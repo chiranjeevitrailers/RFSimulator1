@@ -13,8 +13,8 @@ const AdminDashboard = React.lazy(() => import('./pages/admin/AdminDashboard'))
 const UserDashboard = React.lazy(() => import('./pages/user/UserDashboard'))
 
 // Main app pages
-const AppLayout = React.lazy(() => import('./components/layout/SimpleAppLayout'))
-const DashboardPage = React.lazy(() => import('./pages/app/SimpleDashboardPage'))
+const AppLayout = React.lazy(() => import('./components/layout/TestLayout'))
+const DashboardPage = React.lazy(() => import('./pages/app/TestPage'))
 const TestSuitesPage = React.lazy(() => import('./pages/app/SimpleTestSuitesPage'))
 const AnalyzerPage = React.lazy(() => import('./pages/app/SimpleAnalyzerPage'))
 const ExecutionsPage = React.lazy(() => import('./pages/app/SimpleExecutionsPage'))
