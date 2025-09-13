@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { 
   Play, 
@@ -11,16 +12,31 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  AlertCircle
+  AlertCircle,
+  BarChart3,
+  MessageSquare,
+  Zap
 } from 'lucide-react'
 import { supabase } from '../../lib/supabase/client'
-import { useAuth } from '../../hooks/useAuth'
+import { useAuth } from '../../components/auth/AuthProvider'
+import { ExecutionResults } from '../../components/execution/ExecutionResults'
+import LoadingSpinner from '../../components/common/LoadingSpinner'
 
 export const ExecutionsPage: React.FC = () => {
+  const [searchParams] = useSearchParams()
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [dateFilter, setDateFilter] = useState<string>('all')
+  const [selectedExecution, setSelectedExecution] = useState<string | null>(null)
   const { user } = useAuth()
+
+  // Check if we should show a specific execution
+  useEffect(() => {
+    const executionId = searchParams.get('execution')
+    if (executionId) {
+      setSelectedExecution(executionId)
+    }
+  }, [searchParams])
 
   // Fetch executions
   const { data: executions, isLoading, refetch } = useQuery({
@@ -50,80 +66,7 @@ export const ExecutionsPage: React.FC = () => {
     enabled: !!user?.id
   })
 
-  // Mock data for demonstration
-  const mockExecutions = [
-    {
-      id: '1',
-      test_cases: {
-        title: 'Basic Attach Procedure',
-        complexity: 'basic',
-        test_suites: { name: 'Functional Tests', suite_type: 'functional' }
-      },
-      status: 'PASSED',
-      started_at: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-      finished_at: new Date(Date.now() - 1000 * 60 * 25).toISOString(),
-      fault_injected: false,
-      summary: {
-        totalSteps: 4,
-        passedSteps: 4,
-        failedSteps: 0,
-        successRate: 100
-      }
-    },
-    {
-      id: '2',
-      test_cases: {
-        title: 'Intra-eNB Handover',
-        complexity: 'intermediate',
-        test_suites: { name: 'Mobility Tests', suite_type: 'mobility' }
-      },
-      status: 'RUNNING',
-      started_at: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-      finished_at: null,
-      fault_injected: false,
-      summary: null
-    },
-    {
-      id: '3',
-      test_cases: {
-        title: 'IMS Registration',
-        complexity: 'advanced',
-        test_suites: { name: 'IMS Tests', suite_type: 'ims' }
-      },
-      status: 'FAILED',
-      started_at: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-      finished_at: new Date(Date.now() - 1000 * 60 * 60 * 2 + 1000 * 60 * 3).toISOString(),
-      fault_injected: true,
-      summary: {
-        totalSteps: 6,
-        passedSteps: 4,
-        failedSteps: 2,
-        successRate: 66.7
-      }
-    },
-    {
-      id: '4',
-      test_cases: {
-        title: 'O-RAN F1 Setup',
-        complexity: 'intermediate',
-        test_suites: { name: 'O-RAN Tests', suite_type: 'oran' }
-      },
-      status: 'CANCELLED',
-      started_at: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-      finished_at: new Date(Date.now() - 1000 * 60 * 60 * 24 + 1000 * 60 * 2).toISOString(),
-      fault_injected: false,
-      summary: {
-        totalSteps: 3,
-        passedSteps: 2,
-        failedSteps: 0,
-        successRate: 66.7
-      }
-    }
-  ]
-
-  const displayExecutions = executions || mockExecutions
-
-  const filteredExecutions = displayExecutions.filter(execution => {
+  const filteredExecutions = executions?.filter(execution => {
     const matchesSearch = execution.test_cases.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          execution.test_cases.test_suites.name.toLowerCase().includes(searchTerm.toLowerCase())
     
@@ -202,25 +145,128 @@ export const ExecutionsPage: React.FC = () => {
     return `${Math.round(duration / 60000)}m`
   }
 
+  // If showing specific execution results
+  if (selectedExecution) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Execution Results</h1>
+            <p className="text-base-content/70">
+              Detailed analysis of test execution results
+            </p>
+          </div>
+          <button 
+            onClick={() => setSelectedExecution(null)}
+            className="btn btn-outline"
+          >
+            Back to Executions
+          </button>
+        </div>
+        
+        <ExecutionResults executionId={selectedExecution} />
+      </div>
+    )
+  }
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="loading loading-spinner loading-lg"></div>
+        <LoadingSpinner size="lg" />
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Test Executions</h1>
-        <p className="text-base-content/70">
-          Monitor and analyze your test execution history and results.
-        </p>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="card bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
+        <div className="card-body">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">
+                Test Executions 📊
+              </h1>
+              <p className="text-base-content/70 text-lg">
+                Monitor and analyze your test execution history and results
+              </p>
+            </div>
+            <div className="hidden md:block">
+              <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center">
+                <BarChart3 className="w-10 h-10 text-primary" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="card bg-base-100 shadow-lg">
+          <div className="card-body p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                <BarChart3 className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <div className="font-semibold">{executions?.length || 0}</div>
+                <div className="text-sm text-base-content/70">Total Executions</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card bg-base-100 shadow-lg">
+          <div className="card-body p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-success/10 rounded-full flex items-center justify-center">
+                <CheckCircle className="w-5 h-5 text-success" />
+              </div>
+              <div>
+                <div className="font-semibold">
+                  {executions?.filter(e => e.status === 'PASSED').length || 0}
+                </div>
+                <div className="text-sm text-base-content/70">Passed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card bg-base-100 shadow-lg">
+          <div className="card-body p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-error/10 rounded-full flex items-center justify-center">
+                <XCircle className="w-5 h-5 text-error" />
+              </div>
+              <div>
+                <div className="font-semibold">
+                  {executions?.filter(e => e.status === 'FAILED').length || 0}
+                </div>
+                <div className="text-sm text-base-content/70">Failed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card bg-base-100 shadow-lg">
+          <div className="card-body p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-warning/10 rounded-full flex items-center justify-center">
+                <Clock className="w-5 h-5 text-warning" />
+              </div>
+              <div>
+                <div className="font-semibold">
+                  {executions?.filter(e => e.status === 'RUNNING').length || 0}
+                </div>
+                <div className="text-sm text-base-content/70">Running</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
+      <div className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-base-content/50" size={20} />
           <input
@@ -262,7 +308,7 @@ export const ExecutionsPage: React.FC = () => {
 
       {/* Executions List */}
       <div className="space-y-4">
-        {filteredExecutions.map((execution) => (
+        {filteredExecutions?.map((execution) => (
           <div key={execution.id} className="card bg-base-100 shadow-lg">
             <div className="card-body">
               <div className="flex items-start justify-between">
@@ -309,7 +355,10 @@ export const ExecutionsPage: React.FC = () => {
                 </div>
                 
                 <div className="flex items-center gap-2">
-                  <button className="btn btn-ghost btn-sm">
+                  <button 
+                    onClick={() => setSelectedExecution(execution.id)}
+                    className="btn btn-ghost btn-sm"
+                  >
                     <Eye size={16} />
                   </button>
                   <button className="btn btn-ghost btn-sm">
@@ -327,7 +376,7 @@ export const ExecutionsPage: React.FC = () => {
         ))}
       </div>
 
-      {filteredExecutions.length === 0 && (
+      {filteredExecutions?.length === 0 && (
         <div className="text-center py-12">
           <div className="text-6xl mb-4">📊</div>
           <h3 className="text-xl font-semibold mb-2">No executions found</h3>
@@ -338,10 +387,10 @@ export const ExecutionsPage: React.FC = () => {
             }
           </p>
           {!searchTerm && statusFilter === 'all' && dateFilter === 'all' && (
-            <button className="btn btn-primary">
+            <a href="/app/test-suites" className="btn btn-primary">
               <Play size={16} />
               Browse Test Suites
-            </button>
+            </a>
           )}
         </div>
       )}

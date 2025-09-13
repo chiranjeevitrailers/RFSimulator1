@@ -1,300 +1,209 @@
 import React from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { DashboardStats } from '../../components/dashboard/DashboardStats'
+import { QuotaDisplay, QuotaAlert } from '../../components/billing/QuotaDisplay'
+import { useBilling } from '../../components/billing/BillingProvider'
+import { useAuth } from '../../components/auth/AuthProvider'
 import { 
-  Play, 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
+  Zap, 
   TrendingUp, 
-  Activity,
-  TestTube,
-  BarChart3
+  Users, 
+  BarChart3,
+  Calendar,
+  Clock,
+  CheckCircle,
+  AlertTriangle
 } from 'lucide-react'
-import { supabase } from '../../lib/supabase/client'
-import { useAuth } from '../../hooks/useAuth'
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth()
+  const { quotaInfo, canExecute } = useBilling()
 
-  // Fetch user's recent executions
-  const { data: recentExecutions } = useQuery({
-    queryKey: ['recent-executions', user?.id],
-    queryFn: async () => {
-      if (!user?.id) return []
-      
-      const { data, error } = await supabase
-        .from('executions')
-        .select(`
-          *,
-          test_cases (
-            title,
-            test_suites (
-              name,
-              suite_type
-            )
-          )
-        `)
-        .eq('run_by', user.id)
-        .order('started_at', { ascending: false })
-        .limit(5)
-      
-      if (error) throw error
-      return data
-    },
-    enabled: !!user?.id
-  })
-
-  // Fetch user's execution stats
-  const { data: executionStats } = useQuery({
-    queryKey: ['execution-stats', user?.id],
-    queryFn: async () => {
-      if (!user?.id) return null
-      
-      const { data, error } = await supabase
-        .rpc('get_user_quota_info', { user_id: user.id })
-      
-      if (error) throw error
-      return data
-    },
-    enabled: !!user?.id
-  })
-
-  // Mock data for demo
-  const mockStats = {
-    totalExecutions: 47,
-    passedExecutions: 42,
-    failedExecutions: 3,
-    runningExecutions: 2,
-    successRate: 89.4,
-    thisMonth: 12,
-    lastMonth: 8
-  }
-
-  const mockRecentExecutions = [
-    {
-      id: '1',
-      test_cases: {
-        title: 'Basic Attach Procedure',
-        test_suites: { name: 'Functional Tests', suite_type: 'functional' }
-      },
-      status: 'PASSED',
-      started_at: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-      finished_at: new Date(Date.now() - 1000 * 60 * 25).toISOString()
-    },
-    {
-      id: '2',
-      test_cases: {
-        title: 'Intra-eNB Handover',
-        test_suites: { name: 'Mobility Tests', suite_type: 'mobility' }
-      },
-      status: 'RUNNING',
-      started_at: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-      finished_at: null
-    },
-    {
-      id: '3',
-      test_cases: {
-        title: 'IMS Registration',
-        test_suites: { name: 'IMS Tests', suite_type: 'ims' }
-      },
-      status: 'FAILED',
-      started_at: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-      finished_at: new Date(Date.now() - 1000 * 60 * 60 * 2 + 1000 * 60 * 3).toISOString()
-    }
-  ]
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'PASSED':
-        return <CheckCircle className="w-5 h-5 text-success" />
-      case 'FAILED':
-        return <XCircle className="w-5 h-5 text-error" />
-      case 'RUNNING':
-        return <Clock className="w-5 h-5 text-warning" />
-      default:
-        return <Activity className="w-5 h-5 text-base-content/50" />
-    }
-  }
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'PASSED':
-        return 'badge-success'
-      case 'FAILED':
-        return 'badge-error'
-      case 'RUNNING':
-        return 'badge-warning'
-      default:
-        return 'badge-neutral'
-    }
+  const getGreeting = () => {
+    const hour = new Date().getHours()
+    if (hour < 12) return 'Good morning'
+    if (hour < 18) return 'Good afternoon'
+    return 'Good evening'
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="space-y-6">
       {/* Welcome Section */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">
-          Welcome back, {user?.full_name || user?.email}!
-        </h1>
-        <p className="text-base-content/70">
-          Here's what's happening with your protocol analysis today.
-        </p>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-base-content/70">Total Executions</p>
-                <p className="text-2xl font-bold">{mockStats.totalExecutions}</p>
+      <div className="card bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
+        <div className="card-body">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">
+                {getGreeting()}, {user?.full_name || 'Engineer'}! 👋
+              </h1>
+              <p className="text-base-content/70 text-lg">
+                Welcome to your 5GLabX Cloud dashboard. Ready to analyze some protocols?
+              </p>
+            </div>
+            <div className="hidden md:block">
+              <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center">
+                <BarChart3 className="w-10 h-10 text-primary" />
               </div>
-              <Play className="w-8 h-8 text-primary" />
-            </div>
-            <div className="flex items-center text-sm">
-              <TrendingUp className="w-4 h-4 text-success mr-1" />
-              <span className="text-success">+{mockStats.thisMonth - mockStats.lastMonth} this month</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-base-content/70">Success Rate</p>
-                <p className="text-2xl font-bold">{mockStats.successRate}%</p>
-              </div>
-              <CheckCircle className="w-8 h-8 text-success" />
-            </div>
-            <div className="flex items-center text-sm">
-              <TrendingUp className="w-4 h-4 text-success mr-1" />
-              <span className="text-success">+2.1% from last month</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-base-content/70">Running Tests</p>
-                <p className="text-2xl font-bold">{mockStats.runningExecutions}</p>
-              </div>
-              <Activity className="w-8 h-8 text-warning" />
-            </div>
-            <div className="text-sm text-base-content/50">
-              Active executions
-            </div>
-          </div>
-        </div>
-
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-base-content/70">This Month</p>
-                <p className="text-2xl font-bold">{mockStats.thisMonth}</p>
-              </div>
-              <BarChart3 className="w-8 h-8 text-primary" />
-            </div>
-            <div className="flex items-center text-sm">
-              <TrendingUp className="w-4 h-4 text-success mr-1" />
-              <span className="text-success">+50% from last month</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Quota Info */}
-      {executionStats && (
-        <div className="card bg-base-100 shadow-xl mb-8">
+      {/* Quota Alert */}
+      <QuotaAlert />
+
+      {/* Quick Status */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="card bg-base-100 shadow-lg">
+          <div className="card-body p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-success/10 rounded-full flex items-center justify-center">
+                <CheckCircle className="w-5 h-5 text-success" />
+              </div>
+              <div>
+                <div className="font-semibold">System Status</div>
+                <div className="text-sm text-base-content/70">All systems operational</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card bg-base-100 shadow-lg">
+          <div className="card-body p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-info/10 rounded-full flex items-center justify-center">
+                <Clock className="w-5 h-5 text-info" />
+              </div>
+              <div>
+                <div className="font-semibold">Last Activity</div>
+                <div className="text-sm text-base-content/70">
+                  {new Date().toLocaleTimeString()}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card bg-base-100 shadow-lg">
+          <div className="card-body p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-warning/10 rounded-full flex items-center justify-center">
+                <Zap className="w-5 h-5 text-warning" />
+              </div>
+              <div>
+                <div className="font-semibold">Execution Status</div>
+                <div className="text-sm text-base-content/70">
+                  {canExecute ? 'Ready to execute' : 'Quota exceeded'}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Dashboard Content */}
+      <DashboardStats />
+
+      {/* Getting Started (for new users) */}
+      {(!quotaInfo || quotaInfo.currentExecutions === 0) && (
+        <div className="card bg-base-100 shadow-lg">
           <div className="card-body">
-            <h3 className="card-title mb-4">Usage & Quota</h3>
+            <h2 className="text-xl font-bold mb-4">🚀 Getting Started</h2>
+            <p className="text-base-content/70 mb-6">
+              New to 5GLabX Cloud? Here's how to get started with your first protocol analysis:
+            </p>
+            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <p className="text-sm text-base-content/70">Current Plan</p>
-                <p className="text-lg font-semibold">{executionStats.planName}</p>
-              </div>
-              <div>
-                <p className="text-sm text-base-content/70">Executions This Month</p>
-                <p className="text-lg font-semibold">
-                  {executionStats.currentExecutions}
-                  {executionStats.execLimit && ` / ${executionStats.execLimit}`}
+              <div className="p-4 bg-base-200 rounded-lg">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 bg-primary text-primary-content rounded-full flex items-center justify-center text-sm font-bold">
+                    1
+                  </div>
+                  <h3 className="font-semibold">Browse Test Suites</h3>
+                </div>
+                <p className="text-sm text-base-content/70 mb-3">
+                  Explore our comprehensive library of 3GPP test cases organized by category.
                 </p>
+                <a href="/app/test-suites" className="btn btn-primary btn-sm">
+                  Browse Now
+                </a>
               </div>
-              <div>
-                <p className="text-sm text-base-content/70">Remaining</p>
-                <p className="text-lg font-semibold">
-                  {executionStats.unlimited ? 'Unlimited' : executionStats.remainingExecutions}
+              
+              <div className="p-4 bg-base-200 rounded-lg">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 bg-primary text-primary-content rounded-full flex items-center justify-center text-sm font-bold">
+                    2
+                  </div>
+                  <h3 className="font-semibold">Run Your First Test</h3>
+                </div>
+                <p className="text-sm text-base-content/70 mb-3">
+                  Execute a basic attach procedure to see the platform in action.
                 </p>
+                <a href="/app/test-suites?category=functional" className="btn btn-outline btn-sm">
+                  Start Testing
+                </a>
+              </div>
+              
+              <div className="p-4 bg-base-200 rounded-lg">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 bg-primary text-primary-content rounded-full flex items-center justify-center text-sm font-bold">
+                    3
+                  </div>
+                  <h3 className="font-semibold">Analyze Results</h3>
+                </div>
+                <p className="text-sm text-base-content/70 mb-3">
+                  Use the enhanced log viewer to examine protocol messages and IEs.
+                </p>
+                <a href="/app/analyzer" className="btn btn-outline btn-sm">
+                  Open Analyzer
+                </a>
               </div>
             </div>
-            {!executionStats.unlimited && executionStats.execLimit && (
-              <div className="mt-4">
-                <progress 
-                  className="progress progress-primary w-full" 
-                  value={executionStats.currentExecutions} 
-                  max={executionStats.execLimit}
-                ></progress>
-              </div>
-            )}
           </div>
         </div>
       )}
 
-      {/* Recent Executions */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <h3 className="card-title mb-4">Recent Executions</h3>
-            <div className="space-y-4">
-              {mockRecentExecutions.map((execution) => (
-                <div key={execution.id} className="flex items-center justify-between p-3 bg-base-200 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    {getStatusIcon(execution.status)}
-                    <div>
-                      <p className="font-medium">{execution.test_cases.title}</p>
-                      <p className="text-sm text-base-content/70">
-                        {execution.test_cases.test_suites.name}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className={`badge ${getStatusColor(execution.status)}`}>
-                      {execution.status}
-                    </div>
-                    <p className="text-xs text-base-content/50 mt-1">
-                      {new Date(execution.started_at).toLocaleDateString()}
-                    </p>
-                  </div>
+      {/* Recent Activity Summary */}
+      <div className="card bg-base-100 shadow-lg">
+        <div className="card-body">
+          <h2 className="text-xl font-bold mb-4">📊 Activity Summary</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="font-semibold mb-3">This Week</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-sm text-base-content/70">Test Executions</span>
+                  <span className="font-medium">0</span>
                 </div>
-              ))}
+                <div className="flex justify-between">
+                  <span className="text-sm text-base-content/70">Success Rate</span>
+                  <span className="font-medium text-success">N/A</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-base-content/70">Avg Duration</span>
+                  <span className="font-medium">N/A</span>
+                </div>
+              </div>
             </div>
-            <div className="card-actions justify-end mt-4">
-              <button className="btn btn-outline btn-sm">View All</button>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <h3 className="card-title mb-4">Quick Actions</h3>
-            <div className="space-y-3">
-              <button className="btn btn-primary w-full justify-start">
-                <TestTube size={20} />
-                Start New Analysis
-              </button>
-              <button className="btn btn-outline w-full justify-start">
-                <Play size={20} />
-                Browse Test Suites
-              </button>
-              <button className="btn btn-outline w-full justify-start">
-                <BarChart3 size={20} />
-                View Analytics
-              </button>
+            
+            <div>
+              <h3 className="font-semibold mb-3">This Month</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-sm text-base-content/70">Test Executions</span>
+                  <span className="font-medium">{quotaInfo?.currentExecutions || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-base-content/70">Remaining Quota</span>
+                  <span className="font-medium">
+                    {quotaInfo?.unlimited ? 'Unlimited' : quotaInfo?.remainingExecutions || 0}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-base-content/70">Plan</span>
+                  <span className="font-medium">{quotaInfo?.planName || 'Trial'}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
