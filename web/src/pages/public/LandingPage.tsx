@@ -14,7 +14,22 @@ import {
   RocketLaunchIcon,
   UserGroupIcon,
   AcademicCapIcon,
-  BuildingOfficeIcon
+  BuildingOfficeIcon,
+  SignalIcon,
+  WifiIcon,
+  DevicePhoneMobileIcon,
+  ServerIcon,
+  BoltIcon,
+  EyeIcon,
+  CogIcon,
+  DocumentTextIcon,
+  BeakerIcon,
+  ChartPieIcon,
+  ClockIcon,
+  LockClosedIcon,
+  CloudIcon,
+  CodeBracketIcon,
+  CommandLineIcon
 } from '@heroicons/react/24/outline'
 
 const LandingPage: React.FC = () => {
@@ -29,47 +44,84 @@ const LandingPage: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  const stats = [
+    { label: "Test Cases", value: "1000+" },
+    { label: "Protocols", value: "15+" },
+    { label: "Enterprise Users", value: "500+" },
+    { label: "Countries", value: "50+" }
+  ]
+
   const features = [
     {
-      icon: GlobeAltIcon,
+      icon: SignalIcon,
       title: "Real-time Protocol Analysis",
-      description: "Live 4G/5G protocol monitoring with instant insights and correlation tracking"
+      description: "Live 4G/5G protocol monitoring with instant insights and correlation tracking across all network layers",
+      color: "from-blue-500 to-cyan-500"
     },
     {
-      icon: CpuChipIcon,
+      icon: BeakerIcon,
       title: "1000+ 3GPP Test Cases",
-      description: "Comprehensive test suite covering all protocol layers and scenarios"
+      description: "Comprehensive test suite covering RRC, NAS, NGAP, SIP, O-RAN, NB-IoT, NTN, and V2X protocols",
+      color: "from-purple-500 to-pink-500"
     },
     {
       icon: ShieldCheckIcon,
       title: "Enterprise Security",
-      description: "Bank-grade security with role-based access and audit logging"
+      description: "Bank-grade security with role-based access, audit logging, and compliance with industry standards",
+      color: "from-green-500 to-emerald-500"
     },
     {
       icon: ChartBarIcon,
       title: "Advanced Analytics",
-      description: "AI-powered insights and performance optimization recommendations"
+      description: "AI-powered insights, performance optimization recommendations, and detailed reporting",
+      color: "from-orange-500 to-red-500"
+    },
+    {
+      icon: CloudIcon,
+      title: "Cloud-Native Architecture",
+      description: "Scalable, hardware-free solution that runs entirely in your browser with enterprise reliability",
+      color: "from-indigo-500 to-blue-500"
+    },
+    {
+      icon: CodeBracketIcon,
+      title: "Developer-Friendly",
+      description: "RESTful APIs, webhooks, and comprehensive documentation for seamless integration",
+      color: "from-teal-500 to-green-500"
     }
+  ]
+
+  const protocols = [
+    { name: "RRC", description: "Radio Resource Control" },
+    { name: "NAS", description: "Non-Access Stratum" },
+    { name: "NGAP", description: "Next Generation Application Protocol" },
+    { name: "SIP", description: "Session Initiation Protocol" },
+    { name: "O-RAN", description: "Open Radio Access Network" },
+    { name: "NB-IoT", description: "Narrowband Internet of Things" },
+    { name: "NTN", description: "Non-Terrestrial Networks" },
+    { name: "V2X", description: "Vehicle-to-Everything" }
   ]
 
   const howItWorks = [
     {
       step: "01",
-      title: "Upload Logs",
-      description: "Import your 4G/5G protocol logs or connect live data streams",
-      icon: RocketLaunchIcon
+      title: "Connect & Upload",
+      description: "Import your 4G/5G protocol logs or connect live data streams from your network infrastructure",
+      icon: CloudIcon,
+      color: "bg-blue-500"
     },
     {
       step: "02", 
-      title: "Run Analysis",
-      description: "Execute 1000+ 3GPP test cases with automated fault detection",
-      icon: CpuChipIcon
+      title: "Execute Tests",
+      description: "Run 1000+ 3GPP test cases with automated fault detection and comprehensive protocol validation",
+      icon: BeakerIcon,
+      color: "bg-purple-500"
     },
     {
       step: "03",
-      title: "Get Insights",
-      description: "Receive detailed reports with actionable recommendations",
-      icon: ChartBarIcon
+      title: "Analyze & Optimize",
+      description: "Get detailed insights, performance metrics, and actionable recommendations for network optimization",
+      icon: ChartBarIcon,
+      color: "bg-green-500"
     }
   ]
 
@@ -100,27 +152,19 @@ const LandingPage: React.FC = () => {
     }
   ]
 
-  const stats = [
-    { number: "1000+", label: "3GPP Test Cases" },
-    { number: "50+", label: "Protocol Types" },
-    { number: "99.9%", label: "Uptime SLA" },
-    { number: "24/7", label: "Support" }
-  ]
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
       {/* Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-slate-900/95 backdrop-blur-md shadow-xl' : 'bg-transparent'
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled ? 'bg-slate-900/95 backdrop-blur-md border-b border-slate-800' : 'bg-transparent'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
+          <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-2">
               <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xl">5G</span>
               </div>
-              <span className="text-white font-bold text-xl">5GLabX Cloud</span>
+              <span className="text-white font-bold text-xl">5GLabX</span>
             </div>
 
             {/* Desktop Navigation */}
@@ -131,25 +175,15 @@ const LandingPage: React.FC = () => {
               <Link to="/pricing" className="text-white hover:text-blue-300 transition-colors duration-200">
                 Pricing
               </Link>
-              <Link to="/features" className="text-white hover:text-blue-300 transition-colors duration-200">
-                Features
+              <Link to="/contact" className="text-white hover:text-blue-300 transition-colors duration-200">
+                Contact
               </Link>
-              <Link to="/docs" className="text-white hover:text-blue-300 transition-colors duration-200">
-                Documentation
-              </Link>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="hidden md:flex items-center space-x-4">
-              <Link 
-                to="/login" 
-                className="text-white hover:text-blue-300 transition-colors duration-200"
-              >
+              <Link to="/login" className="text-white hover:text-blue-300 transition-colors duration-200">
                 Login
               </Link>
-              <Link 
-                to="/signup" 
-                className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              <Link
+                to="/signup"
+                className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200"
               >
                 Get Started
               </Link>
@@ -168,34 +202,26 @@ const LandingPage: React.FC = () => {
 
           {/* Mobile Navigation */}
           {isMenuOpen && (
-            <div className="md:hidden bg-slate-900/95 backdrop-blur-md rounded-lg mt-2 p-4">
-              <div className="flex flex-col space-y-4">
-                <Link to="/" className="text-white hover:text-blue-300 transition-colors duration-200">
+            <div className="md:hidden">
+              <div className="px-2 pt-2 pb-3 space-y-1 bg-slate-900/95 backdrop-blur-md rounded-lg mt-2">
+                <Link to="/" className="text-white hover:text-blue-300 transition-colors duration-200 block px-3 py-2">
                   Home
                 </Link>
-                <Link to="/pricing" className="text-white hover:text-blue-300 transition-colors duration-200">
+                <Link to="/pricing" className="text-white hover:text-blue-300 transition-colors duration-200 block px-3 py-2">
                   Pricing
                 </Link>
-                <Link to="/features" className="text-white hover:text-blue-300 transition-colors duration-200">
-                  Features
+                <Link to="/contact" className="text-white hover:text-blue-300 transition-colors duration-200 block px-3 py-2">
+                  Contact
                 </Link>
-                <Link to="/docs" className="text-white hover:text-blue-300 transition-colors duration-200">
-                  Documentation
+                <Link to="/login" className="text-white hover:text-blue-300 transition-colors duration-200 block px-3 py-2">
+                  Login
                 </Link>
-                <div className="pt-4 border-t border-slate-700">
-                  <Link 
-                    to="/login" 
-                    className="block text-white hover:text-blue-300 transition-colors duration-200 mb-2"
-                  >
-                    Login
-                  </Link>
-                  <Link 
-                    to="/signup" 
-                    className="block bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 text-center"
-                  >
-                    Get Started
-                  </Link>
-                </div>
+                <Link
+                  to="/signup"
+                  className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 block text-center mx-3 my-2"
+                >
+                  Get Started
+                </Link>
               </div>
             </div>
           )}
@@ -208,32 +234,27 @@ const LandingPage: React.FC = () => {
           <div className="text-center">
             <div className="mb-8">
               <span className="inline-block bg-gradient-to-r from-blue-500/20 to-indigo-500/20 text-blue-300 px-4 py-2 rounded-full text-sm font-medium border border-blue-500/30">
-                🚀 Next-Generation 4G/5G Protocol Analysis
+                🚀 The Future of Protocol Analysis is Here
               </span>
             </div>
-            
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-              Professional
               <span className="block bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                Protocol Analysis
+                4G/5G Protocol Analysis
               </span>
               <span className="block">Made Simple</span>
             </h1>
-            
             <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-              The industry's most comprehensive 4G/5G protocol analysis platform. 
-              1000+ 3GPP test cases, real-time monitoring, and enterprise-grade security.
+              Professional-grade protocol analyzer with 1000+ 3GPP test cases, real-time monitoring, 
+              and enterprise security. No hardware required.
             </p>
-            
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <Link 
-                to="/signup" 
+              <Link
+                to="/signup"
                 className="group bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-blue-500/25 flex items-center space-x-2"
               >
                 <span>Start Free Trial</span>
                 <ArrowRightIcon className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
               </Link>
-              
               <button className="group flex items-center space-x-2 text-white hover:text-blue-300 transition-colors duration-200">
                 <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:bg-white/20 transition-all duration-200">
                   <PlayIcon className="h-6 w-6" />
@@ -247,7 +268,7 @@ const LandingPage: React.FC = () => {
               {stats.map((stat, index) => (
                 <div key={index} className="text-center group">
                   <div className="text-3xl md:text-4xl font-bold text-white mb-2 group-hover:scale-110 transition-transform duration-200">
-                    {stat.number}
+                    {stat.value}
                   </div>
                   <div className="text-slate-400 text-sm md:text-base">
                     {stat.label}
@@ -271,13 +292,13 @@ const LandingPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <div 
+              <div
                 key={index}
                 className="group bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/10"
               >
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200">
+                <div className={`w-12 h-12 bg-gradient-to-r ${feature.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200`}>
                   <feature.icon className="h-6 w-6 text-white" />
                 </div>
                 <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-blue-300 transition-colors duration-200">
@@ -292,15 +313,45 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* How It Works Section */}
+      {/* Protocols Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Comprehensive Protocol Support
+            </h2>
+            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+              Full coverage of 4G/5G protocols with detailed analysis and testing capabilities
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {protocols.map((protocol, index) => (
+              <div
+                key={index}
+                className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 text-center group"
+              >
+                <div className="text-2xl font-bold text-white mb-2 group-hover:text-blue-300 transition-colors duration-200">
+                  {protocol.name}
+                </div>
+                <div className="text-slate-400 text-sm">
+                  {protocol.description}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-800/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               How It Works
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-              Get started with professional protocol analysis in three simple steps
+              Get started with 5GLabX in three simple steps
             </p>
           </div>
 
@@ -328,7 +379,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-800/50">
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
@@ -341,7 +392,7 @@ const LandingPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <div 
+              <div
                 key={index}
                 className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/10"
               >
@@ -354,15 +405,15 @@ const LandingPage: React.FC = () => {
                   "{testimonial.content}"
                 </p>
                 <div className="flex items-center">
-                  <img 
-                    src={testimonial.avatar} 
+                  <img
+                    src={testimonial.avatar}
                     alt={testimonial.name}
                     className="w-12 h-12 rounded-full mr-4 object-cover"
                   />
                   <div>
                     <div className="text-white font-semibold">{testimonial.name}</div>
                     <div className="text-slate-400 text-sm">
-                      {testimonial.role}, {testimonial.company}
+                      {testimonial.role} at {testimonial.company}
                     </div>
                   </div>
                 </div>
@@ -383,15 +434,15 @@ const LandingPage: React.FC = () => {
               Join thousands of telecom professionals who trust 5GLabX as their preferred protocol analysis platform
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link 
-                to="/signup" 
+              <Link
+                to="/signup"
                 className="group bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-blue-500/25 flex items-center justify-center space-x-2"
               >
                 <span>Start Free Trial</span>
                 <ArrowRightIcon className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
               </Link>
-              <Link 
-                to="/pricing" 
+              <Link
+                to="/pricing"
                 className="text-white border border-slate-600 px-8 py-4 rounded-xl font-semibold text-lg hover:border-blue-500 hover:text-blue-300 transition-all duration-300"
               >
                 View Pricing
@@ -405,7 +456,6 @@ const LandingPage: React.FC = () => {
       <footer className="bg-slate-900 border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Company Info */}
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
                 <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
@@ -439,7 +489,6 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Product Links */}
             <div>
               <h3 className="text-white font-semibold mb-4">Product</h3>
               <ul className="space-y-3">
@@ -451,7 +500,6 @@ const LandingPage: React.FC = () => {
               </ul>
             </div>
 
-            {/* Company Links */}
             <div>
               <h3 className="text-white font-semibold mb-4">Company</h3>
               <ul className="space-y-3">
