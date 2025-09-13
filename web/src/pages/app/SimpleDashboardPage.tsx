@@ -2,15 +2,15 @@ import React from 'react'
 
 export const SimpleDashboardPage: React.FC = () => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ backgroundColor: 'white', padding: '20px', minHeight: '100vh' }}>
       <div className="card bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
         <div className="card-body">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold mb-2">
+              <h1 className="text-3xl font-bold mb-2" style={{ color: 'black', fontSize: '2rem' }}>
                 Welcome to 5GLabX Cloud! 👋
               </h1>
-              <p className="text-base-content/70 text-lg">
+              <p className="text-base-content/70 text-lg" style={{ color: 'gray', fontSize: '1.2rem' }}>
                 Your professional 4G/5G protocol analysis platform is ready.
               </p>
             </div>
