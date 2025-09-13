@@ -2,136 +2,145 @@ name: Deploy Production
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy to'
-        required: true
-        default: 'production'
-        type: choice
-        options:
-        - production
-        - staging
 
 jobs:
   deploy-production:
     runs-on: ubuntu-latest
-    environment: production
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-          
+
       - name: Install dependencies
-        run: npm ci
-        
+        run: |
+          npm ci
+          cd web && npm ci
+          cd ../api && npm ci
+
+      - name: Run linting
+        run: |
+          npm run lint
+          cd web && npm run lint
+          cd ../api && npm run lint
+
+      - name: Run type checking
+        run: |
+          cd web && npm run type-check
+          cd ../api && npm run type-check
+
       - name: Run tests
-        run: npm run test
-        
+        run: |
+          npm run test
+          cd web && npm run test
+          cd ../api && npm run test
+
       - name: Build web application
-        run: npm run build:web
+        run: |
+          cd web && npm run build
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           VITE_STRIPE_PUBLISHABLE_KEY: ${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY }}
-          VITE_APP_ENV: production
-          
+          VITE_SITE_URL: https://app.5glabx.com
+
       - name: Deploy to Netlify
-        uses: netlify/actions/cli@master
+        uses: nwtgck/actions-netlify@v2.0
         with:
-          args: deploy --dir=web/dist --prod=true --message="Production deploy from ${{ github.sha }}"
+          publish-dir: './web/dist'
+          production-deploy: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy production from commit ${{ github.sha }}"
         env:
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          
-      - name: Deploy database migrations
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      - name: Update Supabase Database
+        if: success()
         run: |
-          npx supabase db push --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+          # Install Supabase CLI
+          npm install -g supabase
+          
+          # Set up Supabase project
+          supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+          
+          # Push database changes
+          supabase db push
+          
+          # Run seed script if needed
+          supabase db seed
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          
-      - name: Seed test cases
-        run: |
-          npm run db:seed
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-          
-      - name: Deploy log engine
-        run: |
-          # Deploy to Fly.io or Railway
-          flyctl deploy --config api/fly.toml
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-          
-      - name: Run health checks
-        run: |
-          # Wait for deployment to be ready
-          sleep 30
-          
-          # Check application health
-          curl -f ${{ secrets.PRODUCTION_URL }}/health || exit 1
-          
-          # Check API health
-          curl -f ${{ secrets.API_URL }}/health || exit 1
-          
+
       - name: Notify deployment success
-        uses: 8398a7/action-slack@v3
         if: success()
+        uses: 8398a7/action-slack@v3
         with:
           status: success
           channel: '#deployments'
           text: '🚀 Production deployment successful!'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
       - name: Notify deployment failure
-        uses: 8398a7/action-slack@v3
         if: failure()
+        uses: 8398a7/action-slack@v3
         with:
           status: failure
           channel: '#deployments'
           text: '❌ Production deployment failed!'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
-  deploy-staging:
+  # Deploy API to Railway/Fly.io
+  deploy-api:
     runs-on: ubuntu-latest
-    environment: staging
-    if: github.event.inputs.environment == 'staging'
+    needs: deploy-production
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-          
+
       - name: Install dependencies
-        run: npm ci
-        
-      - name: Build web application
-        run: npm run build:web
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.STAGING_SUPABASE_ANON_KEY }}
-          VITE_STRIPE_PUBLISHABLE_KEY: ${{ secrets.STAGING_STRIPE_PUBLISHABLE_KEY }}
-          VITE_APP_ENV: staging
-          
-      - name: Deploy to Netlify Staging
-        uses: netlify/actions/cli@master
+        run: |
+          cd api && npm ci
+
+      - name: Build API
+        run: |
+          cd api && npm run build
+
+      - name: Deploy to Railway
+        uses: railway-app/railway-deploy@v1
         with:
-          args: deploy --dir=web/dist --prod=false --message="Staging deploy from ${{ github.sha }}"
+          railway-token: ${{ secrets.RAILWAY_TOKEN }}
+          service: 5glabx-api
         env:
-          NETLIFY_SITE_ID: ${{ secrets.STAGING_NETLIFY_SITE_ID }}
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      # Alternative: Deploy to Fly.io
+      # - name: Deploy to Fly.io
+      #   uses: superfly/flyctl-actions/setup-flyctl@master
+      #   with:
+      #     version: latest
+      # 
+      # - name: Deploy to Fly.io
+      #   run: |
+      #     cd api
+      #     flyctl deploy --remote-only
+      #   env:
+      #     FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

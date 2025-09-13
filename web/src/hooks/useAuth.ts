@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import { User as SupabaseUser } from '@supabase/supabase-js'
-import { supabase, getUserProfile } from '../lib/supabase/client'
+import { AuthService } from '../lib/supabase/auth'
 import type { User } from '../lib/supabase/types'
 
 export const useAuth = () => {
@@ -10,107 +9,65 @@ export const useAuth = () => {
   useEffect(() => {
     // Get initial session
     const getInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session?.user) {
-        await loadUserProfile(session.user)
-      } else {
+      try {
+        const currentUser = await AuthService.getCurrentUser()
+        setUser(currentUser)
+      } catch (error) {
+        console.error('Error getting initial session:', error)
         setUser(null)
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
 
     getInitialSession()
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (session?.user) {
-          await loadUserProfile(session.user)
-        } else {
-          setUser(null)
-        }
-        setLoading(false)
-      }
-    )
+    const { data: { subscription } } = AuthService.onAuthStateChange((user) => {
+      setUser(user)
+      setLoading(false)
+    })
 
     return () => subscription.unsubscribe()
   }, [])
 
-  const loadUserProfile = async (supabaseUser: SupabaseUser) => {
-    try {
-      const profile = await getUserProfile(supabaseUser.id)
-      
-      // Get user subscription if exists
-      const { data: subscription } = await supabase
-        .from('subscriptions')
-        .select(`
-          *,
-          plan:plans(*)
-        `)
-        .eq('user_id', supabaseUser.id)
-        .eq('status', 'active')
-        .single()
-
-      setUser({
-        ...profile,
-        subscription: subscription || undefined
-      })
-    } catch (error) {
-      console.error('Error loading user profile:', error)
-      setUser(null)
-    }
-  }
-
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
-    return { data, error }
+    const { user, error } = await AuthService.signIn({ email, password })
+    return { data: user, error }
   }
 
   const signUp = async (email: string, password: string, fullName?: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName
-        }
-      }
-    })
-    return { data, error }
+    const { user, error } = await AuthService.signUp({ email, password, fullName })
+    return { data: user, error }
   }
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
+    const { error } = await AuthService.signOut()
     return { error }
   }
 
   const resetPassword = async (email: string) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`
-    })
+    const { error } = await AuthService.resetPassword(email)
     return { error }
   }
 
   const updatePassword = async (password: string) => {
-    const { error } = await supabase.auth.updateUser({ password })
+    const { error } = await AuthService.updatePassword(password)
     return { error }
   }
 
   const updateProfile = async (updates: Partial<User>) => {
     if (!user) throw new Error('No user logged in')
     
-    const { error } = await supabase
-      .from('profiles')
-      .update(updates)
-      .eq('id', user.id)
-    
+    const { user: updatedUser, error } = await AuthService.updateProfile(user.id, updates)
     if (error) throw error
     
-    // Reload user profile
-    await loadUserProfile(user as any)
+    return updatedUser
+  }
+
+  const signInWithProvider = async (provider: 'google' | 'github') => {
+    const { error } = await AuthService.signInWithProvider(provider)
+    return { error }
   }
 
   return {
@@ -121,6 +78,7 @@ export const useAuth = () => {
     signOut,
     resetPassword,
     updatePassword,
-    updateProfile
+    updateProfile,
+    signInWithProvider
   }
 }

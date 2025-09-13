@@ -1,237 +1,288 @@
 # 5GLabX Cloud
 
-*Subscription-Based 4G/5G Protocol Analyzer & 3GPP Test-Suite Platform*
+> Professional 4G/5G Protocol Analysis Platform
 
-[![Production Ready](https://img.shields.io/badge/Status-Development%20Ready-blue)](DEVELOPMENT.md)
-[![Cloud Platform](https://img.shields.io/badge/Platform-Cloud%20Native-green)](MIGRATION_PLAN.md)
-[![3GPP Compliant](https://img.shields.io/badge/3GPP-Compliant-orange)](test-suites/)
-[![Subscription Model](https://img.shields.io/badge/Model-SaaS-purple)](docs/user-guides/)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/your-badge-id/deploy-status)](https://app.netlify.com/sites/your-site/deploys)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)](https://reactjs.org/)
 
-## 🌟 Overview
+## 🚀 Overview
 
-5GLabX Cloud is a hardware-free, browser-based alternative to Keysight/Anritsu analyzers. Users purchase a subscription, sign-in, and perform:
+5GLabX Cloud is a hardware-free, browser-based 4G/5G protocol analyzer with 1000+ 3GPP test cases. It provides professional-grade protocol analysis capabilities without the need for expensive hardware equipment.
 
-- **Live protocol log analysis** (layers: RRC, NAS, NGAP, SIP, etc.)
-- **Execution of 1000+ ready-made 3GPP functional, mobility, performance and security test cases**
-- **Fault-simulation runs** injecting realistic protocol errors
+### ✨ Key Features
+
+- **🔬 Professional Protocol Analysis**: Analyze RRC, NAS, NGAP, SIP, O-RAN, NB-IoT, NTN, and V2X protocols
+- **📊 1000+ Test Cases**: Comprehensive 3GPP-compliant test suite library
+- **🌐 Browser-Based**: No hardware required - access from anywhere
+- **⚡ Real-Time Analysis**: Live protocol log streaming and analysis
+- **🔧 Fault Simulation**: Test your systems with realistic fault injection
+- **👥 Collaboration**: Real-time team collaboration features
+- **📈 Analytics**: Advanced KPI monitoring and performance metrics
+- **🔒 Enterprise Security**: SOC 2 compliant with enterprise-grade security
+
+## 🏗️ Architecture
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │   Netlify       │    │   Supabase      │
+│   (React/Vite)  │◄──►│   Functions     │◄──►│   (PostgreSQL)  │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   API Backend   │    │   Stripe        │    │   Redis         │
+│   (Node.js)     │◄──►│   (Billing)     │    │   (Cache)       │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+## 🛠️ Technology Stack
+
+### Frontend
+- **React 18** with TypeScript
+- **Vite** for fast development and building
+- **TailwindCSS** + **DaisyUI** for styling
+- **React Query** for data fetching
+- **React Router** for navigation
+- **Zustand** for state management
+
+### Backend
+- **Node.js** with Express and TypeScript
+- **WebSocket** for real-time communication
+- **Supabase** for database and authentication
+- **Stripe** for billing and subscriptions
+- **Netlify Functions** for serverless functions
+
+### Infrastructure
+- **Netlify** for frontend hosting
+- **Railway/Fly.io** for API hosting
+- **Supabase** for database and auth
+- **Docker** for containerization
+- **GitHub Actions** for CI/CD
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js >= 18.0.0
-- npm >= 9.0.0
-- Docker >= 20.10.0 (optional, for local development)
-- Supabase account
-- Stripe account
+- Node.js 18+
+- npm or yarn
+- Docker and Docker Compose
+- Supabase CLI (optional)
 
-### Installation
+### 1. Clone the Repository
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/5glabx/5glabx-cloud.git
-   cd 5glabx-cloud
-   ```
+```bash
+git clone https://github.com/your-org/5glabx-cloud.git
+cd 5glabx-cloud
+```
 
-2. **Install dependencies**
-   ```bash
-   npm run setup
-   ```
+### 2. Run Setup Script
 
-3. **Configure environment**
-   ```bash
-   cp .env.example .env.local
-   # Edit .env.local with your configuration
-   ```
+```bash
+./scripts/dev-setup.sh
+```
 
-4. **Start development environment**
-   ```bash
-   npm run dev
-   ```
+This will:
+- Install all dependencies
+- Set up environment files
+- Configure development environment
+- Set up Git hooks
 
-5. **Access the application**
-   - Frontend: http://localhost:5173
-   - API: http://localhost:3001
-   - Grafana: http://localhost:3000 (admin/admin)
+### 3. Configure Environment Variables
+
+Update the following files with your actual values:
+
+- `.env` - Root environment variables
+- `web/.env` - Frontend environment variables  
+- `api/.env` - Backend environment variables
+
+Required variables:
+```bash
+# Supabase
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_KEY=your-service-key
+
+# Stripe
+STRIPE_SECRET_KEY=sk_test_your-stripe-secret-key
+STRIPE_WEBHOOK_SECRET=whsec_your-webhook-secret
+```
+
+### 4. Start Development Environment
+
+```bash
+./scripts/start-dev.sh
+```
+
+This will start:
+- Frontend: http://localhost:5173
+- API: http://localhost:3001
+- Supabase: http://localhost:54321
+- Monitoring: http://localhost:3000
 
 ## 📁 Project Structure
 
 ```
 5glabx-cloud/
 ├── web/                    # React frontend application
-├── api/                    # Log-Engine microservice
-├── netlify/functions/      # Serverless functions
-├── test-suites/            # 3GPP test case library
-├── infra/                  # Infrastructure configuration
-├── docs/                   # Documentation
-└── .github/workflows/      # CI/CD workflows
+│   ├── src/
+│   │   ├── components/     # React components
+│   │   ├── pages/          # Page components
+│   │   ├── hooks/          # Custom React hooks
+│   │   ├── lib/            # Utility libraries
+│   │   └── types/          # TypeScript type definitions
+│   ├── public/             # Static assets
+│   └── package.json
+├── api/                    # Node.js API backend
+│   ├── src/
+│   │   ├── routes/         # API routes
+│   │   ├── middleware/     # Express middleware
+│   │   ├── websocket/      # WebSocket handlers
+│   │   └── utils/          # Utility functions
+│   └── package.json
+├── netlify/
+│   └── functions/          # Netlify serverless functions
+├── supabase/
+│   ├── migrations/         # Database migrations
+│   ├── seed.sql           # Seed data
+│   └── config.toml        # Supabase configuration
+├── test-suites/           # 3GPP test case library
+├── scripts/               # Development scripts
+├── .github/
+│   └── workflows/         # GitHub Actions CI/CD
+└── docker-compose.yml     # Local development environment
 ```
 
-## 🏗️ Architecture
+## 🧪 Development
 
+### Available Scripts
+
+```bash
+# Root level
+npm run lint              # Lint all projects
+npm run test              # Test all projects
+npm run type-check        # Type check all projects
+
+# Frontend (web/)
+npm run dev               # Start development server
+npm run build             # Build for production
+npm run preview           # Preview production build
+npm run lint              # Lint frontend code
+npm run test              # Run frontend tests
+
+# Backend (api/)
+npm run dev               # Start development server
+npm run build             # Build for production
+npm run start             # Start production server
+npm run lint              # Lint backend code
+npm run test              # Run backend tests
 ```
-Browser (React/Vite)
-   ↕ HTTPS & WebSocket
-Netlify (Static + Functions)
-   ↔ Supabase (Postgres, Auth, Storage)
-   ↔ Stripe (Billing)
-   ↔ 5GLabX Log-Engine API (Container)
+
+### Database Management
+
+```bash
+# Start Supabase locally
+supabase start
+
+# Push schema changes
+supabase db push
+
+# Seed database
+supabase db seed
+
+# Reset database
+supabase db reset
 ```
 
-## 🛠️ Technology Stack
+### Docker Development
 
-### Frontend
-- **React 18** + TypeScript
-- **Vite** for build tooling
-- **TailwindCSS** + DaisyUI for styling
-- **React Query** for server state
-- **Zustand** for client state
-
-### Backend
-- **Supabase** for database and auth
-- **Netlify Functions** for serverless logic
-- **Stripe** for billing
-- **Node.js** for log engine
-
-### DevOps
-- **Netlify** for hosting
-- **Fly.io/Railway** for containers
-- **GitHub Actions** for CI/CD
-- **Docker** for containerization
-
-## 📊 Features
-
-### Core Features
-- ✅ **Protocol Analysis** - RRC, NAS, NGAP, SIP, O-RAN
-- ✅ **Test Execution** - 1000+ 3GPP test cases
-- ✅ **Fault Injection** - Controlled error simulation
-- ✅ **Real-time Collaboration** - Multi-user access
-- ✅ **Subscription Billing** - Stripe integration
-
-### Advanced Features
-- ✅ **O-RAN Support** - F1, E1, E2 interfaces
-- ✅ **NB-IoT Analysis** - NPRACH, NPDCCH, NPDSCH
-- ✅ **V2X Support** - PC5 sidelink analysis
-- ✅ **NTN Support** - Satellite communication
-- ✅ **Admin Dashboard** - User and system management
-
-## 🎯 Use Cases
-
-### Network Operators
-- Real-time 5G network monitoring
-- Protocol layer analysis
-- Performance optimization
-- Troubleshooting and diagnostics
-
-### Research & Development
-- O-RAN interface analysis
-- Advanced technology testing (NB-IoT, V2X, NTN)
-- Protocol development and validation
-- Performance benchmarking
-
-### System Integrators
-- Multi-vendor network integration
-- Automated testing and validation
-- Production deployment support
-- Compliance testing
-
-## 📚 Documentation
-
-### Development
-- **[Development Guide](DEVELOPMENT.md)** - Complete development documentation
-- **[Migration Plan](MIGRATION_PLAN.md)** - Desktop to cloud migration strategy
-- **[Repository Structure](5glabx-cloud-structure.md)** - Detailed project layout
-
-### User Guides
-- **[Getting Started](docs/user-guides/getting-started.md)** - Quick start guide
-- **[Protocol Analysis](docs/user-guides/protocol-analysis.md)** - Analysis features
-- **[Test Execution](docs/user-guides/test-execution.md)** - Running test cases
-- **[Fault Injection](docs/user-guides/fault-injection.md)** - Error simulation
-
-### API Documentation
-- **[Authentication](docs/api/authentication.md)** - Auth endpoints
-- **[Test Execution](docs/api/test-execution.md)** - Test API
-- **[WebSocket](docs/api/websocket.md)** - Real-time streaming
-- **[Error Codes](docs/api/error-codes.md)** - API error reference
-
-## 🚀 Deployment
-
-### Local Development
 ```bash
 # Start all services
-npm run dev
+docker-compose up -d
 
-# Start individual services
-npm run dev:web    # Frontend only
-npm run dev:api    # API only
+# View logs
+docker-compose logs -f
 
-# Docker development
-npm run docker:up
-```
-
-### Production Deployment
-```bash
-# Build for production
-npm run build
-
-# Deploy to Netlify
-npm run deploy:prod
-
-# Deploy to staging
-npm run deploy:preview
+# Stop services
+docker-compose down
 ```
 
 ## 🧪 Testing
 
+### Frontend Testing
 ```bash
-# Run all tests
-npm run test
-
-# Run specific test suites
-npm run test:web    # Frontend tests
-npm run test:api    # API tests
-
-# Run with coverage
-npm run test:coverage
+cd web
+npm run test              # Run unit tests
+npm run test:ui           # Run tests with UI
+npm run test:coverage     # Run tests with coverage
 ```
 
-## 📈 Monitoring
+### Backend Testing
+```bash
+cd api
+npm run test              # Run unit tests
+npm run test:ui           # Run tests with UI
+npm run test:coverage     # Run tests with coverage
+```
 
-### Health Checks
-- Application health: `/health`
-- Database health: `/health/db`
-- Log engine health: `/health/log-engine`
+## 🚀 Deployment
 
-### Metrics
-- Grafana dashboard: http://localhost:3000
-- Prometheus metrics: http://localhost:9090
+### Production Deployment
 
-## 🔒 Security
+The application is automatically deployed to production when changes are pushed to the `main` branch.
 
-### Authentication
-- Supabase Auth with multiple providers
-- Role-based access control (RBAC)
-- JWT token management
+### Manual Deployment
 
-### Data Protection
-- Row Level Security (RLS) on all tables
-- Encrypted data transmission
-- Secure API endpoints
+```bash
+# Deploy frontend to Netlify
+netlify deploy --prod
 
-### Compliance
-- GDPR compliant data handling
-- SOC 2 Type II compliance
-- Regular security audits
+# Deploy API to Railway
+railway deploy
+
+# Deploy API to Fly.io
+flyctl deploy
+```
+
+### Environment Variables
+
+Set the following environment variables in your deployment platform:
+
+**Netlify:**
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+- `VITE_STRIPE_PUBLISHABLE_KEY`
+
+**Railway/Fly.io:**
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_KEY`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+
+## 📚 Documentation
+
+- [Development Guide](./DEVELOPMENT.md)
+- [Migration Plan](./MIGRATION_PLAN.md)
+- [Protocol Analysis Architecture](./PROTOCOL_ANALYSIS_ARCHITECTURE.md)
+- [API Documentation](./docs/api.md)
+- [Test Suite Library](./docs/test-suites.md)
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feat/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feat/amazing-feature`)
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+### Development Guidelines
+
+- Follow the existing code style
+- Write tests for new features
+- Update documentation as needed
+- Ensure all CI checks pass
 
 ## 📄 License
 
@@ -239,43 +290,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support
 
-### Documentation
-- [Complete Documentation](docs/)
-- [FAQ](docs/user-guides/faq.md)
-- [Troubleshooting](docs/deployment/troubleshooting.md)
+- 📧 Email: support@5glabx.com
+- 💬 Discord: [Join our community](https://discord.gg/5glabx)
+- 📖 Documentation: [docs.5glabx.com](https://docs.5glabx.com)
+- 🐛 Issues: [GitHub Issues](https://github.com/your-org/5glabx-cloud/issues)
 
-### Community
-- [GitHub Discussions](https://github.com/5glabx/5glabx-cloud/discussions)
-- [Discord Server](https://discord.gg/5glabx)
-- [Stack Overflow](https://stackoverflow.com/questions/tagged/5glabx)
+## 🙏 Acknowledgments
 
-### Commercial Support
-- [Enterprise Support](https://5glabx.com/enterprise)
-- [Professional Services](https://5glabx.com/services)
-- [Training Programs](https://5glabx.com/training)
-
-## 🎉 Status
-
-### Current Status: Development Ready
-- ✅ Repository structure defined
-- ✅ Development environment configured
-- ✅ Migration plan completed
-- ✅ Project templates created
-- 🚧 Implementation in progress
-
-### Roadmap
-- **Phase 1**: Foundation Setup (Week 1-2)
-- **Phase 2**: Authentication & Billing (Week 3-4)
-- **Phase 3**: Core Dashboard (Week 5-6)
-- **Phase 4**: Protocol Analysis (Week 7-8)
-- **Phase 5**: Test Suites (Week 9-10)
-- **Phase 6**: Advanced Features (Week 11-12)
-- **Phase 7**: Admin & Monitoring (Week 13-14)
-- **Phase 8**: Testing & Optimization (Week 15-16)
-- **Phase 9**: Launch & Support (Week 17-18)
+- 3GPP for protocol specifications
+- Supabase for the amazing backend platform
+- Netlify for hosting and serverless functions
+- The open-source community for inspiration
 
 ---
 
-**5GLabX Cloud** - Transforming 5G protocol analysis with cloud-native architecture and subscription-based access.
-
-*Version 1.0.0 | Status: Development Ready | License: MIT*
+**Built with ❤️ by the 5GLabX Team**

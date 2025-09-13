@@ -1,26 +1,28 @@
 [build]
-  base = "web"
+  # Build command for the frontend
+  command = "cd web && npm run build"
+  
+  # Directory to publish
   publish = "web/dist"
-  command = "npm run build:web"
+  
+  # Functions directory
+  functions = "netlify/functions"
 
 [build.environment]
+  # Node.js version
   NODE_VERSION = "18"
-  NPM_VERSION = "9"
+  
+  # Build environment variables
+  NODE_ENV = "production"
 
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
-
+# Redirect rules
 [[redirects]]
+  # API routes to Netlify functions
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
+# Headers for security
 [[headers]]
   for = "/*"
   [headers.values]
@@ -28,33 +30,68 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co https://api.stripe.com wss://*.supabase.co; frame-src https://js.stripe.com;"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com; frame-src https://js.stripe.com https://hooks.stripe.com;"
 
+# Headers for API routes
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+
+# Headers for static assets
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-[[headers]]
-  for = "*.js"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+# Form handling
+[build.processing]
+  skip_processing = false
 
-[[headers]]
-  for = "*.css"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+[build.processing.css]
+  bundle = true
+  minify = true
 
-[dev]
-  command = "npm run dev:web"
-  port = 5173
-  publish = "web/dist"
+[build.processing.js]
+  bundle = true
+  minify = true
 
+[build.processing.html]
+  pretty_urls = true
+
+# Edge functions (if needed)
+# [[edge_functions]]
+#   function = "hello"
+#   path = "/hello"
+
+# Plugin configuration
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+
+  [plugins.inputs.thresholds]
+    performance = 0.8
+    accessibility = 0.9
+    best-practices = 0.8
+    seo = 0.8
+
+# Branch deploy configuration
 [context.production]
-  command = "npm run build:web"
+  command = "cd web && npm run build"
 
 [context.deploy-preview]
-  command = "npm run build:web"
+  command = "cd web && npm run build"
 
 [context.branch-deploy]
-  command = "npm run build:web"
+  command = "cd web && npm run build"
+
+# Environment variables for different contexts
+[context.production.environment]
+  NODE_ENV = "production"
+
+[context.deploy-preview.environment]
+  NODE_ENV = "staging"
+
+[context.branch-deploy.environment]
+  NODE_ENV = "development"
