@@ -78,7 +78,7 @@ const LandingPage: React.FC = () => {
       name: "Dr. Sarah Chen",
       role: "Principal Engineer",
       company: "Ericsson",
-      content: "5GLabX Cloud has revolutionized our protocol testing. The real-time analysis and comprehensive test coverage have reduced our debugging time by 70%. It's the most advanced platform we've used.",
+      content: "5GLabX has revolutionized our protocol testing. The real-time analysis and comprehensive test coverage have reduced our debugging time by 70%. It's the most advanced platform we've used.",
       rating: 5,
       avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face"
     },
@@ -86,7 +86,7 @@ const LandingPage: React.FC = () => {
       name: "Michael Rodriguez",
       role: "Network Architect",
       company: "Nokia",
-      content: "The O-RAN and NTN test cases are exceptional. 5GLabX Cloud has become our go-to tool for 5G network validation and optimization. Nothing else comes close.",
+      content: "The O-RAN and NTN test cases are exceptional. 5GLabX has become our go-to tool for 5G network validation and optimization. Nothing else comes close.",
       rating: 5,
       avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
     },
@@ -94,7 +94,7 @@ const LandingPage: React.FC = () => {
       name: "Dr. Priya Sharma",
       role: "Research Director",
       company: "Qualcomm",
-      content: "The V2X and NB-IoT test capabilities are outstanding. 5GLabX Cloud provides the depth of analysis we need for cutting-edge research. It's the gold standard in protocol analysis.",
+      content: "The V2X and NB-IoT test capabilities are outstanding. 5GLabX provides the depth of analysis we need for cutting-edge research. It's the gold standard in protocol analysis.",
       rating: 5,
       avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face"
     }
@@ -264,7 +264,7 @@ const LandingPage: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Why Choose 5GLabX Cloud?
+              Why Choose 5GLabX?
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
               The most advanced protocol analysis platform trusted by leading telecom companies worldwide
@@ -335,7 +335,7 @@ const LandingPage: React.FC = () => {
               Trusted by Industry Leaders
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-              See what leading telecom professionals say about 5GLabX Cloud
+              See what leading telecom professionals say about 5GLabX
             </p>
           </div>
 
@@ -380,7 +380,7 @@ const LandingPage: React.FC = () => {
               Ready to Transform Your Protocol Analysis?
             </h2>
             <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-              Join thousands of telecom professionals who trust 5GLabX Cloud as their preferred protocol analysis platform
+              Join thousands of telecom professionals who trust 5GLabX as their preferred protocol analysis platform
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
@@ -411,7 +411,7 @@ const LandingPage: React.FC = () => {
                 <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-xl">5G</span>
                 </div>
-                <span className="text-white font-bold text-xl">5GLabX Cloud</span>
+                <span className="text-white font-bold text-xl">5GLabX</span>
               </div>
               <p className="text-slate-400 mb-6 max-w-md">
                 Professional 4G/5G protocol analysis platform with 1000+ 3GPP test cases, 
@@ -467,7 +467,7 @@ const LandingPage: React.FC = () => {
           <div className="border-t border-slate-800 mt-12 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <p className="text-slate-400 text-sm">
-                © 2024 5GLabX Cloud. All rights reserved.
+                © 2024 5GLabX. All rights reserved.
               </p>
               <div className="flex space-x-6 mt-4 md:mt-0">
                 <a href="#" className="text-slate-400 hover:text-blue-300 transition-colors duration-200 text-sm">

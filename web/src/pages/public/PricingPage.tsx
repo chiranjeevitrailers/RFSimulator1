@@ -170,7 +170,7 @@ const PricingPage: React.FC = () => {
             </span>
           </h1>
             <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-              Choose the perfect 5GLabX Cloud plan for your protocol analysis needs. 
+              Choose the perfect 5GLabX plan for your protocol analysis needs. 
               Start free, scale as you grow.
             </p>
         </div>
@@ -310,7 +310,7 @@ const PricingPage: React.FC = () => {
               Ready to Get Started?
             </h2>
             <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-              Join thousands of telecom professionals who trust 5GLabX Cloud as their preferred protocol analysis platform
+              Join thousands of telecom professionals who trust 5GLabX as their preferred protocol analysis platform
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
@@ -340,7 +340,7 @@ const PricingPage: React.FC = () => {
                 <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-xl">5G</span>
                 </div>
-                <span className="text-white font-bold text-xl">5GLabX Cloud</span>
+                <span className="text-white font-bold text-xl">5GLabX</span>
               </div>
               <p className="text-slate-400 mb-6 max-w-md">
                 Professional 4G/5G protocol analysis platform with 1000+ 3GPP test cases, 
@@ -369,7 +369,7 @@ const PricingPage: React.FC = () => {
           <div className="border-t border-slate-800 mt-12 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <p className="text-slate-400 text-sm">
-                © 2024 5GLabX Cloud. All rights reserved.
+                © 2024 5GLabX. All rights reserved.
               </p>
               <div className="flex space-x-6 mt-4 md:mt-0">
                 <a href="#" className="text-slate-400 hover:text-blue-300 transition-colors duration-200 text-sm">
