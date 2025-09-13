@@ -2,35 +2,18 @@ import React, { Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { AuthProvider } from './components/auth/AuthProvider'
-import { BillingProvider } from './components/billing/BillingProvider'
-import { WebSocketProvider } from './components/layout/WebSocketProvider'
-import { ProtectedRoute } from './components/auth/ProtectedRoute'
-import { AppLayout } from './components/layout/AppLayout'
 import LoadingSpinner from './components/common/LoadingSpinner'
 
-// Lazy load pages for better performance
+// Simple authentication pages
+const SimpleLoginPage = React.lazy(() => import('./components/auth/SimpleLoginPage'))
+const SimpleSignupPage = React.lazy(() => import('./components/auth/SimpleSignupPage'))
+
+// Dashboard pages
+const AdminDashboard = React.lazy(() => import('./pages/admin/AdminDashboard'))
+const UserDashboard = React.lazy(() => import('./pages/user/UserDashboard'))
+
+// Public pages
 const LandingPage = React.lazy(() => import('./pages/public/LandingPage'))
-const PricingPage = React.lazy(() => import('./pages/public/PricingPage'))
-const DocsPage = React.lazy(() => import('./pages/public/DocsPage'))
-const SignupPage = React.lazy(() => import('./pages/public/SignupPage'))
-const LoginPage = React.lazy(() => import('./components/auth/LoginPage'))
-
-const DashboardPage = React.lazy(() => import('./pages/app/DashboardPage'))
-const TestSuitesPage = React.lazy(() => import('./pages/app/TestSuitesPage'))
-const AnalyzerPage = React.lazy(() => import('./pages/app/AnalyzerPage'))
-const ExecutionsPage = React.lazy(() => import('./pages/app/ExecutionsPage'))
-const AccountPage = React.lazy(() => import('./pages/app/AccountPage'))
-const AdminPage = React.lazy(() => import('./pages/app/AdminPage'))
-const OnboardingPage = React.lazy(() => import('./pages/app/OnboardingPage'))
-
-// Advanced feature pages
-const AdvancedAnalyticsPage = React.lazy(() => import('./pages/app/AdvancedAnalyticsPage'))
-const TeamManagementPage = React.lazy(() => import('./pages/app/TeamManagementPage'))
-const AuditLogsPage = React.lazy(() => import('./pages/app/AuditLogsPage'))
-const ApiManagementPage = React.lazy(() => import('./pages/app/ApiManagementPage'))
-const SystemMonitoringPage = React.lazy(() => import('./pages/app/SystemMonitoringPage'))
-const PerformanceOptimizerPage = React.lazy(() => import('./pages/app/PerformanceOptimizerPage'))
 
 // Create a client
 const queryClient = new QueryClient({
@@ -104,62 +87,25 @@ const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <BillingProvider>
-            <WebSocketProvider>
-              <Router>
-                <Suspense fallback={<PageLoader />}>
-                  <Routes>
-                    {/* Public Routes */}
-                    <Route path="/" element={<LandingPage />} />
-                    <Route path="/pricing" element={<PricingPage />} />
-                    <Route path="/docs" element={<DocsPage />} />
-                    <Route path="/signup" element={<SignupPage />} />
-                    <Route path="/login" element={<LoginPage />} />
+        <Router>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<SimpleLoginPage />} />
+              <Route path="/signup" element={<SimpleSignupPage />} />
 
-                    {/* Protected App Routes */}
-                    <Route
-                      path="/app/*"
-                      element={
-                        <ProtectedRoute>
-                          <AppLayout>
-                            <Routes>
-                              {/* Core App Routes */}
-                              <Route path="/" element={<Navigate to="/app/dashboard" replace />} />
-                              <Route path="/dashboard" element={<DashboardPage />} />
-                              <Route path="/test-suites" element={<TestSuitesPage />} />
-                              <Route path="/analyzer" element={<AnalyzerPage />} />
-                              <Route path="/executions" element={<ExecutionsPage />} />
-                              <Route path="/account" element={<AccountPage />} />
-                              <Route path="/onboarding" element={<OnboardingPage />} />
+              {/* Admin Routes */}
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
-                              {/* Advanced Feature Routes */}
-                              <Route path="/analytics" element={<AdvancedAnalyticsPage />} />
-                              <Route path="/teams" element={<TeamManagementPage />} />
-                              <Route path="/audit-logs" element={<AuditLogsPage />} />
-                              <Route path="/api" element={<ApiManagementPage />} />
-                              <Route path="/monitoring" element={<SystemMonitoringPage />} />
-                              <Route path="/performance" element={<PerformanceOptimizerPage />} />
+              {/* User Routes */}
+              <Route path="/user/dashboard" element={<UserDashboard />} />
 
-                              {/* Admin Routes */}
-                              <Route path="/admin" element={<AdminPage />} />
-
-                              {/* Catch-all for app routes */}
-                              <Route path="*" element={<Navigate to="/app/dashboard" replace />} />
-                            </Routes>
-                          </AppLayout>
-                        </ProtectedRoute>
-                      }
-                    />
-
-                    {/* Catch-all route */}
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                  </Routes>
-                </Suspense>
-              </Router>
-            </WebSocketProvider>
-          </BillingProvider>
-        </AuthProvider>
+              {/* Catch-all route */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
+        </Router>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </ErrorBoundary>
