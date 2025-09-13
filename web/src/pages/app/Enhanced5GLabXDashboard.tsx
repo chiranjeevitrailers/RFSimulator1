@@ -33,7 +33,135 @@ import {
   Radio,
   Satellite,
   Car,
-  Building
+  Building,
+  Layers,
+  FileText,
+  Monitor,
+  Server,
+  Router,
+  Cloud,
+  MessageSquare,
+  GitBranch,
+  Target,
+  Gauge,
+  TrendingDown,
+  AlertCircle,
+  CheckSquare,
+  XCircle,
+  Info,
+  ExternalLink,
+  ChevronRight,
+  ChevronDown,
+  Plus,
+  Minus,
+  RefreshCw,
+  Save,
+  Trash2,
+  Edit,
+  Copy,
+  Share,
+  Lock,
+  Unlock,
+  WifiOff,
+  Signal,
+  Battery,
+  Thermometer,
+  HardDrive,
+  MemoryStick,
+  CpuIcon,
+  HardDriveIcon,
+  NetworkIcon,
+  WifiIcon,
+  Bluetooth,
+  BluetoothConnected,
+  BluetoothSearching,
+  BluetoothX,
+  RadioIcon,
+  RadioReceiver,
+  RadioTransmitter,
+  Antenna,
+  Tower,
+  TowerControl,
+  SatelliteIcon,
+  Orbit,
+  Planet,
+  Moon,
+  Sun,
+  Star,
+  Compass,
+  Map,
+  MapPin,
+  Navigation,
+  Route,
+  Truck,
+  Bus,
+  Train,
+  Plane,
+  Ship,
+  Bike,
+  Motorcycle,
+  Scooter,
+  Skateboard,
+  RollerSkate,
+  Walking,
+  Running,
+  Hiking,
+  Swimming,
+  Surfing,
+  Skiing,
+  Snowboarding,
+  Skating,
+  Climbing,
+  Jumping,
+  Flying,
+  Gliding,
+  Parachuting,
+  Diving,
+  Sailing,
+  Rowing,
+  Paddling,
+  Fishing,
+  Hunting,
+  Camping,
+  HikingIcon,
+  Tent,
+  Backpack,
+  CompassIcon,
+  MapIcon,
+  MapPinIcon,
+  NavigationIcon,
+  RouteIcon,
+  TruckIcon,
+  BusIcon,
+  TrainIcon,
+  PlaneIcon,
+  ShipIcon,
+  BikeIcon,
+  MotorcycleIcon,
+  ScooterIcon,
+  SkateboardIcon,
+  RollerSkateIcon,
+  WalkingIcon,
+  RunningIcon,
+  HikingIcon2,
+  SwimmingIcon,
+  SurfingIcon,
+  SkiingIcon,
+  SnowboardingIcon,
+  SkatingIcon,
+  ClimbingIcon,
+  JumpingIcon,
+  FlyingIcon,
+  GlidingIcon,
+  ParachutingIcon,
+  DivingIcon,
+  SailingIcon,
+  RowingIcon,
+  PaddlingIcon,
+  FishingIcon,
+  HuntingIcon,
+  CampingIcon,
+  Terminal
 } from 'lucide-react'
 
 export const Enhanced5GLabXDashboard: React.FC = () => {
@@ -46,6 +174,50 @@ export const Enhanced5GLabXDashboard: React.FC = () => {
     testExecutions: 23,
     systemHealth: 98.5
   })
+
+  // 5GLabX Platform Features
+  const protocolLayers = [
+    { name: 'PHY Layer', icon: Radio, description: 'Physical Layer Analysis', href: '/app/analyzer?layer=phy', status: 'active' },
+    { name: 'MAC Layer', icon: Network, description: 'Medium Access Control', href: '/app/analyzer?layer=mac', status: 'active' },
+    { name: 'RLC Layer', icon: Layers, description: 'Radio Link Control', href: '/app/analyzer?layer=rlc', status: 'active' },
+    { name: 'PDCP Layer', icon: Database, description: 'Packet Data Convergence Protocol', href: '/app/analyzer?layer=pdcp', status: 'active' },
+    { name: 'RRC Layer', icon: Settings, description: 'Radio Resource Control', href: '/app/analyzer?layer=rrc', status: 'active' },
+    { name: 'NAS Layer', icon: MessageSquare, description: 'Non-Access Stratum', href: '/app/analyzer?layer=nas', status: 'active' },
+    { name: 'IMS Layer', icon: Cloud, description: 'IP Multimedia Subsystem', href: '/app/analyzer?layer=ims', status: 'active' }
+  ]
+
+  const coreNetworkAnalyzers = [
+    { name: 'AMF Analyzer', icon: Server, description: 'Access and Mobility Management Function', href: '/app/analyzer?component=amf', technology: '5G' },
+    { name: 'SMF Analyzer', icon: Router, description: 'Session Management Function', href: '/app/analyzer?component=smf', technology: '5G' },
+    { name: 'UPF Analyzer', icon: Network, description: 'User Plane Function', href: '/app/analyzer?component=upf', technology: '5G' },
+    { name: 'AUSF Analyzer', icon: Shield, description: 'Authentication Server Function', href: '/app/analyzer?component=ausf', technology: '5G' },
+    { name: 'UDM Analyzer', icon: Database, description: 'Unified Data Management', href: '/app/analyzer?component=udm', technology: '5G' },
+    { name: 'MME Analyzer', icon: Server, description: 'Mobility Management Entity', href: '/app/analyzer?component=mme', technology: '4G' },
+    { name: 'SGW Analyzer', icon: Router, description: 'Serving Gateway', href: '/app/analyzer?component=sgw', technology: '4G' },
+    { name: 'PGW Analyzer', icon: Network, description: 'Packet Data Network Gateway', href: '/app/analyzer?component=pgw', technology: '4G' }
+  ]
+
+  const oranFeatures = [
+    { name: 'O-RAN Overview', icon: Globe, description: 'Complete O-RAN Analysis', href: '/app/analyzer?oran=overview' },
+    { name: 'O-RAN Interfaces', icon: GitBranch, description: 'E1, F1 Interface Analysis', href: '/app/analyzer?oran=interfaces' },
+    { name: 'CU/DU Analysis', icon: Cpu, description: 'Centralized/Distributed Unit', href: '/app/analyzer?oran=cu-du' },
+    { name: 'Performance Monitoring', icon: Gauge, description: 'O-RAN Performance Metrics', href: '/app/analyzer?oran=performance' },
+    { name: 'xApps Management', icon: Smartphone, description: 'O-RAN Applications', href: '/app/analyzer?oran=xapps' },
+    { name: 'SMO Integration', icon: Cloud, description: 'Service Management and Orchestration', href: '/app/analyzer?oran=smo' }
+  ]
+
+  const advancedTechnologies = [
+    { name: 'NB-IoT Analysis', icon: Wifi, description: 'Narrowband IoT Analysis', href: '/app/analyzer?tech=nbiot', color: 'bg-blue-500' },
+    { name: 'V2X Communication', icon: Car, description: 'Vehicle-to-Everything', href: '/app/analyzer?tech=v2x', color: 'bg-green-500' },
+    { name: 'NTN Networks', icon: Satellite, description: 'Non-Terrestrial Networks', href: '/app/analyzer?tech=ntn', color: 'bg-purple-500' },
+    { name: 'Report Generator', icon: FileText, description: 'Comprehensive Reporting', href: '/app/analyzer?feature=reports', color: 'bg-orange-500' }
+  ]
+
+  const cliIntegrations = [
+    { name: 'srsRAN CLI', icon: Terminal, description: 'srsRAN Command Line Integration', status: 'connected' },
+    { name: 'Open5GS CLI', icon: Terminal, description: 'Open5GS Integration', status: 'connected' },
+    { name: 'Kamailio CLI', icon: Terminal, description: 'Kamailio Integration', status: 'disconnected' }
+  ]
 
   const getGreeting = () => {
     const hour = new Date().getHours()
@@ -450,6 +622,175 @@ export const Enhanced5GLabXDashboard: React.FC = () => {
                   <span className="badge badge-success">Running</span>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Protocol Layer Analysis */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="card-title mb-4">Protocol Layer Analysis</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {protocolLayers.map((layer, index) => (
+              <Link key={index} to={layer.href} className="card bg-base-100 hover:bg-base-300 transition-colors">
+                <div className="card-body p-4">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="text-primary">
+                      <layer.icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="font-semibold">{layer.name}</h3>
+                  </div>
+                  <p className="text-sm text-base-content/70 mb-2">{layer.description}</p>
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${layer.status === 'active' ? 'bg-success' : 'bg-error'}`}></div>
+                    <span className="text-sm text-base-content/70 capitalize">{layer.status}</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Core Network Analyzers */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="card-title mb-4">Core Network Analyzers</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {coreNetworkAnalyzers.map((analyzer, index) => (
+              <Link key={index} to={analyzer.href} className="card bg-base-100 hover:bg-base-300 transition-colors">
+                <div className="card-body p-4">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="text-primary">
+                      <analyzer.icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="font-semibold">{analyzer.name}</h3>
+                  </div>
+                  <p className="text-sm text-base-content/70 mb-2">{analyzer.description}</p>
+                  <div className="flex items-center gap-2">
+                    <span className={`badge badge-sm ${analyzer.technology === '5G' ? 'badge-primary' : 'badge-secondary'}`}>
+                      {analyzer.technology}
+                    </span>
+                    <span className="text-sm text-base-content/70">Core Network</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* O-RAN Features */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="card-title mb-4">O-RAN Integration</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {oranFeatures.map((feature, index) => (
+              <Link key={index} to={feature.href} className="card bg-base-100 hover:bg-base-300 transition-colors">
+                <div className="card-body p-4">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="text-primary">
+                      <feature.icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="font-semibold">{feature.name}</h3>
+                  </div>
+                  <p className="text-sm text-base-content/70 mb-2">{feature.description}</p>
+                  <div className="flex items-center gap-2">
+                    <span className="badge badge-sm badge-info">O-RAN</span>
+                    <span className="text-sm text-base-content/70">Open RAN</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Advanced Technologies */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="card-title mb-4">Advanced Technologies</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {advancedTechnologies.map((tech, index) => (
+              <Link key={index} to={tech.href} className="card bg-base-100 hover:bg-base-300 transition-colors">
+                <div className="card-body p-4">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className={`p-2 rounded-lg ${tech.color} text-white`}>
+                      <tech.icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="font-semibold">{tech.name}</h3>
+                  </div>
+                  <p className="text-sm text-base-content/70">{tech.description}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* CLI Integrations */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="card-title mb-4">CLI Integrations</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {cliIntegrations.map((cli, index) => (
+              <div key={index} className="card bg-base-100">
+                <div className="card-body p-4">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="text-primary">
+                      <cli.icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="font-semibold">{cli.name}</h3>
+                  </div>
+                  <p className="text-sm text-base-content/70 mb-2">{cli.description}</p>
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${cli.status === 'connected' ? 'bg-success' : 'bg-error'}`}></div>
+                    <span className="text-sm text-base-content/70 capitalize">{cli.status}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Real-time Monitoring */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="card-title mb-4">Real-time Monitoring</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="stat bg-base-100 rounded-lg">
+              <div className="stat-figure text-primary">
+                <Activity className="w-8 h-8" />
+              </div>
+              <div className="stat-title">Live Messages</div>
+              <div className="stat-value text-primary">{realTimeData.messagesProcessed.toLocaleString()}</div>
+              <div className="stat-desc">Messages processed today</div>
+            </div>
+            <div className="stat bg-base-100 rounded-lg">
+              <div className="stat-figure text-secondary">
+                <Network className="w-8 h-8" />
+              </div>
+              <div className="stat-title">Active Connections</div>
+              <div className="stat-value text-secondary">{realTimeData.activeConnections.toLocaleString()}</div>
+              <div className="stat-desc">Current connections</div>
+            </div>
+            <div className="stat bg-base-100 rounded-lg">
+              <div className="stat-figure text-accent">
+                <TestTube className="w-8 h-8" />
+              </div>
+              <div className="stat-title">Test Executions</div>
+              <div className="stat-value text-accent">{realTimeData.testExecutions}</div>
+              <div className="stat-desc">Tests running now</div>
+            </div>
+            <div className="stat bg-base-100 rounded-lg">
+              <div className="stat-figure text-success">
+                <Gauge className="w-8 h-8" />
+              </div>
+              <div className="stat-title">System Health</div>
+              <div className="stat-value text-success">{realTimeData.systemHealth}%</div>
+              <div className="stat-desc">Overall system health</div>
             </div>
           </div>
         </div>
