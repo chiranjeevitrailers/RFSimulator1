@@ -1,6 +1,6 @@
 [build]
   # Build command
-  command = "./build-final.sh"
+  command = "./build-robust.sh"
   
   # Directory to publish
   publish = "web/dist"
@@ -115,13 +115,13 @@
 
 # Branch deploy settings
 [context.production]
-  command = "./build-final.sh"
+  command = "./build-robust.sh"
 
 [context.deploy-preview]
-  command = "./build-final.sh"
+  command = "./build-robust.sh"
 
 [context.branch-deploy]
-  command = "./build-final.sh"
+  command = "./build-robust.sh"
 
 # Environment-specific settings
 [context.production.environment]
