@@ -76,7 +76,8 @@ jspm_packages/
 
 # Gatsby files
 .cache/
-public
+# Only ignore Gatsby public directory, not src/pages/public/
+/public
 
 # Storybook build outputs
 .out
