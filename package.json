@@ -58,6 +58,10 @@
   ],
   "author": "5GLabX Team",
   "license": "MIT",
+  "dependencies": {
+    "stripe": "^14.0.0",
+    "@supabase/supabase-js": "^2.38.0"
+  },
   "devDependencies": {
     "concurrently": "^8.2.0",
     "typescript": "^5.0.0",
