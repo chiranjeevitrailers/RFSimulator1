@@ -17,7 +17,9 @@
     "test:coverage": "vitest --coverage",
     "netlify:dev": "netlify dev",
     "netlify:build": "npm run build",
-    "netlify:deploy": "netlify deploy --prod"
+    "netlify:deploy": "netlify deploy --prod",
+    "install:clean": "rm -rf node_modules package-lock.json && npm install",
+    "install:force": "npm install --legacy-peer-deps"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -36,7 +38,7 @@
     "zod": "^3.21.0",
     "react-hot-toast": "^2.4.0",
     "recharts": "^2.7.0",
-    "react-json-view": "^1.21.0",
+    "@uiw/react-json-view": "^2.0.0",
     "monaco-editor": "^0.41.0",
     "@monaco-editor/react": "^4.5.0",
     "@heroicons/react": "^2.0.18"
@@ -60,5 +62,15 @@
     "@vitest/ui": "^0.34.0",
     "@vitest/coverage-v8": "^0.34.0",
     "netlify-cli": "^17.0.0"
+  },
+  "overrides": {
+    "react-json-view": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
+  },
+  "resolutions": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }

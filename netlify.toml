@@ -1,6 +1,6 @@
 [build]
   # Build command
-  command = "npm run build"
+  command = "npm install --legacy-peer-deps && npm run build"
   
   # Directory to publish
   publish = "web/dist"

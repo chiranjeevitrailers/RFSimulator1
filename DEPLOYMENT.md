@@ -29,7 +29,20 @@ This guide provides step-by-step instructions for deploying the 5GLabX Cloud pla
 -- 7. supabase/migrations/007_comprehensive_test_cases.sql
 ```
 
-### 2. Environment Variables
+### 2. Dependency Resolution
+
+#### Fix React Version Conflicts
+The project uses `--legacy-peer-deps` to resolve React version conflicts with some packages:
+
+```bash
+# Install dependencies with legacy peer deps
+npm install --legacy-peer-deps
+
+# Or use the provided script
+npm run install:force
+```
+
+### 3. Environment Variables
 
 #### In Netlify Dashboard:
 1. Go to Site Settings → Environment Variables
@@ -53,7 +66,7 @@ VITE_ENABLE_DEVTOOLS=false
 VITE_ENABLE_ANALYTICS=true
 ```
 
-### 3. Deploy to Netlify
+### 4. Deploy to Netlify
 
 #### Option A: GitHub Integration (Recommended)
 1. Connect your GitHub repository to Netlify
@@ -75,7 +88,7 @@ netlify login
 netlify deploy --prod
 ```
 
-### 4. Domain Configuration
+### 5. Domain Configuration
 
 #### Custom Domain (Optional)
 1. Go to Site Settings → Domain Management
@@ -199,6 +212,12 @@ npm run netlify:dev
 - Verify all dependencies are installed
 - Check for TypeScript errors
 - Review build logs
+
+#### Dependency Conflicts
+- Use `npm install --legacy-peer-deps` to resolve React version conflicts
+- Clear node_modules and package-lock.json: `npm run install:clean`
+- Check for conflicting package versions in package.json
+- Use npm overrides to force specific versions
 
 #### Environment Variables
 - Ensure all required variables are set
