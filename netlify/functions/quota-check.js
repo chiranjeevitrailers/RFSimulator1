@@ -6,17 +6,26 @@ const supabase = createClient(
 )
 
 exports.handler = async (event, context) => {
-  // Only allow POST requests
+  // Handle CORS
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      },
+      body: '',
+    }
+  }
+
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
       headers: {
-        'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS'
       },
-      body: JSON.stringify({ error: 'Method not allowed' })
+      body: JSON.stringify({ error: 'Method not allowed' }),
     }
   }
 
@@ -27,61 +36,61 @@ exports.handler = async (event, context) => {
       return {
         statusCode: 400,
         headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
+          'Access-Control-Allow-Origin': '*',
         },
-        body: JSON.stringify({ error: 'Missing userId' })
+        body: JSON.stringify({ error: 'Missing userId' }),
       }
     }
 
-    // Get user quota info using the database function
+    // Get user quota information using the database function
     const { data: quotaInfo, error } = await supabase
       .rpc('get_user_quota_info', { user_id: userId })
 
     if (error) {
-      console.error('Error getting quota info:', error)
+      console.error('Error getting user quota info:', error)
       return {
         statusCode: 500,
         headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
+          'Access-Control-Allow-Origin': '*',
         },
-        body: JSON.stringify({ 
-          error: 'Failed to get quota info',
-          message: error.message 
-        })
+        body: JSON.stringify({ error: 'Failed to get quota information' }),
       }
     }
 
     // Check if user can execute tests
-    const canExecute = quotaInfo.unlimited || 
-      (quotaInfo.remainingExecutions && quotaInfo.remainingExecutions > 0)
+    const { data: canExecute, error: canExecuteError } = await supabase
+      .rpc('can_user_execute_test', { user_id: userId })
+
+    if (canExecuteError) {
+      console.error('Error checking execution permission:', canExecuteError)
+      return {
+        statusCode: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+        body: JSON.stringify({ error: 'Failed to check execution permission' }),
+      }
+    }
 
     return {
       statusCode: 200,
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
       },
-      body: JSON.stringify({ 
-        success: true,
+      body: JSON.stringify({
+        quotaInfo,
         canExecute,
-        quotaInfo
-      })
+        timestamp: new Date().toISOString(),
+      }),
     }
   } catch (error) {
-    console.error('Error checking quota:', error)
-    
+    console.error('Error in quota check:', error)
     return {
       statusCode: 500,
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
       },
-      body: JSON.stringify({ 
-        error: 'Internal server error',
-        message: error.message 
-      })
+      body: JSON.stringify({ error: 'Internal server error' }),
     }
   }
 }

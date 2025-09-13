@@ -7,17 +7,26 @@ const supabase = createClient(
 )
 
 exports.handler = async (event, context) => {
-  // Only allow POST requests
+  // Handle CORS
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      },
+      body: '',
+    }
+  }
+
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
       headers: {
-        'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS'
       },
-      body: JSON.stringify({ error: 'Method not allowed' })
+      body: JSON.stringify({ error: 'Method not allowed' }),
     }
   }
 
@@ -28,14 +37,13 @@ exports.handler = async (event, context) => {
       return {
         statusCode: 400,
         headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
+          'Access-Control-Allow-Origin': '*',
         },
-        body: JSON.stringify({ error: 'Missing planId or userId' })
+        body: JSON.stringify({ error: 'Missing required fields' }),
       }
     }
 
-    // Get plan details from Supabase
+    // Get plan details from database
     const { data: plan, error: planError } = await supabase
       .from('plans')
       .select('*')
@@ -46,10 +54,9 @@ exports.handler = async (event, context) => {
       return {
         statusCode: 404,
         headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
+          'Access-Control-Allow-Origin': '*',
         },
-        body: JSON.stringify({ error: 'Plan not found' })
+        body: JSON.stringify({ error: 'Plan not found' }),
       }
     }
 
@@ -64,15 +71,35 @@ exports.handler = async (event, context) => {
       return {
         statusCode: 404,
         headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
+          'Access-Control-Allow-Origin': '*',
         },
-        body: JSON.stringify({ error: 'User not found' })
+        body: JSON.stringify({ error: 'User not found' }),
       }
+    }
+
+    // Create or get Stripe customer
+    let customerId = user.stripe_customer_id
+
+    if (!customerId) {
+      const customer = await stripe.customers.create({
+        email: user.email,
+        name: user.full_name,
+        metadata: {
+          user_id: userId,
+        },
+      })
+      customerId = customer.id
+
+      // Update user with Stripe customer ID
+      await supabase
+        .from('profiles')
+        .update({ stripe_customer_id: customerId })
+        .eq('id', userId)
     }
 
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
+      customer: customerId,
       payment_method_types: ['card'],
       line_items: [
         {
@@ -81,40 +108,43 @@ exports.handler = async (event, context) => {
         },
       ],
       mode: 'subscription',
-      success_url: `${process.env.SITE_URL}/app/account?success=true`,
+      success_url: `${process.env.SITE_URL}/app/account?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.SITE_URL}/pricing?canceled=true`,
-      customer_email: user.email,
       metadata: {
-        userId: userId,
-        planId: planId,
+        user_id: userId,
+        plan_id: planId,
+      },
+      subscription_data: {
+        metadata: {
+          user_id: userId,
+          plan_id: planId,
+        },
+      },
+      allow_promotion_codes: true,
+      billing_address_collection: 'required',
+      tax_id_collection: {
+        enabled: true,
       },
     })
 
     return {
       statusCode: 200,
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
       },
-      body: JSON.stringify({ 
-        success: true, 
+      body: JSON.stringify({
         sessionId: session.id,
-        url: session.url 
-      })
+        url: session.url,
+      }),
     }
   } catch (error) {
     console.error('Error creating checkout session:', error)
-    
     return {
       statusCode: 500,
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
       },
-      body: JSON.stringify({ 
-        error: 'Internal server error',
-        message: error.message 
-      })
+      body: JSON.stringify({ error: 'Internal server error' }),
     }
   }
 }
