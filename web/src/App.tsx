@@ -117,7 +117,15 @@ const App: React.FC = () => {
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
               {/* User Routes */}
-              <Route path="/user/dashboard" element={<UserDashboard />} />
+              <Route path="/user/dashboard" element={
+                <SimpleAuthProvider>
+                  <SimpleBillingProvider>
+                    <SimpleWebSocketProvider>
+                      <UserDashboard />
+                    </SimpleWebSocketProvider>
+                  </SimpleBillingProvider>
+                </SimpleAuthProvider>
+              } />
 
               {/* Main App Routes */}
               <Route path="/app" element={
