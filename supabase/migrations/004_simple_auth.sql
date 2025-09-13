@@ -61,8 +61,8 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Create function to verify user credentials
-CREATE OR REPLACE FUNCTION public.verify_user_credentials(email TEXT, password TEXT)
-RETURNS TABLE(user_id UUID, email TEXT, full_name TEXT, role TEXT, status TEXT) AS $$
+CREATE OR REPLACE FUNCTION public.verify_user_credentials(user_email TEXT, user_password TEXT)
+RETURNS TABLE(user_id UUID, user_email_out TEXT, full_name TEXT, role TEXT, status TEXT) AS $$
 DECLARE
   stored_hash TEXT;
   user_record RECORD;
