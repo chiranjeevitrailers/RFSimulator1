@@ -2,20 +2,20 @@ import React, { Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import LoadingSpinner from './components/common/LoadingSpinner.tsx'
+import LoadingSpinner from './components/common/LoadingSpinner'
 
 // Simple authentication pages
-const SimpleLoginPage = React.lazy(() => import('./components/auth/SimpleLoginPage.tsx'))
-const SimpleSignupPage = React.lazy(() => import('./components/auth/SimpleSignupPage.tsx'))
+const SimpleLoginPage = React.lazy(() => import('./components/auth/SimpleLoginPage'))
+const SimpleSignupPage = React.lazy(() => import('./components/auth/SimpleSignupPage'))
 
 // Dashboard pages
-const AdminDashboard = React.lazy(() => import('./pages/admin/AdminDashboard.tsx'))
-const UserDashboard = React.lazy(() => import('./pages/user/UserDashboard.tsx'))
+const AdminDashboard = React.lazy(() => import('./pages/admin/AdminDashboard'))
+const UserDashboard = React.lazy(() => import('./pages/user/UserDashboard'))
 
 // Public pages
-const LandingPage = React.lazy(() => import('./pages/public/LandingPage.tsx'))
-const PricingPage = React.lazy(() => import('./pages/public/PricingPage.tsx'))
-const ContactPage = React.lazy(() => import('./pages/public/ContactPage.tsx'))
+const LandingPage = React.lazy(() => import('./pages/public/LandingPage'))
+const PricingPage = React.lazy(() => import('./pages/public/PricingPage'))
+const ContactPage = React.lazy(() => import('./pages/public/ContactPage'))
 
 // Create a client
 const queryClient = new QueryClient({

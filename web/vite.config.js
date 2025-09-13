@@ -15,6 +15,7 @@ export default defineConfig({
       '@types': path.resolve(__dirname, './src/types'),
       '@assets': path.resolve(__dirname, './src/assets'),
     },
+    extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
   },
   build: {
     outDir: 'dist',

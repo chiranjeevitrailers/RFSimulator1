@@ -19,6 +19,7 @@ export default defineConfig(({ command, mode }) => {
         '@types': path.resolve(__dirname, './src/types'),
         '@assets': path.resolve(__dirname, './src/assets'),
       },
+      extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
     },
     define: {
       __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
