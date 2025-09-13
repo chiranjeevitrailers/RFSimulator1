@@ -8,8 +8,8 @@ DECLARE
   i INTEGER;
   template_id UUID;
   protocol_types TEXT[] := ARRAY['RRC', 'NAS', 'NGAP', 'SIP', 'O-RAN', 'NB-IoT', 'NTN', 'V2X', 'IMS', 'S1AP', 'X2AP', 'E1AP', 'F1AP', 'E2AP'];
-  suite_types TEXT[] := ARRAY['functional', 'mobility', 'security', 'performance', 'ims', 'oran', 'nbiot', 'ntn', 'v2x'];
-  complexity_levels TEXT[] := ARRAY['basic', 'intermediate', 'advanced', 'expert'];
+  suite_types TEXT[] := ARRAY['functional', 'mobility', 'performance', 'security', 'ims', 'qos', 'oran', 'nbiot', 'ntn', 'v2x', 'interrat', 'negative', 'regression'];
+  complexity_levels TEXT[] := ARRAY['basic', 'intermediate', 'advanced'];
   protocol_category TEXT;
   suite_type TEXT;
   complexity TEXT;
@@ -42,7 +42,6 @@ BEGIN
       WHEN 'basic' THEN duration := 20 + (random() * 30)::int;
       WHEN 'intermediate' THEN duration := 40 + (random() * 40)::int;
       WHEN 'advanced' THEN duration := 80 + (random() * 60)::int;
-      WHEN 'expert' THEN duration := 120 + (random() * 80)::int;
     END CASE;
     
     -- Insert test case template
@@ -52,11 +51,11 @@ BEGIN
     ) VALUES (
       template_id,
       test_case_name,
-      suite_type,
-      protocol_category,
+      suite_type::suite_type,
+      protocol_category::protocol_layer,
       description,
       threegpp_ref,
-      complexity,
+      complexity::complexity_level,
       duration,
       '{"test_environment": "configured", "ue_ready": true, "network_available": true}',
       '{"test_passed": true, "all_checks_verified": true, "performance_acceptable": true}'
