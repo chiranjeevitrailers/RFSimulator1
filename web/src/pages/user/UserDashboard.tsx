@@ -231,199 +231,318 @@ export const UserDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-base-100">
-      {/* Header */}
-      <header className="bg-base-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-base-content">User Dashboard</h1>
-              <p className="mt-1 text-sm text-base-content/70">
-                Welcome back, {user?.full_name || user?.email}
-              </p>
+      {/* Mobile sidebar overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-base-200 shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
+        <div className="flex flex-col h-full">
+          {/* Logo */}
+          <div className="flex items-center justify-between h-16 px-4 border-b border-base-300">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <TestTube className="w-5 h-5 text-primary-content" />
+              </div>
+              <span className="text-xl font-bold">5GLabX Cloud</span>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="badge badge-secondary">User</span>
-              <button
-                onClick={handleLogout}
-                className="btn btn-outline btn-sm"
-              >
-                Logout
-              </button>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="lg:hidden btn btn-ghost btn-sm"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* User Info */}
+          <div className="p-4 border-b border-base-300">
+            <div className="flex items-center gap-3">
+              <div className="avatar placeholder">
+                <div className="bg-primary text-primary-content rounded-full w-10">
+                  <span className="text-sm">
+                    {user?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'}
+                  </span>
+                </div>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">
+                  {user?.full_name || 'User'}
+                </p>
+                <p className="text-xs text-base-content/70 truncate">
+                  User Plan
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1 overflow-y-auto p-4 space-y-2">
+            {/* Core Navigation */}
+            <div className="space-y-1">
+              <h3 className="text-xs font-semibold text-base-content/50 uppercase tracking-wider mb-2">
+                Core Features
+              </h3>
+              {navigation.map((item) => {
+                const Icon = item.icon
+                return (
+                  <button
+                    key={item.name}
+                    onClick={() => {
+                      setActiveComponent(item.href)
+                      setSidebarOpen(false)
+                    }}
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+                      activeComponent === item.href
+                        ? 'bg-primary text-primary-content'
+                        : 'text-base-content hover:bg-base-300'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    {item.name}
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* Protocol Layers */}
+            <div className="space-y-1 mt-6">
+              <h3 className="text-xs font-semibold text-base-content/50 uppercase tracking-wider mb-2">
+                Protocol Layers
+              </h3>
+              {protocolLayers.map((layer, index) => {
+                const Icon = layer.icon
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setActiveComponent(`layer-${layer.name.toLowerCase().replace(' ', '-')}`)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left text-base-content hover:bg-base-300"
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="flex-1">{layer.name}</span>
+                    <div className={`w-2 h-2 rounded-full ${layer.status === 'active' ? 'bg-success' : 'bg-error'}`}></div>
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* Core Network Analyzers */}
+            <div className="space-y-1 mt-6">
+              <h3 className="text-xs font-semibold text-base-content/50 uppercase tracking-wider mb-2">
+                Core Network
+              </h3>
+              {coreNetworkAnalyzers.slice(0, 4).map((analyzer, index) => {
+                const Icon = analyzer.icon
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setActiveComponent(`analyzer-${analyzer.name.toLowerCase().replace(' ', '-')}`)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left text-base-content hover:bg-base-300"
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="flex-1">{analyzer.name}</span>
+                    <span className={`badge badge-xs ${analyzer.technology === '5G' ? 'badge-primary' : 'badge-secondary'}`}>
+                      {analyzer.technology}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          </nav>
+
+          {/* Connection Status */}
+          <div className="p-4 border-t border-base-300">
+            <div className="flex items-center gap-2 text-sm">
+              <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
+              <span className="text-base-content/70">Connected</span>
             </div>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {/* Welcome Section */}
-        <div className="bg-base-200 rounded-lg p-8 mb-8">
-          <div className="flex items-center space-x-4">
-            <div className="avatar placeholder">
-              <div className="bg-primary text-primary-content rounded-full w-16">
-                <span className="text-xl">
-                  {user?.full_name?.charAt(0) || user?.email.charAt(0)}
-                </span>
+      <div className="lg:pl-64">
+        {/* Top Navigation */}
+        <header className="bg-base-100 shadow-sm border-b border-base-300">
+          <div className="flex items-center justify-between h-16 px-4">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="lg:hidden btn btn-ghost btn-sm"
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+              
+              <div className="hidden md:flex items-center gap-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-base-content/50" size={16} />
+                  <input
+                    type="text"
+                    placeholder="Search test cases, executions..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="input input-bordered input-sm pl-10 w-64"
+                  />
+                </div>
               </div>
             </div>
-            <div>
-              <h2 className="text-2xl font-bold text-base-content">
-                Hello, {user?.full_name || 'User'}!
-              </h2>
-              <p className="text-base-content/70">
-                You're logged in as a regular user. Here's what you can do:
-              </p>
-            </div>
-          </div>
-        </div>
 
-        {/* 5GLabX Access Card */}
-        <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-lg p-8 mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-base-content mb-2">
-                🚀 Access 5GLabX Cloud
-              </h2>
-              <p className="text-base-content/70 text-lg mb-4">
-                Your professional 4G/5G protocol analysis platform is ready. Start analyzing protocols, running 3GPP test cases, and exploring our comprehensive test suite library.
-              </p>
-              <div className="flex gap-3">
-                <button 
-                  onClick={() => navigate('/app/dashboard')}
-                  className="btn btn-primary btn-lg"
-                >
-                  Open 5GLabX Platform
-                </button>
-                <button 
-                  onClick={() => navigate('/app/test-suites')}
-                  className="btn btn-outline btn-lg"
-                >
-                  Browse Test Suites
-                </button>
-              </div>
-            </div>
-            <div className="hidden md:block">
-              <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center">
-                <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+            <div className="flex items-center gap-2">
+              <button className="btn btn-ghost btn-sm">
+                <HelpCircle className="w-5 h-5" />
+              </button>
+              
+              <button className="btn btn-ghost btn-sm relative">
+                <Bell className="w-5 h-5" />
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-error rounded-full"></span>
+              </button>
+              
+              <div className="dropdown dropdown-end">
+                <label tabIndex={0} className="btn btn-ghost btn-sm">
+                  <div className="avatar placeholder">
+                    <div className="bg-primary text-primary-content rounded-full w-8">
+                      <span className="text-xs">
+                        {user?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'}
+                      </span>
+                    </div>
+                  </div>
+                </label>
+                <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                  <li>
+                    <button className="flex items-center gap-2">
+                      <User className="w-4 h-4" />
+                      Account Settings
+                    </button>
+                  </li>
+                  <li><div className="divider my-1"></div></li>
+                  <li>
+                    <button onClick={handleLogout} className="flex items-center gap-2 text-error">
+                      <LogOut className="w-4 h-4" />
+                      Sign Out
+                    </button>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
-        </div>
+        </header>
 
-        {/* Feature Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <div className="bg-base-200 p-6 rounded-lg">
-            <div className="flex items-center mb-4">
-              <div className="p-2 bg-primary rounded-lg">
-                <svg className="w-6 h-6 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+        {/* Page Content */}
+        <main className="p-6">
+          {/* Real-time Log Display */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-8rem)]">
+            {/* Left Panel - Controls */}
+            <div className="lg:col-span-1 space-y-4">
+              {/* Processing Controls */}
+              <div className="card bg-base-200">
+                <div className="card-body p-4">
+                  <h3 className="card-title text-sm mb-3">Processing Controls</h3>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setIsProcessing(!isProcessing)}
+                      className={`btn btn-sm ${isProcessing ? 'btn-error' : 'btn-success'}`}
+                    >
+                      {isProcessing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                      {isProcessing ? 'Stop' : 'Start'}
+                    </button>
+                    <button className="btn btn-sm btn-outline">
+                      <RotateCcw className="w-4 h-4" />
+                      Reset
+                    </button>
+                  </div>
+                </div>
               </div>
-              <h3 className="ml-3 text-lg font-medium text-base-content">Test Execution</h3>
-            </div>
-            <p className="text-base-content/70 mb-4">
-              Run 3GPP test cases and analyze protocol messages in real-time.
-            </p>
-            <button 
-              onClick={() => navigate('/app/test-suites')}
-              className="btn btn-primary btn-sm"
-            >
-              Start Testing
-            </button>
-          </div>
 
-          <div className="bg-base-200 p-6 rounded-lg">
-            <div className="flex items-center mb-4">
-              <div className="p-2 bg-secondary rounded-lg">
-                <svg className="w-6 h-6 text-secondary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
+              {/* System Status */}
+              <div className="card bg-base-200">
+                <div className="card-body p-4">
+                  <h3 className="card-title text-sm mb-3">System Status</h3>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>Messages/sec</span>
+                      <span className="font-bold">1,247</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>Buffer</span>
+                      <span className="font-bold">2.3MB</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>Uptime</span>
+                      <span className="font-bold">2h 34m</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h3 className="ml-3 text-lg font-medium text-base-content">Protocol Analyzer</h3>
-            </div>
-            <p className="text-base-content/70 mb-4">
-              Analyze protocol messages, view detailed logs, and examine test results.
-            </p>
-            <button 
-              onClick={() => navigate('/app/analyzer')}
-              className="btn btn-secondary btn-sm"
-            >
-              Open Analyzer
-            </button>
-          </div>
 
-          <div className="bg-base-200 p-6 rounded-lg">
-            <div className="flex items-center mb-4">
-              <div className="p-2 bg-accent rounded-lg">
-                <svg className="w-6 h-6 text-accent-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
+              {/* CLI Integrations */}
+              <div className="card bg-base-200">
+                <div className="card-body p-4">
+                  <h3 className="card-title text-sm mb-3">CLI Integrations</h3>
+                  <div className="space-y-2">
+                    {cliIntegrations.map((cli, index) => (
+                      <div key={index} className="flex items-center gap-2 text-sm">
+                        <cli.icon className="w-4 h-4" />
+                        <span className="flex-1">{cli.name}</span>
+                        <div className={`w-2 h-2 rounded-full ${cli.status === 'connected' ? 'bg-success' : 'bg-error'}`}></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <h3 className="ml-3 text-lg font-medium text-base-content">Analytics</h3>
             </div>
-            <p className="text-base-content/70 mb-4">
-              View your test execution history and performance analytics.
-            </p>
-            <button 
-              onClick={() => navigate('/app/analytics')}
-              className="btn btn-accent btn-sm"
-            >
-              View Analytics
-            </button>
-          </div>
-        </div>
 
-        {/* User Information */}
-        <div className="bg-base-200 rounded-lg p-6">
-          <h3 className="text-lg font-medium text-base-content mb-4">Account Information</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-base-content/70">Full Name</label>
-              <p className="mt-1 text-base-content">{user?.full_name || 'Not provided'}</p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-base-content/70">Email</label>
-              <p className="mt-1 text-base-content">{user?.email}</p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-base-content/70">Role</label>
-              <p className="mt-1 text-base-content">
-                <span className="badge badge-secondary">{user?.role}</span>
-              </p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-base-content/70">Status</label>
-              <p className="mt-1 text-base-content">
-                <span className={`badge ${user?.status === 'active' ? 'badge-success' : 'badge-warning'}`}>
-                  {user?.status}
-                </span>
-              </p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-base-content/70">Member Since</label>
-              <p className="mt-1 text-base-content">
-                {new Date(user?.created_at || '').toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-base-content/70">Last Updated</label>
-              <p className="mt-1 text-base-content">
-                {new Date(user?.updated_at || '').toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </p>
+            {/* Right Panel - Log Display */}
+            <div className="lg:col-span-2">
+              <div className="card bg-base-200 h-full">
+                <div className="card-body p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="card-title text-sm">Real-time Log Analysis</h3>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+                      <span className="text-sm text-base-content/70">Live</span>
+                    </div>
+                  </div>
+                  
+                  {/* Log Display */}
+                  <div className="bg-base-300 rounded-lg p-4 h-[calc(100%-4rem)] overflow-y-auto font-mono text-sm">
+                    {logs.length === 0 ? (
+                      <div className="text-center text-base-content/50 py-8">
+                        <Activity className="w-8 h-8 mx-auto mb-2" />
+                        <p>Click Start to begin real-time log analysis</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-1">
+                        {logs.map((log) => (
+                          <div key={log.id} className="flex items-start gap-2 py-1">
+                            <span className="text-xs text-base-content/50 w-20 flex-shrink-0">
+                              {log.timestamp}
+                            </span>
+                            <span className={`text-xs w-12 flex-shrink-0 ${getLevelColor(log.level)}`}>
+                              {log.level}
+                            </span>
+                            <div className="flex items-center gap-1 w-12 flex-shrink-0">
+                              {getComponentIcon(log.component)}
+                              <span className="text-xs">{log.component}</span>
+                            </div>
+                            <span className="text-xs flex-1 break-all">
+                              {log.message}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   )
 }
