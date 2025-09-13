@@ -26,7 +26,7 @@ interface SimpleBillingProviderProps {
   children: React.ReactNode
 }
 
-export const SimpleBillingProvider: React.FC<SimpleBillingProviderProps> = ({ children }) => {
+const SimpleBillingProvider: React.FC<SimpleBillingProviderProps> = ({ children }) => {
   const [quotaInfo] = useState<QuotaInfo>({
     planName: 'Trial',
     currentExecutions: 0,
@@ -47,3 +47,5 @@ export const SimpleBillingProvider: React.FC<SimpleBillingProviderProps> = ({ ch
     </SimpleBillingContext.Provider>
   )
 }
+
+export default SimpleBillingProvider

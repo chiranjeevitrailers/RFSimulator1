@@ -25,7 +25,7 @@ import { useSimpleBilling } from '../billing/SimpleBillingProvider'
 import { SimpleQuotaDisplay } from '../billing/SimpleQuotaDisplay'
 import { useSimpleWebSocket } from './SimpleWebSocketProvider'
 
-export const AppLayout: React.FC = () => {
+const AppLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const location = useLocation()
@@ -345,3 +345,5 @@ export const AppLayout: React.FC = () => {
     </div>
   )
 }
+
+export default AppLayout

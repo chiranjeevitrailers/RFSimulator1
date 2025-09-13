@@ -18,7 +18,7 @@ interface SimpleWebSocketProviderProps {
   children: React.ReactNode
 }
 
-export const SimpleWebSocketProvider: React.FC<SimpleWebSocketProviderProps> = ({ children }) => {
+const SimpleWebSocketProvider: React.FC<SimpleWebSocketProviderProps> = ({ children }) => {
   const [isConnected, setIsConnected] = useState(true) // Simulate connected state
 
   useEffect(() => {
@@ -40,3 +40,5 @@ export const SimpleWebSocketProvider: React.FC<SimpleWebSocketProviderProps> = (
     </SimpleWebSocketContext.Provider>
   )
 }
+
+export default SimpleWebSocketProvider

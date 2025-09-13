@@ -21,7 +21,7 @@ interface SimpleAuthProviderProps {
   children: React.ReactNode
 }
 
-export const SimpleAuthProvider: React.FC<SimpleAuthProviderProps> = ({ children }) => {
+const SimpleAuthProvider: React.FC<SimpleAuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -49,3 +49,5 @@ export const SimpleAuthProvider: React.FC<SimpleAuthProviderProps> = ({ children
     </SimpleAuthContext.Provider>
   )
 }
+
+export default SimpleAuthProvider
