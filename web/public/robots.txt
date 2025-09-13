@@ -1,0 +1,11 @@
+# 5GLabX Cloud - Robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://5glabx-cloud.netlify.app/sitemap.xml
+
+# Disallow admin and API routes
+Disallow: /admin/
+Disallow: /api/
+Disallow: /.netlify/

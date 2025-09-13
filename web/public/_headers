@@ -1,0 +1,41 @@
+# Netlify headers file for security and performance
+
+# Security headers for all files
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# Content Security Policy
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https: blob:; connect-src 'self' https://*.supabase.co https://*.netlify.app wss://*.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';
+
+# Cache static assets for 1 year
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache images for 1 year
+*.jpg
+  Cache-Control: public, max-age=31536000
+
+*.png
+  Cache-Control: public, max-age=31536000
+
+*.svg
+  Cache-Control: public, max-age=31536000
+
+*.ico
+  Cache-Control: public, max-age=31536000
+
+# Cache fonts for 1 year
+*.woff
+  Cache-Control: public, max-age=31536000
+
+*.woff2
+  Cache-Control: public, max-age=31536000
+
+# Don't cache HTML files
+*.html
+  Cache-Control: no-cache, no-store, must-revalidate

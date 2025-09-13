@@ -1,0 +1,16 @@
+{
+  "name": "5GLabX",
+  "short_name": "5GLabX",
+  "description": "Professional 4G/5G Protocol Analysis Platform",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "icons": [],
+  "categories": ["productivity", "business", "utilities"],
+  "lang": "en",
+  "dir": "ltr",
+  "scope": "/",
+  "prefer_related_applications": false
+}

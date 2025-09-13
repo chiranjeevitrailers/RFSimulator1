@@ -76,8 +76,7 @@ jspm_packages/
 
 # Gatsby files
 .cache/
-# Only ignore Gatsby public directory, not src/pages/public/
-/public
+# Note: web/public/ is needed for static HTML deployment
 
 # Storybook build outputs
 .out
