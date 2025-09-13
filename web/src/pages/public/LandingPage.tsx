@@ -29,7 +29,20 @@ import {
   LockClosedIcon,
   CloudIcon,
   CodeBracketIcon,
-  CommandLineIcon
+  CommandLineIcon,
+  WrenchScrewdriverIcon,
+  CpuChipIcon as ChipIcon,
+  RadioIcon,
+  SignalIcon as AntennaIcon,
+  GlobeAltIcon as SatelliteIcon,
+  TruckIcon,
+  Cog6ToothIcon,
+  ChartBarSquareIcon,
+  DocumentChartBarIcon,
+  ExclamationTriangleIcon,
+  InformationCircleIcon,
+  CheckCircleIcon,
+  XCircleIcon
 } from '@heroicons/react/24/outline'
 
 const LandingPage: React.FC = () => {
@@ -51,54 +64,73 @@ const LandingPage: React.FC = () => {
     { label: "Countries", value: "50+" }
   ]
 
-  const features = [
+  const coreFeatures = [
     {
       icon: SignalIcon,
       title: "Real-time Protocol Analysis",
       description: "Live 4G/5G protocol monitoring with instant insights and correlation tracking across all network layers",
-      color: "from-blue-500 to-cyan-500"
+      color: "from-blue-500 to-cyan-500",
+      badge: "Live"
     },
     {
       icon: BeakerIcon,
       title: "1000+ 3GPP Test Cases",
       description: "Comprehensive test suite covering RRC, NAS, NGAP, SIP, O-RAN, NB-IoT, NTN, and V2X protocols",
-      color: "from-purple-500 to-pink-500"
+      color: "from-purple-500 to-pink-500",
+      badge: "New"
     },
     {
       icon: ShieldCheckIcon,
       title: "Enterprise Security",
       description: "Bank-grade security with role-based access, audit logging, and compliance with industry standards",
-      color: "from-green-500 to-emerald-500"
+      color: "from-green-500 to-emerald-500",
+      badge: null
     },
     {
       icon: ChartBarIcon,
       title: "Advanced Analytics",
       description: "AI-powered insights, performance optimization recommendations, and detailed reporting",
-      color: "from-orange-500 to-red-500"
-    },
-    {
-      icon: CloudIcon,
-      title: "Cloud-Native Architecture",
-      description: "Scalable, hardware-free solution that runs entirely in your browser with enterprise reliability",
-      color: "from-indigo-500 to-blue-500"
-    },
-    {
-      icon: CodeBracketIcon,
-      title: "Developer-Friendly",
-      description: "RESTful APIs, webhooks, and comprehensive documentation for seamless integration",
-      color: "from-teal-500 to-green-500"
+      color: "from-orange-500 to-red-500",
+      badge: null
     }
   ]
 
-  const protocols = [
-    { name: "RRC", description: "Radio Resource Control" },
-    { name: "NAS", description: "Non-Access Stratum" },
-    { name: "NGAP", description: "Next Generation Application Protocol" },
-    { name: "SIP", description: "Session Initiation Protocol" },
-    { name: "O-RAN", description: "Open Radio Access Network" },
-    { name: "NB-IoT", description: "Narrowband Internet of Things" },
-    { name: "NTN", description: "Non-Terrestrial Networks" },
-    { name: "V2X", description: "Vehicle-to-Everything" }
+  const protocolSupport = [
+    { name: "RRC", description: "Radio Resource Control", icon: RadioIcon },
+    { name: "NAS", description: "Non-Access Stratum", icon: AntennaIcon },
+    { name: "NGAP", description: "Next Generation Application Protocol", icon: ServerIcon },
+    { name: "SIP", description: "Session Initiation Protocol", icon: DevicePhoneMobileIcon },
+    { name: "O-RAN", description: "Open Radio Access Network", icon: GlobeAltIcon },
+    { name: "NB-IoT", description: "Narrowband Internet of Things", icon: DevicePhoneMobileIcon },
+    { name: "NTN", description: "Non-Terrestrial Networks", icon: SatelliteIcon },
+    { name: "V2X", description: "Vehicle-to-Everything", icon: TruckIcon }
+  ]
+
+  const specializedFeatures = [
+    {
+      icon: Cog6ToothIcon,
+      title: "O-RAN Integration",
+      description: "Complete O-RAN interface analysis with E1, F1, and X2/Xn support",
+      features: ["E1 Interface Analysis", "F1 Interface Monitoring", "X2/Xn Handover", "O-RAN Performance"]
+    },
+    {
+      icon: DevicePhoneMobileIcon,
+      title: "NB-IoT Analysis",
+      description: "Specialized NB-IoT protocol analysis and optimization tools",
+      features: ["NB-IoT Call Flow", "PHY Layer Analysis", "MAC Layer Monitoring", "RRC Layer Tracking"]
+    },
+    {
+      icon: TruckIcon,
+      title: "V2X Testing",
+      description: "Vehicle-to-Everything communication analysis and testing",
+      features: ["Sidelink Analysis", "V2X Scenarios", "Safety Messaging", "Performance Metrics"]
+    },
+    {
+      icon: SatelliteIcon,
+      title: "NTN Support",
+      description: "Non-Terrestrial Network analysis with satellite communication",
+      features: ["Satellite Tracking", "SIB19 Analysis", "Timing Analysis", "Doppler Effects"]
+    }
   ]
 
   const howItWorks = [
@@ -154,8 +186,13 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      {/* Demo Banner */}
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 text-center text-sm font-semibold">
+        🚀 5GLabX Platform - Enhanced O-RAN Integration Demo
+      </div>
+
       {/* Navigation */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      <nav className={`fixed top-8 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled ? 'bg-slate-900/95 backdrop-blur-md border-b border-slate-800' : 'bg-transparent'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -165,6 +202,7 @@ const LandingPage: React.FC = () => {
                 <span className="text-white font-bold text-xl">5G</span>
               </div>
               <span className="text-white font-bold text-xl">5GLabX</span>
+              <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Demo</span>
             </div>
 
             {/* Desktop Navigation */}
@@ -229,23 +267,23 @@ const LandingPage: React.FC = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8">
+      <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
             <div className="mb-8">
               <span className="inline-block bg-gradient-to-r from-blue-500/20 to-indigo-500/20 text-blue-300 px-4 py-2 rounded-full text-sm font-medium border border-blue-500/30">
-                🚀 The Future of Protocol Analysis is Here
+                🚀 Advanced 5G Network Analysis Platform
               </span>
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
               <span className="block bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                4G/5G Protocol Analysis
+                5GLabX Platform
               </span>
-              <span className="block">Made Simple</span>
+              <span className="block">Enhanced O-RAN Integration</span>
             </h1>
-            <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Professional-grade protocol analyzer with 1000+ 3GPP test cases, real-time monitoring, 
-              and enterprise security. No hardware required.
+            <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-4xl mx-auto leading-relaxed">
+              Advanced 5G network analysis platform with O-RAN, NB-IoT, V2X, and NTN support. 
+              Real-time protocol analysis, comprehensive test suites, and enterprise-grade security.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               <Link
@@ -280,26 +318,37 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Core Features Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-800/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Why Choose 5GLabX?
+              Core Platform Features
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-              The most advanced protocol analysis platform trusted by leading telecom companies worldwide
+              Comprehensive 5G protocol analysis with real-time monitoring and advanced analytics
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {coreFeatures.map((feature, index) => (
               <div
                 key={index}
                 className="group bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/10"
               >
-                <div className={`w-12 h-12 bg-gradient-to-r ${feature.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200`}>
-                  <feature.icon className="h-6 w-6 text-white" />
+                <div className="flex items-start justify-between mb-4">
+                  <div className={`w-12 h-12 bg-gradient-to-r ${feature.color} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
+                    <feature.icon className="h-6 w-6 text-white" />
+                  </div>
+                  {feature.badge && (
+                    <span className={`text-xs px-2 py-1 rounded-full font-semibold ${
+                      feature.badge === 'Live' ? 'bg-red-500 text-white animate-pulse' : 
+                      feature.badge === 'New' ? 'bg-blue-500 text-white' : 
+                      'bg-green-500 text-white'
+                    }`}>
+                      {feature.badge}
+                    </span>
+                  )}
                 </div>
                 <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-blue-300 transition-colors duration-200">
                   {feature.title}
@@ -313,7 +362,7 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Protocols Section */}
+      {/* Protocol Support Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -326,11 +375,14 @@ const LandingPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {protocols.map((protocol, index) => (
+            {protocolSupport.map((protocol, index) => (
               <div
                 key={index}
                 className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 text-center group"
               >
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-200">
+                  <protocol.icon className="h-6 w-6 text-white" />
+                </div>
                 <div className="text-2xl font-bold text-white mb-2 group-hover:text-blue-300 transition-colors duration-200">
                   {protocol.name}
                 </div>
@@ -343,8 +395,53 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* How It Works Section */}
+      {/* Specialized Features Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-800/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Specialized Analysis Modules
+            </h2>
+            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+              Advanced modules for O-RAN, NB-IoT, V2X, and NTN protocol analysis
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {specializedFeatures.map((feature, index) => (
+              <div
+                key={index}
+                className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/10"
+              >
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mr-4">
+                    <feature.icon className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white mb-1">
+                      {feature.title}
+                    </h3>
+                    <p className="text-slate-400 text-sm">
+                      {feature.description}
+                    </p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {feature.features.map((item, idx) => (
+                    <div key={idx} className="flex items-center text-slate-300 text-sm">
+                      <CheckIcon className="h-4 w-4 text-green-400 mr-2 flex-shrink-0" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
@@ -379,7 +476,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-800/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
@@ -464,8 +561,8 @@ const LandingPage: React.FC = () => {
                 <span className="text-white font-bold text-xl">5GLabX</span>
               </div>
               <p className="text-slate-400 mb-6 max-w-md">
-                Professional 4G/5G protocol analysis platform with 1000+ 3GPP test cases, 
-                real-time monitoring, and enterprise-grade security.
+                Advanced 5G network analysis platform with O-RAN, NB-IoT, V2X, and NTN support. 
+                Real-time protocol analysis, comprehensive test suites, and enterprise-grade security.
               </p>
               <div className="flex space-x-4">
                 <a href="#" className="text-slate-400 hover:text-blue-300 transition-colors duration-200">
