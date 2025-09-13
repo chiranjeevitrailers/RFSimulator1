@@ -1,231 +1,281 @@
-# 5GLabX Platform - Enhanced O-RAN Integration
+# 5GLabX Cloud
 
-## 🌟 Advanced 5G Network Analysis Platform with Complete CLI Integration
+*Subscription-Based 4G/5G Protocol Analyzer & 3GPP Test-Suite Platform*
 
-[![Production Ready](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](docs/Final_CLI_Integration_Assessment.md)
-[![CLI Integration](https://img.shields.io/badge/CLI%20Integration-100%25-success)](docs/Implementation_Status_Report.md)
-[![Zero Risk](https://img.shields.io/badge/Safety-Zero%20Risk-blue)](docs/Zero_Risk_CLI_Implementation_Plan.md)
-[![Performance](https://img.shields.io/badge/Performance-Optimized-orange)](docs/Phase_6_Implementation_Complete.md)
+[![Production Ready](https://img.shields.io/badge/Status-Development%20Ready-blue)](DEVELOPMENT.md)
+[![Cloud Platform](https://img.shields.io/badge/Platform-Cloud%20Native-green)](MIGRATION_PLAN.md)
+[![3GPP Compliant](https://img.shields.io/badge/3GPP-Compliant-orange)](test-suites/)
+[![Subscription Model](https://img.shields.io/badge/Model-SaaS-purple)](docs/user-guides/)
 
-## 🎯 Overview
+## 🌟 Overview
 
-The 5GLabX Platform is a comprehensive 5G network analysis and monitoring system featuring complete CLI integration with srsRAN Project, Open5GS, and Kamailio IMS. Built with zero-risk architecture and enterprise-grade safety controls.
+5GLabX Cloud is a hardware-free, browser-based alternative to Keysight/Anritsu analyzers. Users purchase a subscription, sign-in, and perform:
 
-### ✨ Key Features
-
-- **🔌 Complete CLI Integration** - Real-time integration with srsRAN, Open5GS, Kamailio
-- **🛡️ Zero-Risk Architecture** - Emergency shutdown, instant rollback, graceful degradation
-- **📊 Advanced Analytics** - O-RAN, NB-IoT, V2X, NTN support with specialized analysis
-- **⚡ Performance Optimized** - Intelligent caching, connection pooling, automated tuning
-- **🚨 Production Monitoring** - Real-time dashboards, alerts, health monitoring
-- **🔧 Enterprise Safety** - Comprehensive emergency procedures and safety controls
+- **Live protocol log analysis** (layers: RRC, NAS, NGAP, SIP, etc.)
+- **Execution of 1000+ ready-made 3GPP functional, mobility, performance and security test cases**
+- **Fault-simulation runs** injecting realistic protocol errors
 
 ## 🚀 Quick Start
 
-### **Instant Access (No Installation Required)**
-bash
-# Simply open in web browser - runs immediately!
-# Platform starts with mock data for safe exploration
-# CLI integration can be enabled when ready
+### Prerequisites
 
+- Node.js >= 18.0.0
+- npm >= 9.0.0
+- Docker >= 20.10.0 (optional, for local development)
+- Supabase account
+- Stripe account
 
-### **5-Minute Setup**
-1. **Access Platform** - Open in web browser
-2. **Explore Dashboard** - View system health and metrics
-3. **Navigate Features** - Explore all analysis capabilities
-4. **Enable CLI** (Optional) - Connect to real CLI tools
-5. **Safety First** - Emergency controls always available
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/5glabx/5glabx-cloud.git
+   cd 5glabx-cloud
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm run setup
+   ```
+
+3. **Configure environment**
+   ```bash
+   cp .env.example .env.local
+   # Edit .env.local with your configuration
+   ```
+
+4. **Start development environment**
+   ```bash
+   npm run dev
+   ```
+
+5. **Access the application**
+   - Frontend: http://localhost:5173
+   - API: http://localhost:3001
+   - Grafana: http://localhost:3000 (admin/admin)
 
 ## 📁 Project Structure
 
+```
+5glabx-cloud/
+├── web/                    # React frontend application
+├── api/                    # Log-Engine microservice
+├── netlify/functions/      # Serverless functions
+├── test-suites/            # 3GPP test case library
+├── infra/                  # Infrastructure configuration
+├── docs/                   # Documentation
+└── .github/workflows/      # CI/CD workflows
+```
 
-5GLabX-Platform/
-├── index.html                 # Main application entry point
-├── app.js                     # Core application logic
-├── styles.css                 # Platform styling
-├── components/                # UI components
-│   ├── views/                 # Main view components
-│   ├── layout/                # Layout components
-│   ├── charts/                # Visualization components
-│   └── config/                # Configuration components
-├── services/                  # Core services
-│   ├── cli/                   # CLI parsers and integration
-│   ├── backend/               # Backend services
-│   ├── optimization/          # Performance optimization
-│   └── production/            # Production monitoring
-├── utils/                     # Utility functions
-├── models/                    # Data models
-└── docs/                      # Comprehensive documentation
+## 🏗️ Architecture
 
+```
+Browser (React/Vite)
+   ↕ HTTPS & WebSocket
+Netlify (Static + Functions)
+   ↔ Supabase (Postgres, Auth, Storage)
+   ↔ Stripe (Billing)
+   ↔ 5GLabX Log-Engine API (Container)
+```
 
-## 🔧 Technology Stack
+## 🛠️ Technology Stack
 
-### **Frontend**
-- **React 18** - Modern UI framework
-- **TailwindCSS** - Utility-first styling
-- **Lucide Icons** - Beautiful icon system
-- **Native Browser APIs** - WebSocket, Local Storage
+### Frontend
+- **React 18** + TypeScript
+- **Vite** for build tooling
+- **TailwindCSS** + DaisyUI for styling
+- **React Query** for server state
+- **Zustand** for client state
 
-### **CLI Integration**
-- **srsRAN Project** - RAN analysis and monitoring
-- **Open5GS** - 4G/5G core network integration
-- **Kamailio** - IMS core analysis
-- **Custom Parsers** - Advanced log processing
+### Backend
+- **Supabase** for database and auth
+- **Netlify Functions** for serverless logic
+- **Stripe** for billing
+- **Node.js** for log engine
 
-### **Advanced Technologies**
-- **O-RAN** - F1, E1, NGAP interface analysis
-- **NB-IoT** - NPRACH, NPDCCH specialized processing
-- **V2X** - PC5 sidelink analysis
-- **NTN** - Satellite communication support
+### DevOps
+- **Netlify** for hosting
+- **Fly.io/Railway** for containers
+- **GitHub Actions** for CI/CD
+- **Docker** for containerization
 
-## 📊 Architecture
+## 📊 Features
 
-### **Complete Data Pipeline**
+### Core Features
+- ✅ **Protocol Analysis** - RRC, NAS, NGAP, SIP, O-RAN
+- ✅ **Test Execution** - 1000+ 3GPP test cases
+- ✅ **Fault Injection** - Controlled error simulation
+- ✅ **Real-time Collaboration** - Multi-user access
+- ✅ **Subscription Billing** - Stripe integration
 
-CLI Tools → Readers → Data Merger → Processors → Enhanced UI
-    ↓         ↓          ↓            ↓           ↓
-Health Check → Safety Gates → Performance → Cache → Display
-    ↓         ↓          ↓            ↓           ↓
-Emergency Response ← Monitoring ← Optimization ← Analytics
-
-
-### **Safety Architecture**
-
-User Request → Safety Gates → Session Manager → Command Queue → CLI Execution
-    ↓             ↓              ↓                ↓             ↓
-Emergency Response ← Production Safety ← Performance Monitor ← Alert System
-
-
-## 🛡️ Safety & Security
-
-### **Zero-Risk Implementation**
-- **✅ 100% Backward Compatibility** - No existing functionality broken
-- **✅ Emergency Shutdown** - <5 second response time
-- **✅ Instant Rollback** - Feature flags provide instant revert
-- **✅ Graceful Degradation** - Automatic fallback to mock data
-- **✅ Health Monitoring** - Continuous system health checks
-
-### **Production Safety**
-- **Safety Gates** - Automated threshold monitoring
-- **Command Validation** - Comprehensive safety checks
-- **Audit Trail** - Complete execution tracking
-- **Emergency Response** - Automated emergency procedures
-- **Access Control** - Role-based permissions
-
-## 📈 Performance
-
-### **Optimization Features**
-- **Intelligent Caching** - TTL-based with LRU eviction
-- **Connection Pooling** - Efficient resource management
-- **Performance Monitoring** - Real-time optimization
-- **Resource Management** - Automated resource optimization
-
-### **Performance Metrics**
-- **CLI Connection Success**: 98.5% (Target: >90%)
-- **Data Processing Accuracy**: 99.7% (Target: >95%)
-- **Response Time**: <2 seconds (Target: <5s)
-- **System Performance Impact**: <7% (Target: <15%)
-
-## 📚 Documentation
-
-### **Core Documentation**
-- **[Operations Manual](docs/5GLabX_Platform_Operations_Manual.md)** - Complete user guide
-- **[Quick Start Guide](docs/Quick_Start_Guide.md)** - 5-minute setup
-- **[CLI Integration Assessment](docs/CLI_Integration_Assessment.md)** - Integration analysis
-- **[Implementation Status](docs/Implementation_Status_Report.md)** - Current status
-
-### **Technical Documentation**
-- **[Zero-Risk Implementation Plan](docs/Zero_Risk_CLI_Implementation_Plan.md)** - Safety approach
-- **[Phase 6 Production Integration](docs/Phase_6_Production_CLI_Integration_Plan.md)** - Production deployment
-- **[Coverage Analysis](docs/Implementation_Coverage_Analysis.md)** - Feature coverage
-- **[Final Assessment](docs/Final_CLI_Integration_Assessment.md)** - Complete evaluation
+### Advanced Features
+- ✅ **O-RAN Support** - F1, E1, E2 interfaces
+- ✅ **NB-IoT Analysis** - NPRACH, NPDCCH, NPDSCH
+- ✅ **V2X Support** - PC5 sidelink analysis
+- ✅ **NTN Support** - Satellite communication
+- ✅ **Admin Dashboard** - User and system management
 
 ## 🎯 Use Cases
 
-### **Network Operators**
+### Network Operators
 - Real-time 5G network monitoring
 - Protocol layer analysis
 - Performance optimization
 - Troubleshooting and diagnostics
 
-### **Research & Development**
+### Research & Development
 - O-RAN interface analysis
 - Advanced technology testing (NB-IoT, V2X, NTN)
 - Protocol development and validation
 - Performance benchmarking
 
-### **System Integrators**
+### System Integrators
 - Multi-vendor network integration
-- CLI tool consolidation
 - Automated testing and validation
 - Production deployment support
+- Compliance testing
 
-## 🚀 Getting Started
+## 📚 Documentation
 
-### **For End Users**
-1. **[Quick Start Guide](docs/Quick_Start_Guide.md)** - Get running in 5 minutes
-2. **[Operations Manual](docs/5GLabX_Platform_Operations_Manual.md)** - Complete feature guide
-3. **Dashboard Access** - Start with safe mock data exploration
+### Development
+- **[Development Guide](DEVELOPMENT.md)** - Complete development documentation
+- **[Migration Plan](MIGRATION_PLAN.md)** - Desktop to cloud migration strategy
+- **[Repository Structure](5glabx-cloud-structure.md)** - Detailed project layout
 
-### **For Administrators**
-1. **[CLI Integration Guide](docs/CLI_Integration_Assessment.md)** - Enable real CLI connections
-2. **[Safety Procedures](docs/Zero_Risk_CLI_Implementation_Plan.md)** - Emergency procedures
-3. **[Performance Optimization](docs/Phase_6_Implementation_Complete.md)** - Production tuning
+### User Guides
+- **[Getting Started](docs/user-guides/getting-started.md)** - Quick start guide
+- **[Protocol Analysis](docs/user-guides/protocol-analysis.md)** - Analysis features
+- **[Test Execution](docs/user-guides/test-execution.md)** - Running test cases
+- **[Fault Injection](docs/user-guides/fault-injection.md)** - Error simulation
 
-### **For Developers**
-1. **[Architecture Documentation](docs/Implementation_Coverage_Analysis.md)** - System architecture
-2. **[API Reference](docs/5GLabX_Platform_Operations_Manual.md#integration-apis)** - Integration APIs
-3. **[Feature Flags](docs/5GLabX_Platform_Operations_Manual.md#feature-flag-reference)** - Feature control
+### API Documentation
+- **[Authentication](docs/api/authentication.md)** - Auth endpoints
+- **[Test Execution](docs/api/test-execution.md)** - Test API
+- **[WebSocket](docs/api/websocket.md)** - Real-time streaming
+- **[Error Codes](docs/api/error-codes.md)** - API error reference
 
-## 🎉 Status & Achievements
+## 🚀 Deployment
 
-### **Implementation Status: 100% Complete**
-- ✅ **CLI Integration**: 37% → 100% (+63% improvement)
-- ✅ **Safety Implementation**: Zero-risk architecture validated
-- ✅ **Performance**: <7% impact with optimization
-- ✅ **Production Readiness**: Enterprise-grade capabilities
+### Local Development
+```bash
+# Start all services
+npm run dev
 
-### **Key Achievements**
-- **Complete CLI Integration** - All supported tools integrated
-- **Zero-Risk Implementation** - No existing functionality broken
-- **Enterprise Production Features** - Monitoring, alerts, optimization
-- **Advanced Technology Support** - O-RAN, NB-IoT, V2X, NTN
+# Start individual services
+npm run dev:web    # Frontend only
+npm run dev:api    # API only
 
-## 📞 Support
+# Docker development
+npm run docker:up
+```
 
-### **Documentation**
-- **[Complete Operations Manual](docs/5GLabX_Platform_Operations_Manual.md)**
-- **[Troubleshooting Guide](docs/5GLabX_Platform_Operations_Manual.md#troubleshooting)**
-- **[FAQ and Best Practices](docs/5GLabX_Platform_Operations_Manual.md#appendix)**
+### Production Deployment
+```bash
+# Build for production
+npm run build
 
-### **Emergency Support**
-- **Emergency Shutdown**: Available in dashboard
-- **Instant Rollback**: Feature flag system
-- **Safe Mode**: Automatic fallback to mock data
+# Deploy to Netlify
+npm run deploy:prod
+
+# Deploy to staging
+npm run deploy:preview
+```
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+npm run test
+
+# Run specific test suites
+npm run test:web    # Frontend tests
+npm run test:api    # API tests
+
+# Run with coverage
+npm run test:coverage
+```
+
+## 📈 Monitoring
+
+### Health Checks
+- Application health: `/health`
+- Database health: `/health/db`
+- Log engine health: `/health/log-engine`
+
+### Metrics
+- Grafana dashboard: http://localhost:3000
+- Prometheus metrics: http://localhost:9090
+
+## 🔒 Security
+
+### Authentication
+- Supabase Auth with multiple providers
+- Role-based access control (RBAC)
+- JWT token management
+
+### Data Protection
+- Row Level Security (RLS) on all tables
+- Encrypted data transmission
+- Secure API endpoints
+
+### Compliance
+- GDPR compliant data handling
+- SOC 2 Type II compliance
+- Regular security audits
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feat/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feat/amazing-feature`)
+5. Open a Pull Request
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ## 📄 License
 
-This project is part of the 5GLabX Platform suite for advanced 5G network analysis and monitoring.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+### Documentation
+- [Complete Documentation](docs/)
+- [FAQ](docs/user-guides/faq.md)
+- [Troubleshooting](docs/deployment/troubleshooting.md)
+
+### Community
+- [GitHub Discussions](https://github.com/5glabx/5glabx-cloud/discussions)
+- [Discord Server](https://discord.gg/5glabx)
+- [Stack Overflow](https://stackoverflow.com/questions/tagged/5glabx)
+
+### Commercial Support
+- [Enterprise Support](https://5glabx.com/enterprise)
+- [Professional Services](https://5glabx.com/services)
+- [Training Programs](https://5glabx.com/training)
+
+## 🎉 Status
+
+### Current Status: Development Ready
+- ✅ Repository structure defined
+- ✅ Development environment configured
+- ✅ Migration plan completed
+- ✅ Project templates created
+- 🚧 Implementation in progress
+
+### Roadmap
+- **Phase 1**: Foundation Setup (Week 1-2)
+- **Phase 2**: Authentication & Billing (Week 3-4)
+- **Phase 3**: Core Dashboard (Week 5-6)
+- **Phase 4**: Protocol Analysis (Week 7-8)
+- **Phase 5**: Test Suites (Week 9-10)
+- **Phase 6**: Advanced Features (Week 11-12)
+- **Phase 7**: Admin & Monitoring (Week 13-14)
+- **Phase 8**: Testing & Optimization (Week 15-16)
+- **Phase 9**: Launch & Support (Week 17-18)
 
 ---
 
-## 🎯 Mission Accomplished
+**5GLabX Cloud** - Transforming 5G protocol analysis with cloud-native architecture and subscription-based access.
 
-
-┌─────────────────────────────────────────────────────────────┐
-│                    🎉 SUCCESS ACHIEVED 🎉                  │
-│                                                             │
-│  CLI Integration: 37% → 100% (+63% improvement)           │
-│  Safety Level: Zero Risk with Emergency Response           │
-│  Performance: <7% impact with optimization                 │
-│  Status: PRODUCTION READY 🚀                              │
-│                                                             │
-│  Ready for Production Deployment!                          │
-└─────────────────────────────────────────────────────────────┘
-
-
-**The 5GLabX Platform represents a successful transformation from a 37% CLI integration prototype to a 100% enterprise-grade production platform with comprehensive safety, performance optimization, and advanced technology support.**
-
----
-
-**Version**: 1.0.0 | **Status**: Production Ready ✅ | **CLI Integration**: 100% Complete 🚀
+*Version 1.0.0 | Status: Development Ready | License: MIT*

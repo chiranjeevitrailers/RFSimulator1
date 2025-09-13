@@ -1,77 +1,78 @@
 {
-  "name": "5glabx-platform-desktop",
+  "name": "5glabx-cloud",
   "version": "1.0.0",
-  "description": "5GLabX Platform - Desktop Application with Complete CLI Integration",
-  "main": "electron/main.js",
-  "homepage": "./",
+  "description": "5GLabX Cloud - Subscription-Based 4G/5G Protocol Analyzer & 3GPP Test-Suite Platform",
+  "private": true,
+  "workspaces": [
+    "web",
+    "api",
+    "netlify/functions"
+  ],
   "scripts": {
-    "install:all": "bash install.sh",
-    "install:check": "bash install.sh --status",
-    "uninstall": "bash install.sh --uninstall",
-    "setup": "npm install && npm run config",
-    "config": "node scripts/setup-config.js",
-    "start": "npm run dev-full",
-    "dev": "npm run electron-dev",
-    "dev-full": "concurrently \"npm run server\" \"npm run electron-dev\"",
-    "server": "node server.js",
-    "server-dev": "nodemon server.js",
-    "electron": "electron .",
-    "electron-dev": "ELECTRON_IS_DEV=true electron .",
-    "build-electron": "electron-builder",
-    "dist": "electron-builder --publish=never",
-    "pack": "electron-builder --dir",
-    "test": "npm run server-test",
-    "server-test": "curl -s http://localhost:8080/health || echo 'Server not running'",
-    "logs": "tail -f /var/log/5glabx/server.log",
-    "clean": "rm -rf node_modules dist *.log"
+    "dev": "concurrently \"npm run dev:web\" \"npm run dev:api\"",
+    "dev:web": "cd web && npm run dev",
+    "dev:api": "cd api && npm run dev",
+    "build": "npm run build:web && npm run build:api",
+    "build:web": "cd web && npm run build",
+    "build:api": "cd api && npm run build",
+    "test": "npm run test:web && npm run test:api",
+    "test:web": "cd web && npm run test",
+    "test:api": "cd api && npm run test",
+    "lint": "npm run lint:web && npm run lint:api",
+    "lint:web": "cd web && npm run lint",
+    "lint:api": "cd api && npm run lint",
+    "type-check": "npm run type-check:web && npm run type-check:api",
+    "type-check:web": "cd web && npm run type-check",
+    "type-check:api": "cd api && npm run type-check",
+    "clean": "npm run clean:web && npm run clean:api",
+    "clean:web": "cd web && rm -rf node_modules dist",
+    "clean:api": "cd api && rm -rf node_modules dist",
+    "setup": "npm install && npm run setup:web && npm run setup:api",
+    "setup:web": "cd web && npm install",
+    "setup:api": "cd api && npm install",
+    "deploy:preview": "netlify deploy --dir=web/dist",
+    "deploy:prod": "netlify deploy --prod --dir=web/dist",
+    "db:migrate": "supabase db push",
+    "db:seed": "node infra/scripts/seed-test-cases.ts",
+    "db:reset": "supabase db reset",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f"
   },
   "keywords": [
     "5G",
-    "srsRAN",
-    "Open5GS", 
-    "Kamailio",
+    "4G",
+    "LTE",
+    "NR",
+    "3GPP",
+    "protocol-analyzer",
+    "test-suite",
+    "fault-injection",
     "O-RAN",
     "NB-IoT",
     "V2X",
-    "NTN"
+    "NTN",
+    "cloud",
+    "subscription",
+    "SaaS"
   ],
   "author": "5GLabX Team",
   "license": "MIT",
-  "dependencies": {
-    "express": "^4.18.2",
-    "ws": "^8.14.2",
-    "cors": "^2.8.5",
-    "concurrently": "^8.0.1",
-    "nodemon": "^2.0.22"
-  },
   "devDependencies": {
-    "electron": "^27.0.0",
-    "electron-builder": "^24.6.4"
+    "concurrently": "^8.2.0",
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
   },
-  "build": {
-    "appId": "com.5glabx.platform",
-    "productName": "5GLabX Platform",
-    "directories": {
-      "output": "dist"
-    },
-    "files": [
-      "**/*",
-      "!node_modules",
-      "!dist",
-      "!*.md"
-    ],
-    "mac": {
-      "category": "public.app-category.developer-tools",
-      "icon": "electron/assets/icon.icns"
-    },
-    "win": {
-      "target": "nsis",
-      "icon": "electron/assets/icon.ico"
-    },
-    "linux": {
-      "target": "AppImage",
-      "icon": "electron/assets/icon.png",
-      "category": "Development"
-    }
-  }
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/5glabx/5glabx-cloud.git"
+  },
+  "bugs": {
+    "url": "https://github.com/5glabx/5glabx-cloud/issues"
+  },
+  "homepage": "https://app.5glabx.com"
 }

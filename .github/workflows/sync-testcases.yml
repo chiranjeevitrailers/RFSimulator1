@@ -1,0 +1,98 @@
+name: Sync Test Cases
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      force_update:
+        description: 'Force update all test cases'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  sync-test-cases:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Validate test case schemas
+        run: |
+          npm run validate:schemas
+          
+      - name: Check for test case changes
+        id: check-changes
+        run: |
+          # Check if there are changes in test-suites directory
+          if git diff --quiet HEAD~1 HEAD -- test-suites/; then
+            echo "No changes detected in test-suites directory"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "Changes detected in test-suites directory"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Sync test cases to database
+        if: steps.check-changes.outputs.has_changes == 'true' || github.event.inputs.force_update == 'true'
+        run: |
+          npm run db:seed
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          
+      - name: Validate test case compliance
+        if: steps.check-changes.outputs.has_changes == 'true' || github.event.inputs.force_update == 'true'
+        run: |
+          # Run 3GPP compliance checks
+          npm run validate:3gpp-compliance
+          
+      - name: Run test case validation
+        if: steps.check-changes.outputs.has_changes == 'true' || github.event.inputs.force_update == 'true'
+        run: |
+          # Run a sample of test cases to ensure they work
+          npm run test:validation-sample
+          
+      - name: Update test case statistics
+        if: steps.check-changes.outputs.has_changes == 'true' || github.event.inputs.force_update == 'true'
+        run: |
+          # Update test case counts and statistics
+          npm run update:test-stats
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          
+      - name: Notify sync completion
+        if: steps.check-changes.outputs.has_changes == 'true' || github.event.inputs.force_update == 'true'
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          channel: '#test-cases'
+          text: '✅ Test cases synchronized successfully!'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          
+      - name: Create summary report
+        if: steps.check-changes.outputs.has_changes == 'true' || github.event.inputs.force_update == 'true'
+        run: |
+          # Generate a summary report of the sync
+          npm run generate:sync-report
+          
+      - name: Upload sync report
+        if: steps.check-changes.outputs.has_changes == 'true' || github.event.inputs.force_update == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-case-sync-report
+          path: sync-report.json
