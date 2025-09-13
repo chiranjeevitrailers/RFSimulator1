@@ -2,10 +2,85 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getCurrentUser, logoutUser } from '../../lib/auth/simpleAuth'
 import { User } from '../../lib/auth/simpleAuth'
+import { 
+  TestTube, 
+  BarChart3, 
+  Clock, 
+  User, 
+  Settings,
+  Users,
+  Shield,
+  Code,
+  Activity,
+  Zap,
+  Crown,
+  Menu,
+  X,
+  Bell,
+  Search,
+  HelpCircle,
+  LogOut,
+  Play,
+  Pause,
+  RotateCcw,
+  Download,
+  Upload,
+  Eye,
+  Filter,
+  Network,
+  Database,
+  Cpu,
+  Radio,
+  Smartphone,
+  Wifi,
+  Satellite,
+  Car,
+  Building,
+  Layers,
+  FileText,
+  Monitor,
+  Server,
+  Router,
+  Cloud,
+  MessageSquare,
+  GitBranch,
+  Target,
+  Gauge,
+  TrendingDown,
+  AlertCircle,
+  CheckSquare,
+  XCircle,
+  Info,
+  ExternalLink,
+  ChevronRight,
+  ChevronDown,
+  Plus,
+  Minus,
+  RefreshCw,
+  Save,
+  Trash2,
+  Edit,
+  Copy,
+  Share,
+  Lock,
+  Unlock,
+  WifiOff,
+  Signal,
+  Battery,
+  Thermometer,
+  HardDrive,
+  MemoryStick,
+  Terminal
+} from 'lucide-react'
 
 export const UserDashboard: React.FC = () => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [activeComponent, setActiveComponent] = useState('dashboard')
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [logs, setLogs] = useState<any[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -25,12 +100,130 @@ export const UserDashboard: React.FC = () => {
     navigate('/login')
   }
 
+  // 5GLabX Navigation Components
+  const navigation = [
+    { name: 'Dashboard', href: 'dashboard', icon: BarChart3 },
+    { name: 'Test Suites', href: 'test-suites', icon: TestTube },
+    { name: 'Protocol Analyzer', href: 'analyzer', icon: BarChart3 },
+    { name: 'Executions', href: 'executions', icon: Clock },
+    { name: 'Analytics', href: 'analytics', icon: BarChart3 },
+    { name: 'Account', href: 'account', icon: User },
+  ]
+
+  const protocolLayers = [
+    { name: 'PHY Layer', icon: Radio, description: 'Physical Layer Analysis', status: 'active' },
+    { name: 'MAC Layer', icon: Network, description: 'Medium Access Control', status: 'active' },
+    { name: 'RLC Layer', icon: Layers, description: 'Radio Link Control', status: 'active' },
+    { name: 'PDCP Layer', icon: Database, description: 'Packet Data Convergence Protocol', status: 'active' },
+    { name: 'RRC Layer', icon: Settings, description: 'Radio Resource Control', status: 'active' },
+    { name: 'NAS Layer', icon: MessageSquare, description: 'Non-Access Stratum', status: 'active' },
+    { name: 'IMS Layer', icon: Cloud, description: 'IP Multimedia Subsystem', status: 'active' }
+  ]
+
+  const coreNetworkAnalyzers = [
+    { name: 'AMF Analyzer', icon: Server, description: 'Access and Mobility Management Function', technology: '5G' },
+    { name: 'SMF Analyzer', icon: Router, description: 'Session Management Function', technology: '5G' },
+    { name: 'UPF Analyzer', icon: Network, description: 'User Plane Function', technology: '5G' },
+    { name: 'AUSF Analyzer', icon: Shield, description: 'Authentication Server Function', technology: '5G' },
+    { name: 'UDM Analyzer', icon: Database, description: 'Unified Data Management', technology: '5G' },
+    { name: 'MME Analyzer', icon: Server, description: 'Mobility Management Entity', technology: '4G' },
+    { name: 'SGW Analyzer', icon: Router, description: 'Serving Gateway', technology: '4G' },
+    { name: 'PGW Analyzer', icon: Network, description: 'Packet Data Network Gateway', technology: '4G' }
+  ]
+
+  const oranFeatures = [
+    { name: 'O-RAN Overview', icon: Globe, description: 'Complete O-RAN Analysis' },
+    { name: 'O-RAN Interfaces', icon: GitBranch, description: 'E1, F1 Interface Analysis' },
+    { name: 'CU/DU Analysis', icon: Cpu, description: 'Centralized/Distributed Unit' },
+    { name: 'Performance Monitoring', icon: Gauge, description: 'O-RAN Performance Metrics' },
+    { name: 'xApps Management', icon: Smartphone, description: 'O-RAN Applications' },
+    { name: 'SMO Integration', icon: Cloud, description: 'Service Management and Orchestration' }
+  ]
+
+  const advancedTechnologies = [
+    { name: 'NB-IoT Analysis', icon: Wifi, description: 'Narrowband IoT Analysis', color: 'bg-blue-500' },
+    { name: 'V2X Communication', icon: Car, description: 'Vehicle-to-Everything', color: 'bg-green-500' },
+    { name: 'NTN Networks', icon: Satellite, description: 'Non-Terrestrial Networks', color: 'bg-purple-500' },
+    { name: 'Report Generator', icon: FileText, description: 'Comprehensive Reporting', color: 'bg-orange-500' }
+  ]
+
+  const cliIntegrations = [
+    { name: 'srsRAN CLI', icon: Terminal, description: 'srsRAN Command Line Integration', status: 'connected' },
+    { name: 'Open5GS CLI', icon: Terminal, description: 'Open5GS Integration', status: 'connected' },
+    { name: 'Kamailio CLI', icon: Terminal, description: 'Kamailio Integration', status: 'disconnected' }
+  ]
+
+  // Generate sample logs for real-time appearance
+  useEffect(() => {
+    if (isProcessing) {
+      const interval = setInterval(() => {
+        const sampleLogs = [
+          '[PHY] [I] [931.6] PDSCH: rnti=0x4601 h_id=0 k1=4 prb=[0,87) symb=[1,14) mod=QPSK rv=0 tbs=309 t=135.5us',
+          '[MAC] [I] [938.5] DL PDU: ue=0 rnti=0x4601 size=169: SDU: lcid=1 nof_sdus=1 total_size=55',
+          '[RLC] [I] du=0 ue=0 SRB1 DL: TX PDU. dc=data p=1 si=full sn=0 pdu_len=53 grant_len=55',
+          '[PDCP] [I] PDCP TX: ue=0 drb=1 sn=0 pdu_len=53',
+          '[RRC] [I] RRC Connection Setup: ue=0 rnti=0x4601',
+          '[NAS] [I] NAS Attach Request: imsi=123456789012345',
+          '[IMS] [I] SIP INVITE: from=user1@domain.com to=user2@domain.com'
+        ]
+        
+        const newLog = {
+          id: Date.now() + Math.random(),
+          timestamp: new Date().toLocaleTimeString(),
+          level: ['DEBUG', 'INFO', 'WARN', 'ERROR'][Math.floor(Math.random() * 4)],
+          component: ['PHY', 'MAC', 'RLC', 'PDCP', 'RRC', 'NAS', 'IMS'][Math.floor(Math.random() * 7)],
+          message: sampleLogs[Math.floor(Math.random() * sampleLogs.length)]
+        }
+        
+        setLogs(prev => [...prev.slice(-50), newLog])
+      }, 1000 + Math.random() * 2000)
+      
+      return () => clearInterval(interval)
+    }
+  }, [isProcessing])
+
+  const getLevelColor = (level: string) => {
+    switch (level) {
+      case 'ERROR':
+        return 'text-red-500'
+      case 'WARN':
+        return 'text-yellow-500'
+      case 'INFO':
+        return 'text-blue-500'
+      case 'DEBUG':
+        return 'text-green-500'
+      default:
+        return 'text-gray-500'
+    }
+  }
+
+  const getComponentIcon = (component: string) => {
+    switch (component) {
+      case 'PHY':
+        return <Radio className="w-4 h-4 text-purple-500" />
+      case 'MAC':
+        return <Network className="w-4 h-4 text-blue-500" />
+      case 'RLC':
+        return <Layers className="w-4 h-4 text-green-500" />
+      case 'PDCP':
+        return <Database className="w-4 h-4 text-orange-500" />
+      case 'RRC':
+        return <Settings className="w-4 h-4 text-red-500" />
+      case 'NAS':
+        return <MessageSquare className="w-4 h-4 text-indigo-500" />
+      case 'IMS':
+        return <Cloud className="w-4 h-4 text-cyan-500" />
+      default:
+        return <Activity className="w-4 h-4 text-gray-500" />
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-base-100 flex items-center justify-center">
         <div className="text-center">
           <div className="loading loading-spinner loading-lg"></div>
-          <p className="mt-4 text-base-content/70">Loading user dashboard...</p>
+          <p className="mt-4 text-base-content/70">Loading 5GLabX Platform...</p>
         </div>
       </div>
     )
