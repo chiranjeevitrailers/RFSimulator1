@@ -1,15 +1,22 @@
--- Fix for missing verify_user_credentials function
+-- Fixed version of verify_user_credentials function
 -- Run this in your Supabase SQL Editor
 
--- Create function to verify user credentials
+-- Drop the existing function if it exists
+DROP FUNCTION IF EXISTS public.verify_user_credentials(TEXT, TEXT);
+
+-- Create function to verify user credentials with proper column references
 CREATE OR REPLACE FUNCTION public.verify_user_credentials(user_email TEXT, user_password TEXT)
 RETURNS TABLE(user_id UUID, user_email_out TEXT, full_name TEXT, role TEXT, status TEXT) AS $$
 DECLARE
   stored_hash TEXT;
-  user_record RECORD;
+  user_id_val UUID;
+  user_email_val TEXT;
+  user_full_name_val TEXT;
+  user_role_val TEXT;
+  user_status_val TEXT;
 BEGIN
   SELECT u.password_hash, u.id, u.email, u.full_name, u.role, u.status
-  INTO stored_hash, user_record.id, user_record.email, user_record.full_name, user_record.role, user_record.status
+  INTO stored_hash, user_id_val, user_email_val, user_full_name_val, user_role_val, user_status_val
   FROM users u
   WHERE u.email = $1 AND u.status = 'active';
   
@@ -19,7 +26,7 @@ BEGIN
   
   -- Use bcrypt to verify password
   IF crypt($2, stored_hash) = stored_hash THEN
-    RETURN QUERY SELECT user_record.id, user_record.email, user_record.full_name, user_record.role, user_record.status;
+    RETURN QUERY SELECT user_id_val, user_email_val, user_full_name_val, user_role_val, user_status_val;
   END IF;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
