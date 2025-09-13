@@ -14,6 +14,8 @@ const UserDashboard = React.lazy(() => import('./pages/user/UserDashboard'))
 
 // Public pages
 const LandingPage = React.lazy(() => import('./pages/public/LandingPage'))
+const PricingPage = React.lazy(() => import('./pages/public/PricingPage'))
+const ContactPage = React.lazy(() => import('./pages/public/ContactPage'))
 
 // Create a client
 const queryClient = new QueryClient({
@@ -92,6 +94,8 @@ const App: React.FC = () => {
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<LandingPage />} />
+              <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/contact" element={<ContactPage />} />
               <Route path="/login" element={<SimpleLoginPage />} />
               <Route path="/signup" element={<SimpleSignupPage />} />
 
