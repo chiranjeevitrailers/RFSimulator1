@@ -38,7 +38,7 @@
     "zod": "^3.21.0",
     "react-hot-toast": "^2.4.0",
     "recharts": "^2.7.0",
-    "@uiw/react-json-view": "^2.0.0",
+    "react18-json-view": "^1.0.0",
     "monaco-editor": "^0.41.0",
     "@monaco-editor/react": "^4.5.0",
     "@heroicons/react": "^2.0.18"
@@ -64,7 +64,7 @@
     "netlify-cli": "^17.0.0"
   },
   "overrides": {
-    "react-json-view": {
+    "react18-json-view": {
       "react": "$react",
       "react-dom": "$react-dom"
     }
