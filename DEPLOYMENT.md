@@ -32,7 +32,7 @@ This guide provides step-by-step instructions for deploying the 5GLabX Cloud pla
 ### 2. Dependency Resolution
 
 #### Fix React Version Conflicts
-The project uses `react18-json-view` (React 18 compatible) and `--legacy-peer-deps` to resolve React version conflicts:
+The project uses `react-json-view-lite` (React 18 compatible) and `--legacy-peer-deps` to resolve React version conflicts:
 
 ```bash
 # Install dependencies with legacy peer deps
@@ -44,9 +44,9 @@ npm run install:force
 
 #### JSON Viewer Component
 The project includes a React 18 compatible JSON viewer component:
-- **Package**: `react18-json-view`
+- **Package**: `react-json-view-lite`
 - **Component**: `JsonViewer` in `src/components/common/JsonViewer.tsx`
-- **Usage**: `<JsonViewer data={jsonData} theme="dark" />`
+- **Usage**: `<JsonViewer data={jsonData} collapsed={false} />`
 
 ### 3. Environment Variables
 
