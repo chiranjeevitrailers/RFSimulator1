@@ -14,9 +14,9 @@ const UserDashboard = React.lazy(() => import('./pages/user/UserDashboard'))
 
 // Main app pages
 const AppLayout = React.lazy(() => import('./components/layout/AppLayout'))
-const DashboardPage = React.lazy(() => import('./pages/app/DashboardPage'))
-const TestSuitesPage = React.lazy(() => import('./pages/app/TestSuitesPage'))
-const AnalyzerPage = React.lazy(() => import('./pages/app/AnalyzerPage'))
+const DashboardPage = React.lazy(() => import('./pages/app/SimpleDashboardPage'))
+const TestSuitesPage = React.lazy(() => import('./pages/app/SimpleTestSuitesPage'))
+const AnalyzerPage = React.lazy(() => import('./pages/app/SimpleAnalyzerPage'))
 const ExecutionsPage = React.lazy(() => import('./pages/app/ExecutionsPage'))
 const AnalyticsPage = React.lazy(() => import('./pages/app/AdvancedAnalyticsPage'))
 const AccountPage = React.lazy(() => import('./pages/app/AccountPage'))
