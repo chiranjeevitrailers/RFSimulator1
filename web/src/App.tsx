@@ -13,13 +13,13 @@ const AdminDashboard = React.lazy(() => import('./pages/admin/AdminDashboard'))
 const UserDashboard = React.lazy(() => import('./pages/user/UserDashboard'))
 
 // Main app pages
-const AppLayout = React.lazy(() => import('./components/layout/TestLayout'))
-const DashboardPage = React.lazy(() => import('./pages/app/TestPage'))
-const TestSuitesPage = React.lazy(() => import('./pages/app/SimpleTestSuitesPage'))
-const AnalyzerPage = React.lazy(() => import('./pages/app/SimpleAnalyzerPage'))
-const ExecutionsPage = React.lazy(() => import('./pages/app/SimpleExecutionsPage'))
-const AnalyticsPage = React.lazy(() => import('./pages/app/SimpleAnalyticsPage'))
-const AccountPage = React.lazy(() => import('./pages/app/SimpleAccountPage'))
+const AppLayout = React.lazy(() => import('./components/layout/AppLayout'))
+const DashboardPage = React.lazy(() => import('./pages/app/DashboardPage'))
+const TestSuitesPage = React.lazy(() => import('./pages/app/TestSuitesPage'))
+const AnalyzerPage = React.lazy(() => import('./pages/app/AnalyzerPage'))
+const ExecutionsPage = React.lazy(() => import('./pages/app/ExecutionsPage'))
+const AnalyticsPage = React.lazy(() => import('./pages/app/AnalyticsPage'))
+const AccountPage = React.lazy(() => import('./pages/app/AccountPage'))
 
 // Providers
 const SimpleAuthProvider = React.lazy(() => import('./components/auth/SimpleAuthProvider'))
@@ -120,7 +120,15 @@ const App: React.FC = () => {
               <Route path="/user/dashboard" element={<UserDashboard />} />
 
               {/* Main App Routes */}
-              <Route path="/app" element={<AppLayout />}>
+              <Route path="/app" element={
+                <SimpleAuthProvider>
+                  <SimpleBillingProvider>
+                    <SimpleWebSocketProvider>
+                      <AppLayout />
+                    </SimpleWebSocketProvider>
+                  </SimpleBillingProvider>
+                </SimpleAuthProvider>
+              }>
                 <Route path="dashboard" element={<DashboardPage />} />
                 <Route path="test-suites" element={<TestSuitesPage />} />
                 <Route path="analyzer" element={<AnalyzerPage />} />
