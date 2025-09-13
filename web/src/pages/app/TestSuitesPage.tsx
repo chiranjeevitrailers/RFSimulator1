@@ -1,7 +1,7 @@
 import React from 'react'
 import { TestSuiteBrowser } from '../../components/test-suites/TestSuiteBrowser'
-import { QuotaAlert } from '../../components/billing/QuotaDisplay'
-import { useBilling } from '../../components/billing/BillingProvider'
+import { SimpleQuotaAlert } from '../../components/billing/SimpleQuotaDisplay'
+import { useSimpleBilling } from '../../components/billing/SimpleBillingProvider'
 import { 
   TestTube, 
   Search, 
@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 
 export const TestSuitesPage: React.FC = () => {
-  const { quotaInfo } = useBilling()
+  const { quotaInfo } = useSimpleBilling()
 
   return (
     <div className="space-y-6">
@@ -39,7 +39,7 @@ export const TestSuitesPage: React.FC = () => {
       </div>
 
       {/* Quota Alert */}
-      <QuotaAlert />
+      <SimpleQuotaAlert />
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

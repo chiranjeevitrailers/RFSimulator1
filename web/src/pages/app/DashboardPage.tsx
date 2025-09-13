@@ -1,8 +1,8 @@
 import React from 'react'
 import { DashboardStats } from '../../components/dashboard/DashboardStats'
-import { QuotaDisplay, QuotaAlert } from '../../components/billing/QuotaDisplay'
-import { useBilling } from '../../components/billing/BillingProvider'
-import { useAuth } from '../../components/auth/AuthProvider'
+import { SimpleQuotaAlert } from '../../components/billing/SimpleQuotaDisplay'
+import { useSimpleBilling } from '../../components/billing/SimpleBillingProvider'
+import { useSimpleAuth } from '../../components/auth/SimpleAuthProvider'
 import { 
   Zap, 
   TrendingUp, 
@@ -15,8 +15,8 @@ import {
 } from 'lucide-react'
 
 export const DashboardPage: React.FC = () => {
-  const { user } = useAuth()
-  const { quotaInfo, canExecute } = useBilling()
+  const { user } = useSimpleAuth()
+  const { quotaInfo, canExecute } = useSimpleBilling()
 
   const getGreeting = () => {
     const hour = new Date().getHours()
@@ -49,7 +49,7 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* Quota Alert */}
-      <QuotaAlert />
+      <SimpleQuotaAlert />
 
       {/* Quick Status */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -12,6 +12,20 @@ const SimpleSignupPage = React.lazy(() => import('./components/auth/SimpleSignup
 const AdminDashboard = React.lazy(() => import('./pages/admin/AdminDashboard'))
 const UserDashboard = React.lazy(() => import('./pages/user/UserDashboard'))
 
+// Main app pages
+const AppLayout = React.lazy(() => import('./components/layout/AppLayout'))
+const DashboardPage = React.lazy(() => import('./pages/app/DashboardPage'))
+const TestSuitesPage = React.lazy(() => import('./pages/app/TestSuitesPage'))
+const AnalyzerPage = React.lazy(() => import('./pages/app/AnalyzerPage'))
+const ExecutionsPage = React.lazy(() => import('./pages/app/ExecutionsPage'))
+const AnalyticsPage = React.lazy(() => import('./pages/app/AdvancedAnalyticsPage'))
+const AccountPage = React.lazy(() => import('./pages/app/AccountPage'))
+
+// Providers
+const SimpleAuthProvider = React.lazy(() => import('./components/auth/SimpleAuthProvider'))
+const SimpleBillingProvider = React.lazy(() => import('./components/billing/SimpleBillingProvider'))
+const SimpleWebSocketProvider = React.lazy(() => import('./components/layout/SimpleWebSocketProvider'))
+
 // Public pages
 const LandingPage = React.lazy(() => import('./pages/public/LandingPage'))
 const PricingPage = React.lazy(() => import('./pages/public/PricingPage'))
@@ -104,6 +118,25 @@ const App: React.FC = () => {
 
               {/* User Routes */}
               <Route path="/user/dashboard" element={<UserDashboard />} />
+
+              {/* Main App Routes */}
+              <Route path="/app" element={
+                <SimpleAuthProvider>
+                  <SimpleBillingProvider>
+                    <SimpleWebSocketProvider>
+                      <AppLayout />
+                    </SimpleWebSocketProvider>
+                  </SimpleBillingProvider>
+                </SimpleAuthProvider>
+              }>
+                <Route path="dashboard" element={<DashboardPage />} />
+                <Route path="test-suites" element={<TestSuitesPage />} />
+                <Route path="analyzer" element={<AnalyzerPage />} />
+                <Route path="executions" element={<ExecutionsPage />} />
+                <Route path="analytics" element={<AnalyticsPage />} />
+                <Route path="account" element={<AccountPage />} />
+                <Route index element={<Navigate to="/app/dashboard" replace />} />
+              </Route>
 
               {/* Catch-all route */}
               <Route path="*" element={<Navigate to="/" replace />} />

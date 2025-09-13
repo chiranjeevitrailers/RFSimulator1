@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, Outlet } from 'react-router-dom'
 import { 
   LayoutDashboard, 
   TestTube, 
@@ -20,22 +20,18 @@ import {
   HelpCircle,
   LogOut
 } from 'lucide-react'
-import { useAuth } from '../auth/AuthProvider'
-import { useBilling } from '../billing/BillingProvider'
-import { QuotaDisplay } from '../billing/QuotaDisplay'
-import { useWebSocketContext } from './WebSocketProvider'
+import { useSimpleAuth } from '../auth/SimpleAuthProvider'
+import { useSimpleBilling } from '../billing/SimpleBillingProvider'
+import { SimpleQuotaDisplay } from '../billing/SimpleQuotaDisplay'
+import { useSimpleWebSocket } from './SimpleWebSocketProvider'
 
-interface AppLayoutProps {
-  children: React.ReactNode
-}
-
-export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
+export const AppLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const location = useLocation()
-  const { user, signOut } = useAuth()
-  const { quotaInfo } = useBilling()
-  const { isConnected } = useWebSocketContext()
+  const { user, signOut } = useSimpleAuth()
+  const { quotaInfo } = useSimpleBilling()
+  const { isConnected } = useSimpleWebSocket()
 
   const navigation = [
     { name: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard },
@@ -131,7 +127,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
           {/* Quota Display */}
           <div className="p-4 border-b border-base-300">
-            <QuotaDisplay />
+            <SimpleQuotaDisplay />
           </div>
 
           {/* Navigation */}
@@ -317,7 +313,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
         {/* Page Content */}
         <main className="p-6">
-          {children}
+          <Outlet />
         </main>
       </div>
 
