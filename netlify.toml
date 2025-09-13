@@ -121,15 +121,15 @@
 # Environment-specific settings
 [context.production.environment]
   VITE_APP_ENV = "production"
-  VITE_SUPABASE_URL = "https://your-project.supabase.co"
-  VITE_SUPABASE_ANON_KEY = "your-anon-key"
+  VITE_SUPABASE_URL = "https://jfuvkbyngisdkmxuidkw.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpmdXZrYnluZ2lzZGtteHVpZGt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2NTg1NjksImV4cCI6MjA3MzIzNDU2OX0.4EXarkvnaQYbx46AHxIQGuuLLVtqg_qfYyeWf15yQew"
 
 [context.deploy-preview.environment]
   VITE_APP_ENV = "preview"
-  VITE_SUPABASE_URL = "https://your-project.supabase.co"
-  VITE_SUPABASE_ANON_KEY = "your-anon-key"
+  VITE_SUPABASE_URL = "https://jfuvkbyngisdkmxuidkw.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpmdXZrYnluZ2lzZGtteHVpZGt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2NTg1NjksImV4cCI6MjA3MzIzNDU2OX0.4EXarkvnaQYbx46AHxIQGuuLLVtqg_qfYyeWf15yQew"
 
 [context.branch-deploy.environment]
   VITE_APP_ENV = "development"
-  VITE_SUPABASE_URL = "https://your-project.supabase.co"
-  VITE_SUPABASE_ANON_KEY = "your-anon-key"
+  VITE_SUPABASE_URL = "https://jfuvkbyngisdkmxuidkw.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpmdXZrYnluZ2lzZGtteHVpZGt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2NTg1NjksImV4cCI6MjA3MzIzNDU2OX0.4EXarkvnaQYbx46AHxIQGuuLLVtqg_qfYyeWf15yQew"
