@@ -7,7 +7,7 @@ RETURNS VOID AS $$
 DECLARE
   i INTEGER;
   template_id UUID;
-  protocol_types TEXT[] := ARRAY['RRC', 'NAS', 'NGAP', 'SIP', 'O-RAN', 'NB-IoT', 'NTN', 'V2X', 'IMS', 'S1AP', 'X2AP', 'E1AP', 'F1AP', 'E2AP'];
+  protocol_types TEXT[] := ARRAY['RRC', 'NAS', 'S1AP', 'NGAP', 'SIP', 'DIAMETER', 'F1AP', 'E1AP', 'E2AP', 'GTP-U', 'GTP-C', 'PC5', 'Uu', 'X2AP', 'XnAP', 'E2SM', 'O1', 'A1', 'E1'];
   suite_types TEXT[] := ARRAY['functional', 'mobility', 'performance', 'security', 'ims', 'qos', 'oran', 'nbiot', 'ntn', 'v2x', 'interrat', 'negative', 'regression'];
   complexity_levels TEXT[] := ARRAY['basic', 'intermediate', 'advanced'];
   protocol_category TEXT;
@@ -52,7 +52,7 @@ BEGIN
       template_id,
       test_case_name,
       suite_type::suite_type,
-      protocol_category::protocol_layer,
+      protocol_category::message_category,
       description,
       threegpp_ref,
       complexity::complexity_level,
@@ -280,7 +280,7 @@ RETURNS VOID AS $$
 DECLARE
   i INTEGER;
   message_id UUID;
-  protocol_types TEXT[] := ARRAY['RRC', 'NAS', 'NGAP', 'SIP', 'O-RAN', 'NB-IoT', 'NTN', 'V2X', 'IMS', 'S1AP', 'X2AP', 'E1AP', 'F1AP', 'E2AP'];
+  protocol_types TEXT[] := ARRAY['RRC', 'NAS', 'S1AP', 'NGAP', 'SIP', 'DIAMETER', 'F1AP', 'E1AP', 'E2AP', 'GTP-U', 'GTP-C', 'PC5', 'Uu', 'X2AP', 'XnAP', 'E2SM', 'O1', 'A1', 'E1'];
   protocol_category TEXT;
   message_name TEXT;
   message_description TEXT;
@@ -348,7 +348,7 @@ RETURNS VOID AS $$
 DECLARE
   i INTEGER;
   ie_id UUID;
-  protocol_types TEXT[] := ARRAY['RRC', 'NAS', 'NGAP', 'SIP', 'O-RAN', 'NB-IoT', 'NTN', 'V2X', 'IMS', 'S1AP', 'X2AP', 'E1AP', 'F1AP', 'E2AP'];
+  protocol_types TEXT[] := ARRAY['RRC', 'NAS', 'S1AP', 'NGAP', 'SIP', 'DIAMETER', 'F1AP', 'E1AP', 'E2AP', 'GTP-U', 'GTP-C', 'PC5', 'Uu', 'X2AP', 'XnAP', 'E2SM', 'O1', 'A1', 'E1'];
   protocol_category TEXT;
   ie_name TEXT;
   ie_type TEXT;
