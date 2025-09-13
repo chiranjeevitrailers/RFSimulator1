@@ -77,10 +77,16 @@ VITE_ENABLE_ANALYTICS=true
 #### Option A: GitHub Integration (Recommended)
 1. Connect your GitHub repository to Netlify
 2. Set build settings:
-   - **Build command**: `npm run build`
+   - **Build command**: `./build.sh`
    - **Publish directory**: `web/dist`
    - **Functions directory**: `netlify/functions`
 3. Deploy automatically on every push to main
+
+**Note**: The build script automatically:
+- Installs dependencies with `--legacy-peer-deps`
+- Runs type checking and linting
+- Builds the application
+- Provides detailed build output
 
 #### Option B: Manual Deploy
 ```bash

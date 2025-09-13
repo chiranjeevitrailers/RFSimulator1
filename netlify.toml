@@ -1,6 +1,6 @@
 [build]
   # Build command
-  command = "npm install --legacy-peer-deps && npm run build"
+  command = "./build.sh"
   
   # Directory to publish
   publish = "web/dist"
@@ -115,13 +115,13 @@
 
 # Branch deploy settings
 [context.production]
-  command = "npm run build:production"
+  command = "./build.sh"
 
 [context.deploy-preview]
-  command = "npm run build:preview"
+  command = "./build.sh"
 
 [context.branch-deploy]
-  command = "npm run build:preview"
+  command = "./build.sh"
 
 # Environment-specific settings
 [context.production.environment]
