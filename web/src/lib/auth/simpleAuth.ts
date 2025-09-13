@@ -69,8 +69,8 @@ export const verifyAdminCredentials = async (credentials: AdminCredentials): Pro
 export const verifyUserCredentials = async (credentials: UserCredentials): Promise<AuthResponse> => {
   try {
     const { data, error } = await supabase.rpc('verify_user_credentials', {
-      email: credentials.email,
-      password: credentials.password
+      user_email: credentials.email,
+      user_password: credentials.password
     })
 
     if (error) {
