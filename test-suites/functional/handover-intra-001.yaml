@@ -1,0 +1,323 @@
+# Intra-eNB Handover Procedure - TS 36.331 5.4.3.1
+id: "handover-intra-001"
+title: "Intra-eNB Handover Procedure"
+suite_type: "functional"
+threegpp_ref: "TS 36.331 5.4.3.1"
+description: "Verify intra-eNB handover procedure with successful RRC connection reconfiguration"
+complexity: "intermediate"
+expected_duration: 40
+
+# Default Parameters
+default_parameters:
+  ue:
+    imsi: "001010123456789"
+    s_tmsi: "0x12345678"
+    rnti: 0x003D
+    c_rnti: 0x003D
+    plmn_id: "00101"
+    tac: "0001"
+    source_cell_id: "0x000001"
+    target_cell_id: "0x000002"
+    guti: "001010000100187654321"
+  network:
+    enb_id: "eNB-001"
+    mme_id: "MME-001"
+    plmn_id: "00101"
+    tac: "0001"
+    source_cell_id: "0x000001"
+    target_cell_id: "0x000002"
+    source_pci: 1
+    target_pci: 2
+    source_earfcn: 1850
+    target_earfcn: 1850
+    bandwidth: 20
+
+# Test Case Steps
+steps:
+  - order: 1
+    layer: "RRC"
+    direction: "UE→eNB"
+    message_type: "MeasurementReport"
+    message_json:
+      messageType: "MeasurementReport"
+      criticalExtensions:
+        measurementReport:
+          rrcTransactionIdentifier: 0
+          criticalExtensions:
+            measurementReportR8:
+              measResults:
+                measId: 1
+                rsrpResult: 85
+                rsrqResult: 15
+                measResultNeighCells:
+                  measResultListEUTRA:
+                    - physCellId: 2
+                      cgiInfo:
+                        cellGlobalId:
+                          plmnIdentity:
+                            mcc: "001"
+                            mnc: "01"
+                          cellIdentity: "000000000000000000000000000000000010"
+                        trackingAreaCode: "0001"
+                        plmnIdentityList:
+                          - plmnIdentity:
+                              mcc: "001"
+                              mnc: "01"
+                      measResult:
+                        rsrpResult: 90
+                        rsrqResult: 18
+    expected_params:
+      measId: 1
+      rsrpResult: 85
+      rsrqResult: 15
+      measResultNeighCells:
+        measResultListEUTRA:
+          - physCellId: 2
+            measResult:
+              rsrpResult: 90
+              rsrqResult: 18
+    correlation_keys:
+      rnti: 0x003D
+      c_rnti: 0x003D
+      meas_id: 1
+      source_cell_id: "0x000001"
+      target_cell_id: "0x000002"
+
+  - order: 2
+    layer: "RRC"
+    direction: "eNB→UE"
+    message_type: "RRCConnectionReconfiguration"
+    message_json:
+      messageType: "RRCConnectionReconfiguration"
+      rrcTransactionIdentifier: 1
+      criticalExtensions:
+        rrcConnectionReconfigurationR8:
+          mobilityControlInfo:
+            targetPhysCellId: 2
+            carrierFreq:
+              dlCarrierFreq: 1850
+            carrierBandwidth:
+              dlBandwidth: "n100"
+            additionalSpectrumEmission: 1
+            t304: "ms1000"
+            newUEIdentity:
+              cRNTI: 0x003E
+            radioResourceConfigCommon:
+              rachConfigCommon:
+                preambleInfo:
+                  numberOfRAPreambles: "n52"
+                  preamblesGroupAConfig:
+                    sizeOfRAPreamblesGroupA: "n28"
+                    messageSizeGroupA: "b56"
+                    messagePowerOffsetGroupB: "minusinfinity"
+                powerRampingParameters:
+                  powerRampingStep: "dB2"
+                  preambleInitialReceivedTargetPower: "dBm-120"
+                raSupervisionInfo:
+                  preambleTransMax: "n10"
+                  raResponseWindowSize: "sf6"
+                  macContentionResolutionTimer: "sf48"
+                maxHARQMsg3Tx: 4
+              prachConfig:
+                rootSequenceIndex: 0
+                prachConfigInfo:
+                  prachConfigIndex: 0
+                  highSpeedFlag: false
+                  zeroCorrelationZoneConfig: 0
+                  prachFreqOffset: 0
+              pdschConfigCommon:
+                referenceSignalPower: -58
+                p_b: 0
+              puschConfigCommon:
+                puschConfigBasic:
+                  n_SB: 1
+                  hoppingMode: "interSubFrame"
+                  puschHoppingOffset: 0
+                  enable64QAM: false
+                ulReferenceSignalsPUSCH:
+                  groupHoppingEnabled: true
+                  groupAssignmentPUSCH: 0
+                  sequenceHoppingEnabled: false
+                  cyclicShift: 0
+              phichConfig:
+                phichDuration: "normal"
+                phichResource: "oneSixth"
+              pucchConfigCommon:
+                deltaPUCCHShift: "ds1"
+                nRB_CQI: 0
+                nCS_AN: 0
+                n1PUCCHAN: 0
+              soundingRSConfigCommon:
+                srsBandwidthConfig: "bw0"
+                srsSubframeConfig: "sc0"
+                ackNackSRS_SimultaneousTransmission: false
+              uplinkPowerControlCommon:
+                p0_NominalPUSCH: -85
+                alpha: "al0"
+                p0_NominalPUCCH: -96
+                deltaFListPUCCH:
+                  deltaF_PUCCH_Format1: "deltaF0"
+                  deltaF_PUCCH_Format1b: "deltaF0"
+                  deltaF_PUCCH_Format2: "deltaF0"
+                  deltaF_PUCCH_Format2a: "deltaF0"
+                  deltaF_PUCCH_Format2b: "deltaF0"
+                deltaPreambleMsg3: 6
+              antennaInfoCommon:
+                antennaPortsCount: "an1"
+              pMax: 23
+              ulCyclicPrefixLength: "len1"
+            radioResourceConfigDedicated:
+              srbToAddModList:
+                - srbIdentity: 1
+                  rlcConfig:
+                    ulRLCConfig:
+                      am:
+                        ulAMRLC:
+                          maxRetxThreshold: "t32"
+                          pollPDU: "p4"
+                          pollByte: "kB25"
+                          tPollRetransmit: "ms45"
+                  logicalChannelConfig:
+                    ulSpecificParameters:
+                      priority: 1
+                      prioritisedBitRate: "kbps8"
+                      bucketSizeDuration: "ms50"
+                      logicalChannelGroup: 0
+              drbToAddModList:
+                - drbIdentity: 1
+                  pdcpConfig:
+                    discardTimer: "ms150"
+                    rlcUM:
+                      pdcpSNSize: "len12bits"
+                    headerCompression:
+                      rohc:
+                        maxCID: 15
+                        profiles:
+                          profile0x0001: true
+                          profile0x0002: true
+                          profile0x0003: true
+                          profile0x0004: true
+                          profile0x0006: true
+                          profile0x0101: true
+                          profile0x0102: true
+                          profile0x0103: true
+                          profile0x0104: true
+                  rlcConfig:
+                    ulRLCConfig:
+                      um:
+                        ulUMRLC:
+                          snFieldLength: "size5"
+                    dlRLCConfig:
+                      um:
+                        dlUMRLC:
+                          snFieldLength: "size5"
+                          tReordering: "ms35"
+                  logicalChannelIdentity: 3
+                  logicalChannelConfig:
+                    ulSpecificParameters:
+                      priority: 3
+                      prioritisedBitRate: "infinity"
+                      bucketSizeDuration: "ms100"
+                      logicalChannelGroup: 0
+              macMainConfig:
+                ulSCHConfig:
+                  maxHARQTx: 4
+                  periodicBSRTimer: "sf10"
+                  retxBSRTimer: "sf320"
+                  ttiBundling: false
+                drxConfig:
+                  onDurationTimer: "psf1"
+                  drxInactivityTimer: "psf1"
+                  drxRetransmissionTimer: "psf1"
+                  longDRXCycleStartOffset:
+                    sf10: 0
+                  shortDRX:
+                    shortDRXCycle: "sf2"
+                    drxShortCycleTimer: 1
+                timeAlignmentTimerDedicated: "sf500"
+                phrConfig:
+                  periodicPHRTimer: "sf10"
+                  prohibitPHRTimer: 0
+                  dlPathlossChange: "dB1"
+                srConfig:
+                  dsrTransMax: "n4"
+              spsConfig:
+                semiPersistentSchedCCHConfig:
+                  semiPersistentSchedIntervalDL: "sf10"
+                  numberOfConfSPSProcesses: 2
+                  n1PUCCHANPersistentList:
+                    - 0
+                    - 1
+                spsConfigDL:
+                  semiPersistentSchedIntervalDL: "sf10"
+                  numberOfConfSPSProcesses: 2
+                spsConfigUL:
+                  semiPersistentSchedIntervalUL: "sf10"
+                  implicitReleaseAfter: 2
+                  p0Persistent:
+                    p0NominalPUSCHPersistent: -85
+                    p0UEPUSCHPersistent: 0
+    expected_params:
+      rrcTransactionIdentifier: 1
+      mobilityControlInfo:
+        targetPhysCellId: 2
+        carrierFreq:
+          dlCarrierFreq: 1850
+        newUEIdentity:
+          cRNTI: 0x003E
+        t304: "ms1000"
+    correlation_keys:
+      rnti: 0x003D
+      c_rnti: 0x003E
+      target_phys_cell_id: 2
+      target_cell_id: "0x000002"
+
+  - order: 3
+    layer: "RRC"
+    direction: "UE→eNB"
+    message_type: "RRCConnectionReconfigurationComplete"
+    message_json:
+      messageType: "RRCConnectionReconfigurationComplete"
+      rrcTransactionIdentifier: 1
+      criticalExtensions:
+        rrcConnectionReconfigurationCompleteR8: {}
+    expected_params:
+      rrcTransactionIdentifier: 1
+    correlation_keys:
+      rnti: 0x003E
+      c_rnti: 0x003E
+      target_cell_id: "0x000002"
+
+  - order: 4
+    layer: "RRC"
+    direction: "UE→eNB"
+    message_type: "MeasurementReport"
+    message_json:
+      messageType: "MeasurementReport"
+      criticalExtensions:
+        measurementReport:
+          rrcTransactionIdentifier: 0
+          criticalExtensions:
+            measurementReportR8:
+              measResults:
+                measId: 1
+                rsrpResult: 95
+                rsrqResult: 20
+    expected_params:
+      measId: 1
+      rsrpResult: 95
+      rsrqResult: 20
+    correlation_keys:
+      rnti: 0x003E
+      c_rnti: 0x003E
+      target_cell_id: "0x000002"
+
+# Expected Results
+expected_results:
+  handover_success: true
+  measurement_report_received: true
+  rrc_reconfiguration_success: true
+  target_cell_access_success: true
+  new_c_rnti_assigned: true
+  total_duration: "40s"
+  message_count: 4

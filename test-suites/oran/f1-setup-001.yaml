@@ -1,0 +1,243 @@
+# F1 Setup Procedure - O-RAN.WG4.CUS.0-v01.00
+id: "f1-setup-001"
+title: "F1 Setup Procedure"
+suite_type: "oran"
+threegpp_ref: "O-RAN.WG4.CUS.0-v01.00"
+description: "Verify F1 setup procedure between gNB-CU and gNB-DU with successful configuration exchange"
+complexity: "intermediate"
+expected_duration: 25
+
+# Default Parameters
+default_parameters:
+  cu:
+    cu_id: "gNB-CU-001"
+    cu_name: "gNB-CU-001"
+    global_gnb_id: "0010100000001"
+    plmn_id: "00101"
+    supported_plmns:
+      - plmn_id: "00101"
+        tac: "0001"
+  du:
+    du_id: "gNB-DU-001"
+    du_name: "gNB-DU-001"
+    global_gnb_id: "0010100000001"
+    plmn_id: "00101"
+    supported_plmns:
+      - plmn_id: "00101"
+        tac: "0001"
+  network:
+    plmn_id: "00101"
+    tac: "0001"
+    cell_id: "0x000001"
+    pci: 1
+    earfcn: 1850
+    bandwidth: 20
+
+# Test Case Steps
+steps:
+  - order: 1
+    layer: "F1AP"
+    direction: "gNB-DU→gNB-CU"
+    message_type: "F1SetupRequest"
+    message_json:
+      messageType: "F1SetupRequest"
+      protocolIEs:
+        transactionID:
+          id: 49
+          criticality: "reject"
+          value:
+            transactionID: 1
+        gNBDUName:
+          id: 1
+          criticality: "reject"
+          value:
+            gNBDUName: "gNB-DU-001"
+        gNBDUServedCellsList:
+          id: 2
+          criticality: "reject"
+          value:
+            gNBDUServedCellsList:
+              - servedCellsItem:
+                  nRCGI:
+                    pLMNIdentity: "00101"
+                    nRCellIdentity: "000000000000000000000000000000000001"
+                  nRPCI: 1
+                  servedPLMNs:
+                    - pLMNIdentity: "00101"
+                  nRFreqInfo:
+                    nRARFCN: 1850
+                    frequencyBandList:
+                      - frequencyBandItem:
+                          frequencyBandIndicatorNR: 3
+                  configuredTACIndication: "configured"
+                  servedPLMNs:
+                    - pLMNIdentity: "00101"
+                  gNBDUSystemInformation:
+                    mIB:
+                      systemFrameNumber: "0000000000"
+                      subCarrierSpacingCommon: "scs15kHz"
+                      ssbSubcarrierOffset: 0
+                      dmrsTypeAPosition: "pos2"
+                      pdcchConfigSIB1:
+                        controlResourceSetZero: 0
+                        searchSpaceZero: 0
+                    sIB1:
+                      cellSelectionInfo:
+                        qRxLevMin: -70
+                        qQualMin: -18
+                      cellAccessRelatedInfo:
+                        plmnIdentityList:
+                          - plmnIdentity:
+                              pLMNIdentity: "00101"
+                        trackingAreaCode: "0001"
+                        cellIdentity: "000000000000000000000000000000000001"
+                        cellBarred: "notBarred"
+                        intraFreqReselection: "allowed"
+                        cellReservedForOperatorUse: "notReserved"
+    expected_params:
+      transactionID: 1
+      gNBDUName: "gNB-DU-001"
+      gNBDUServedCellsList:
+        - servedCellsItem:
+            nRCGI:
+              pLMNIdentity: "00101"
+              nRCellIdentity: "000000000000000000000000000000000001"
+            nRPCI: 1
+            nRFreqInfo:
+              nRARFCN: 1850
+              frequencyBandList:
+                - frequencyBandItem:
+                    frequencyBandIndicatorNR: 3
+    correlation_keys:
+      transaction_id: 1
+      du_name: "gNB-DU-001"
+      plmn_id: "00101"
+      cell_id: "000000000000000000000000000000000001"
+
+  - order: 2
+    layer: "F1AP"
+    direction: "gNB-CU→gNB-DU"
+    message_type: "F1SetupResponse"
+    message_json:
+      messageType: "F1SetupResponse"
+      protocolIEs:
+        transactionID:
+          id: 49
+          criticality: "reject"
+          value:
+            transactionID: 1
+        gNBCUName:
+          id: 3
+          criticality: "reject"
+          value:
+            gNBCUName: "gNB-CU-001"
+        cellsToBeActivatedList:
+          id: 4
+          criticality: "reject"
+          value:
+            cellsToBeActivatedList:
+              - cellsToBeActivatedItem:
+                  nRCGI:
+                    pLMNIdentity: "00101"
+                    nRCellIdentity: "000000000000000000000000000000000001"
+                  nRPCI: 1
+                  servedPLMNs:
+                    - pLMNIdentity: "00101"
+                  nRFreqInfo:
+                    nRARFCN: 1850
+                    frequencyBandList:
+                      - frequencyBandItem:
+                          frequencyBandIndicatorNR: 3
+                  configuredTACIndication: "configured"
+                  gNBCUSystemInformation:
+                    mIB:
+                      systemFrameNumber: "0000000000"
+                      subCarrierSpacingCommon: "scs15kHz"
+                      ssbSubcarrierOffset: 0
+                      dmrsTypeAPosition: "pos2"
+                      pdcchConfigSIB1:
+                        controlResourceSetZero: 0
+                        searchSpaceZero: 0
+                    sIB1:
+                      cellSelectionInfo:
+                        qRxLevMin: -70
+                        qQualMin: -18
+                      cellAccessRelatedInfo:
+                        plmnIdentityList:
+                          - plmnIdentity:
+                              pLMNIdentity: "00101"
+                        trackingAreaCode: "0001"
+                        cellIdentity: "000000000000000000000000000000000001"
+                        cellBarred: "notBarred"
+                        intraFreqReselection: "allowed"
+                        cellReservedForOperatorUse: "notReserved"
+    expected_params:
+      transactionID: 1
+      gNBCUName: "gNB-CU-001"
+      cellsToBeActivatedList:
+        - cellsToBeActivatedItem:
+            nRCGI:
+              pLMNIdentity: "00101"
+              nRCellIdentity: "000000000000000000000000000000000001"
+            nRPCI: 1
+            nRFreqInfo:
+              nRARFCN: 1850
+    correlation_keys:
+      transaction_id: 1
+      cu_name: "gNB-CU-001"
+      plmn_id: "00101"
+      cell_id: "000000000000000000000000000000000001"
+
+  - order: 3
+    layer: "F1AP"
+    direction: "gNB-DU→gNB-CU"
+    message_type: "F1SetupFailure"
+    message_json:
+      messageType: "F1SetupFailure"
+      protocolIEs:
+        transactionID:
+          id: 49
+          criticality: "reject"
+          value:
+            transactionID: 1
+        cause:
+          id: 5
+          criticality: "ignore"
+          value:
+            cause:
+              radioNetwork: "unspecified"
+        timeToWait:
+          id: 6
+          criticality: "ignore"
+          value:
+            timeToWait: "v1s"
+        criticalityDiagnostics:
+          id: 7
+          criticality: "ignore"
+          value:
+            criticalityDiagnostics:
+              procedureCode: 1
+              triggeringMessage: "initiatingMessage"
+              procedureCriticality: "reject"
+              iEsCriticalityDiagnostics:
+                - iECriticality: "reject"
+                  iEID: 2
+                  typeOfError: "missing"
+    expected_params:
+      transactionID: 1
+      cause:
+        radioNetwork: "unspecified"
+      timeToWait: "v1s"
+    correlation_keys:
+      transaction_id: 1
+      cause: "unspecified"
+      time_to_wait: "v1s"
+
+# Expected Results
+expected_results:
+  f1_setup_success: false
+  setup_failure_received: true
+  cause_identified: true
+  retry_after_wait: true
+  total_duration: "25s"
+  message_count: 3

@@ -1,0 +1,359 @@
+# IMS Registration Procedure - TS 24.229 5.1.1
+id: "ims-registration-001"
+title: "IMS Registration Procedure"
+suite_type: "ims"
+threegpp_ref: "TS 24.229 5.1.1"
+description: "Verify IMS registration procedure with successful authentication and service profile activation"
+complexity: "intermediate"
+expected_duration: 45
+
+# Default Parameters
+default_parameters:
+  ue:
+    imsi: "001010123456789"
+    msisdn: "+1234567890"
+    private_user_identity: "001010123456789@ims.mnc001.mcc001.3gppnetwork.org"
+    public_user_identity: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+    realm: "ims.mnc001.mcc001.3gppnetwork.org"
+  network:
+    p_cscf: "p-cscf.ims.mnc001.mcc001.3gppnetwork.org"
+    s_cscf: "s-cscf.ims.mnc001.mcc001.3gppnetwork.org"
+    i_cscf: "i-cscf.ims.mnc001.mcc001.3gppnetwork.org"
+    hss: "hss.ims.mnc001.mcc001.3gppnetwork.org"
+    plmn_id: "00101"
+    apn: "ims"
+
+# Test Case Steps
+steps:
+  - order: 1
+    layer: "SIP"
+    direction: "UE→P-CSCF"
+    message_type: "REGISTER"
+    message_json:
+      method: "REGISTER"
+      requestUri: "sip:ims.mnc001.mcc001.3gppnetwork.org"
+      from: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+      to: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+      callId: "call-id-001"
+      cseq: "1 REGISTER"
+      contact: "sip:+1234567890@[2001:db8::1]:5060"
+      expires: "600"
+      userAgent: "5GLabX-UE/1.0"
+      supported: "path, gruu"
+      pAccessNetworkInfo: "3GPP-E-UTRAN-FDD; utran-cell-id-3gpp=0010100000001"
+      pVisitedNetworkId: "00101"
+      authorization: "Digest username=\"001010123456789@ims.mnc001.mcc001.3gppnetwork.org\", realm=\"ims.mnc001.mcc001.3gppnetwork.org\", nonce=\"\", uri=\"sip:ims.mnc001.mcc001.3gppnetwork.org\", response=\"\""
+    expected_params:
+      method: "REGISTER"
+      requestUri: "sip:ims.mnc001.mcc001.3gppnetwork.org"
+      expires: "600"
+      pAccessNetworkInfo: "3GPP-E-UTRAN-FDD; utran-cell-id-3gpp=0010100000001"
+    correlation_keys:
+      call_id: "call-id-001"
+      from: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+      contact: "sip:+1234567890@[2001:db8::1]:5060"
+
+  - order: 2
+    layer: "SIP"
+    direction: "P-CSCF→I-CSCF"
+    message_type: "REGISTER"
+    message_json:
+      method: "REGISTER"
+      requestUri: "sip:ims.mnc001.mcc001.3gppnetwork.org"
+      from: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+      to: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+      callId: "call-id-001"
+      cseq: "1 REGISTER"
+      contact: "sip:+1234567890@[2001:db8::1]:5060"
+      expires: "600"
+      userAgent: "5GLabX-UE/1.0"
+      supported: "path, gruu"
+      pAccessNetworkInfo: "3GPP-E-UTRAN-FDD; utran-cell-id-3gpp=0010100000001"
+      pVisitedNetworkId: "00101"
+      path: "sip:p-cscf.ims.mnc001.mcc001.3gppnetwork.org;lr"
+      authorization: "Digest username=\"001010123456789@ims.mnc001.mcc001.3gppnetwork.org\", realm=\"ims.mnc001.mcc001.3gppnetwork.org\", nonce=\"\", uri=\"sip:ims.mnc001.mcc001.3gppnetwork.org\", response=\"\""
+    expected_params:
+      method: "REGISTER"
+      path: "sip:p-cscf.ims.mnc001.mcc001.3gppnetwork.org;lr"
+    correlation_keys:
+      call_id: "call-id-001"
+      path: "sip:p-cscf.ims.mnc001.mcc001.3gppnetwork.org;lr"
+
+  - order: 3
+    layer: "Diameter"
+    direction: "I-CSCF→HSS"
+    message_type: "User-Authorization-Request"
+    message_json:
+      commandCode: 300
+      applicationId: 16777216
+      hopByHopId: 12345678
+      endToEndId: 87654321
+      avps:
+        - code: 263
+          name: "Session-Id"
+          value: "ims.mnc001.mcc001.3gppnetwork.org;300;12345678"
+        - code: 264
+          name: "Auth-Application-Id"
+          value: 16777216
+        - code: 283
+          name: "Destination-Realm"
+          value: "ims.mnc001.mcc001.3gppnetwork.org"
+        - code: 1
+          name: "User-Name"
+          value: "001010123456789@ims.mnc001.mcc001.3gppnetwork.org"
+        - code: 601
+          name: "Public-Identity"
+          value: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+        - code: 602
+          name: "Visited-Network-Identifier"
+          value: "00101"
+        - code: 603
+          name: "User-Authorization-Type"
+          value: "REGISTRATION"
+    expected_params:
+      commandCode: 300
+      applicationId: 16777216
+      avps:
+        - code: 1
+          name: "User-Name"
+          value: "001010123456789@ims.mnc001.mcc001.3gppnetwork.org"
+        - code: 601
+          name: "Public-Identity"
+          value: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+    correlation_keys:
+      session_id: "ims.mnc001.mcc001.3gppnetwork.org;300;12345678"
+      user_name: "001010123456789@ims.mnc001.mcc001.3gppnetwork.org"
+      public_identity: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+
+  - order: 4
+    layer: "Diameter"
+    direction: "HSS→I-CSCF"
+    message_type: "User-Authorization-Answer"
+    message_json:
+      commandCode: 300
+      applicationId: 16777216
+      hopByHopId: 12345678
+      endToEndId: 87654321
+      resultCode: 2001
+      avps:
+        - code: 263
+          name: "Session-Id"
+          value: "ims.mnc001.mcc001.3gppnetwork.org;300;12345678"
+        - code: 264
+          name: "Auth-Application-Id"
+          value: 16777216
+        - code: 268
+          name: "Result-Code"
+          value: 2001
+        - code: 283
+          name: "Destination-Realm"
+          value: "ims.mnc001.mcc001.3gppnetwork.org"
+        - code: 1
+          name: "User-Name"
+          value: "001010123456789@ims.mnc001.mcc001.3gppnetwork.org"
+        - code: 604
+          name: "S-CSCF-Name"
+          value: "sip:s-cscf.ims.mnc001.mcc001.3gppnetwork.org"
+        - code: 605
+          name: "Server-Capabilities"
+          value:
+            mandatoryCapability: [1, 2, 3]
+            optionalCapability: [4, 5, 6]
+    expected_params:
+      commandCode: 300
+      resultCode: 2001
+      avps:
+        - code: 604
+          name: "S-CSCF-Name"
+          value: "sip:s-cscf.ims.mnc001.mcc001.3gppnetwork.org"
+        - code: 605
+          name: "Server-Capabilities"
+    correlation_keys:
+      session_id: "ims.mnc001.mcc001.3gppnetwork.org;300;12345678"
+      s_cscf_name: "sip:s-cscf.ims.mnc001.mcc001.3gppnetwork.org"
+
+  - order: 5
+    layer: "SIP"
+    direction: "I-CSCF→S-CSCF"
+    message_type: "REGISTER"
+    message_json:
+      method: "REGISTER"
+      requestUri: "sip:ims.mnc001.mcc001.3gppnetwork.org"
+      from: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+      to: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+      callId: "call-id-001"
+      cseq: "1 REGISTER"
+      contact: "sip:+1234567890@[2001:db8::1]:5060"
+      expires: "600"
+      userAgent: "5GLabX-UE/1.0"
+      supported: "path, gruu"
+      pAccessNetworkInfo: "3GPP-E-UTRAN-FDD; utran-cell-id-3gpp=0010100000001"
+      pVisitedNetworkId: "00101"
+      path: "sip:p-cscf.ims.mnc001.mcc001.3gppnetwork.org;lr, sip:i-cscf.ims.mnc001.mcc001.3gppnetwork.org;lr"
+      authorization: "Digest username=\"001010123456789@ims.mnc001.mcc001.3gppnetwork.org\", realm=\"ims.mnc001.mcc001.3gppnetwork.org\", nonce=\"\", uri=\"sip:ims.mnc001.mcc001.3gppnetwork.org\", response=\"\""
+    expected_params:
+      method: "REGISTER"
+      path: "sip:p-cscf.ims.mnc001.mcc001.3gppnetwork.org;lr, sip:i-cscf.ims.mnc001.mcc001.3gppnetwork.org;lr"
+    correlation_keys:
+      call_id: "call-id-001"
+      path: "sip:p-cscf.ims.mnc001.mcc001.3gppnetwork.org;lr, sip:i-cscf.ims.mnc001.mcc001.3gppnetwork.org;lr"
+
+  - order: 6
+    layer: "Diameter"
+    direction: "S-CSCF→HSS"
+    message_type: "Server-Assignment-Request"
+    message_json:
+      commandCode: 301
+      applicationId: 16777216
+      hopByHopId: 23456789
+      endToEndId: 98765432
+      avps:
+        - code: 263
+          name: "Session-Id"
+          value: "ims.mnc001.mcc001.3gppnetwork.org;301;23456789"
+        - code: 264
+          name: "Auth-Application-Id"
+          value: 16777216
+        - code: 283
+          name: "Destination-Realm"
+          value: "ims.mnc001.mcc001.3gppnetwork.org"
+        - code: 1
+          name: "User-Name"
+          value: "001010123456789@ims.mnc001.mcc001.3gppnetwork.org"
+        - code: 601
+          name: "Public-Identity"
+          value: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+        - code: 606
+          name: "Server-Name"
+          value: "sip:s-cscf.ims.mnc001.mcc001.3gppnetwork.org"
+        - code: 607
+          name: "Server-Assignment-Type"
+          value: "REGISTRATION"
+        - code: 608
+          name: "User-Data-Already-Available"
+          value: "USER_DATA_NOT_AVAILABLE"
+    expected_params:
+      commandCode: 301
+      applicationId: 16777216
+      avps:
+        - code: 606
+          name: "Server-Name"
+          value: "sip:s-cscf.ims.mnc001.mcc001.3gppnetwork.org"
+        - code: 607
+          name: "Server-Assignment-Type"
+          value: "REGISTRATION"
+    correlation_keys:
+      session_id: "ims.mnc001.mcc001.3gppnetwork.org;301;23456789"
+      server_name: "sip:s-cscf.ims.mnc001.mcc001.3gppnetwork.org"
+
+  - order: 7
+    layer: "Diameter"
+    direction: "HSS→S-CSCF"
+    message_type: "Server-Assignment-Answer"
+    message_json:
+      commandCode: 301
+      applicationId: 16777216
+      hopByHopId: 23456789
+      endToEndId: 98765432
+      resultCode: 2001
+      avps:
+        - code: 263
+          name: "Session-Id"
+          value: "ims.mnc001.mcc001.3gppnetwork.org;301;23456789"
+        - code: 264
+          name: "Auth-Application-Id"
+          value: 16777216
+        - code: 268
+          name: "Result-Code"
+          value: 2001
+        - code: 283
+          name: "Destination-Realm"
+          value: "ims.mnc001.mcc001.3gppnetwork.org"
+        - code: 1
+          name: "User-Name"
+          value: "001010123456789@ims.mnc001.mcc001.3gppnetwork.org"
+        - code: 609
+          name: "User-Data"
+          value: "SERVICE_PROFILE_DATA"
+        - code: 610
+          name: "Charging-Information"
+          value:
+            primaryEventChargingFunctionName: "sip:ecf.ims.mnc001.mcc001.3gppnetwork.org"
+            secondaryEventChargingFunctionName: "sip:ecf2.ims.mnc001.mcc001.3gppnetwork.org"
+    expected_params:
+      commandCode: 301
+      resultCode: 2001
+      avps:
+        - code: 609
+          name: "User-Data"
+          value: "SERVICE_PROFILE_DATA"
+        - code: 610
+          name: "Charging-Information"
+    correlation_keys:
+      session_id: "ims.mnc001.mcc001.3gppnetwork.org;301;23456789"
+      user_data: "SERVICE_PROFILE_DATA"
+
+  - order: 8
+    layer: "SIP"
+    direction: "S-CSCF→P-CSCF"
+    message_type: "200 OK"
+    message_json:
+      statusCode: 200
+      reasonPhrase: "OK"
+      from: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+      to: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+      callId: "call-id-001"
+      cseq: "1 REGISTER"
+      contact: "sip:+1234567890@[2001:db8::1]:5060"
+      expires: "600"
+      date: "Mon, 01 Jan 2024 12:00:00 GMT"
+      path: "sip:p-cscf.ims.mnc001.mcc001.3gppnetwork.org;lr, sip:i-cscf.ims.mnc001.mcc001.3gppnetwork.org;lr"
+      serviceRoute: "sip:s-cscf.ims.mnc001.mcc001.3gppnetwork.org;lr"
+      pAssociatedURI: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+      pChargingVector: "icid-value=1234567890;icid-generated-at=p-cscf.ims.mnc001.mcc001.3gppnetwork.org"
+    expected_params:
+      statusCode: 200
+      reasonPhrase: "OK"
+      expires: "600"
+      serviceRoute: "sip:s-cscf.ims.mnc001.mcc001.3gppnetwork.org;lr"
+      pAssociatedURI: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+    correlation_keys:
+      call_id: "call-id-001"
+      service_route: "sip:s-cscf.ims.mnc001.mcc001.3gppnetwork.org;lr"
+      p_charging_vector: "icid-value=1234567890;icid-generated-at=p-cscf.ims.mnc001.mcc001.3gppnetwork.org"
+
+  - order: 9
+    layer: "SIP"
+    direction: "P-CSCF→UE"
+    message_type: "200 OK"
+    message_json:
+      statusCode: 200
+      reasonPhrase: "OK"
+      from: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+      to: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+      callId: "call-id-001"
+      cseq: "1 REGISTER"
+      contact: "sip:+1234567890@[2001:db8::1]:5060"
+      expires: "600"
+      date: "Mon, 01 Jan 2024 12:00:00 GMT"
+      serviceRoute: "sip:s-cscf.ims.mnc001.mcc001.3gppnetwork.org;lr"
+      pAssociatedURI: "sip:+1234567890@ims.mnc001.mcc001.3gppnetwork.org"
+      pChargingVector: "icid-value=1234567890;icid-generated-at=p-cscf.ims.mnc001.mcc001.3gppnetwork.org"
+    expected_params:
+      statusCode: 200
+      reasonPhrase: "OK"
+      expires: "600"
+      serviceRoute: "sip:s-cscf.ims.mnc001.mcc001.3gppnetwork.org;lr"
+    correlation_keys:
+      call_id: "call-id-001"
+      service_route: "sip:s-cscf.ims.mnc001.mcc001.3gppnetwork.org;lr"
+
+# Expected Results
+expected_results:
+  registration_success: true
+  authentication_success: true
+  service_profile_activation_success: true
+  charging_information_received: true
+  service_route_established: true
+  total_duration: "45s"
+  message_count: 9

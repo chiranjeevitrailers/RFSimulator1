@@ -1,0 +1,384 @@
+# Basic Attach Procedure - TS 23.401 5.3.2.1
+id: "attach-basic-001"
+title: "Basic Attach Procedure"
+suite_type: "functional"
+threegpp_ref: "TS 23.401 5.3.2.1"
+description: "Verify basic UE attach procedure with successful authentication and context establishment"
+complexity: "basic"
+expected_duration: 30
+
+# Default Parameters
+default_parameters:
+  ue:
+    imsi: "001010123456789"
+    s_tmsi: "0x12345678"
+    rnti: 0x003D
+    plmn_id: "00101"
+    tac: "0001"
+    cell_id: "0x000001"
+  network:
+    enb_id: "eNB-001"
+    mme_id: "MME-001"
+    plmn_id: "00101"
+    tac: "0001"
+    cell_id: "0x000001"
+    mme_code: 0x01
+    mme_group_id: 0x0001
+
+# Test Case Steps
+steps:
+  - order: 1
+    layer: "RRC"
+    direction: "UE→eNB"
+    message_type: "RRCConnectionRequest"
+    message_json:
+      messageType: "RRCConnectionRequest"
+      criticalExtensions:
+        rrcConnectionRequest:
+          ueIdentity:
+            sTMSI: "0x12345678"
+          establishmentCause: "mo-Signalling"
+    expected_params:
+      establishmentCause: "mo-Signalling"
+      ueIdentity:
+        sTMSI: "0x12345678"
+    correlation_keys:
+      rnti: 0x003D
+      s_tmsi: "0x12345678"
+      cell_id: "0x000001"
+
+  - order: 2
+    layer: "RRC"
+    direction: "eNB→UE"
+    message_type: "RRCConnectionSetup"
+    message_json:
+      messageType: "RRCConnectionSetup"
+      rrcTransactionIdentifier: 0
+      criticalExtensions:
+        rrcConnectionSetupR8:
+          radioResourceConfigDedicated:
+            srbToAddModList:
+              - srbIdentity: 1
+                rlcConfig:
+                  ulRLCConfig:
+                    am:
+                      ulAMRLC:
+                        maxRetxThreshold: "t32"
+                        pollPDU: "p4"
+                        pollByte: "kB25"
+                        tPollRetransmit: "ms45"
+    expected_params:
+      rrcTransactionIdentifier: 0
+      srbIdentity: 1
+    correlation_keys:
+      rnti: 0x003D
+      c_rnti: 0x003D
+
+  - order: 3
+    layer: "RRC"
+    direction: "UE→eNB"
+    message_type: "RRCConnectionSetupComplete"
+    message_json:
+      messageType: "RRCConnectionSetupComplete"
+      rrcTransactionIdentifier: 0
+      criticalExtensions:
+        rrcConnectionSetupCompleteR8:
+          selectedPLMNIdentity: 1
+          dedicatedInfoNAS: "NAS_ATTACH_REQUEST"
+    expected_params:
+      rrcTransactionIdentifier: 0
+      selectedPLMNIdentity: 1
+    correlation_keys:
+      rnti: 0x003D
+      c_rnti: 0x003D
+
+  - order: 4
+    layer: "S1AP"
+    direction: "eNB→MME"
+    message_type: "InitialUEMessage"
+    message_json:
+      messageType: "InitialUEMessage"
+      protocolIEs:
+        eNBUEID:
+          id: 1
+          criticality: "ignore"
+          value:
+            eNBUEID: 1
+        nasPDU:
+          id: 26
+          criticality: "reject"
+          value:
+            nasPDU: "NAS_ATTACH_REQUEST"
+        tAI:
+          id: 67
+          criticality: "reject"
+          value:
+            tAI:
+              pLMNidentity: "00101"
+              tAC: "0001"
+        rRCestablishmentCause:
+          id: 137
+          criticality: "ignore"
+          value:
+            rRCestablishmentCause: "mo-Signalling"
+    expected_params:
+      eNBUEID: 1
+      rRCestablishmentCause: "mo-Signalling"
+      tAI:
+        pLMNidentity: "00101"
+        tAC: "0001"
+    correlation_keys:
+      enb_ue_id: 1
+      plmn_id: "00101"
+      tac: "0001"
+
+  - order: 5
+    layer: "NAS"
+    direction: "UE→MME"
+    message_type: "AttachRequest"
+    message_json:
+      messageType: "AttachRequest"
+      securityHeaderType: "Plain"
+      protocolDiscriminator: "EPSMobilityManagement"
+      nasKeySetIdentifier: 0
+      epsAttachType: "EPSAttach"
+      epsMobileIdentity:
+        type: "IMSI"
+        imsi: "001010123456789"
+      ueNetworkCapability:
+        eea0: true
+        eea1: true
+        eea2: true
+        eea3: true
+        eia0: true
+        eia1: true
+        eia2: true
+        eia3: true
+      esmMessageContainer: "ESM_ATTACH_REQUEST"
+    expected_params:
+      epsAttachType: "EPSAttach"
+      epsMobileIdentity:
+        type: "IMSI"
+        imsi: "001010123456789"
+    correlation_keys:
+      imsi: "001010123456789"
+      plmn_id: "00101"
+
+  - order: 6
+    layer: "S1AP"
+    direction: "MME→eNB"
+    message_type: "InitialContextSetupRequest"
+    message_json:
+      messageType: "InitialContextSetupRequest"
+      protocolIEs:
+        mMEUEID:
+          id: 0
+          criticality: "ignore"
+          value:
+            mMEUEID: 1
+        eNBUEID:
+          id: 1
+          criticality: "ignore"
+          value:
+            eNBUEID: 1
+        uEAggregateMaximumBitrate:
+          id: 23
+          criticality: "reject"
+          value:
+            uEAggregateMaximumBitrate:
+              uEAggregateMaximumBitrateDL: 1000000
+              uEAggregateMaximumBitrateUL: 1000000
+        eRABToBeSetupListCtxtSUReq:
+          id: 24
+          criticality: "reject"
+          value:
+            eRABToBeSetupListCtxtSUReq:
+              - eRABID: 5
+                eRABLevelQoSParameters:
+                  qCI: 9
+                  allocationRetentionPriority:
+                    priorityLevel: 15
+                    preEmptionCapability: "shall-not-trigger-pre-emption"
+                    preEmptionVulnerability: "not-pre-emptable"
+                transportLayerAddress: "192.168.1.1"
+                gTPTEID: "0x12345678"
+        uESecurityCapabilities:
+          id: 107
+          criticality: "reject"
+          value:
+            uESecurityCapabilities:
+              encryptionAlgorithms: "AES"
+              integrityProtectionAlgorithms: "AES"
+    expected_params:
+      mMEUEID: 1
+      eNBUEID: 1
+      uEAggregateMaximumBitrate:
+        uEAggregateMaximumBitrateDL: 1000000
+        uEAggregateMaximumBitrateUL: 1000000
+    correlation_keys:
+      mme_ue_id: 1
+      enb_ue_id: 1
+      erab_id: 5
+
+  - order: 7
+    layer: "RRC"
+    direction: "eNB→UE"
+    message_type: "RRCConnectionReconfiguration"
+    message_json:
+      messageType: "RRCConnectionReconfiguration"
+      rrcTransactionIdentifier: 1
+      criticalExtensions:
+        rrcConnectionReconfigurationR8:
+          radioResourceConfigDedicated:
+            srbToAddModList:
+              - srbIdentity: 2
+                rlcConfig:
+                  ulRLCConfig:
+                    am:
+                      ulAMRLC:
+                        maxRetxThreshold: "t32"
+                        pollPDU: "p4"
+                        pollByte: "kB25"
+                        tPollRetransmit: "ms45"
+            drbToAddModList:
+              - drbIdentity: 1
+                pdcpConfig:
+                  discardTimer: "ms150"
+                  rlcUM:
+                    pdcpSNSize: "len12bits"
+                rlcConfig:
+                  ulRLCConfig:
+                    um:
+                      ulUMRLC:
+                        snFieldLength: "size5"
+                  dlRLCConfig:
+                    um:
+                      dlUMRLC:
+                        snFieldLength: "size5"
+                        tReordering: "ms35"
+            securityConfigHO:
+              securityAlgorithmConfig:
+                cipheringAlgorithm: "aes"
+                integrityProtectionAlgorithm: "aes"
+    expected_params:
+      rrcTransactionIdentifier: 1
+      srbIdentity: 2
+      drbIdentity: 1
+      securityAlgorithmConfig:
+        cipheringAlgorithm: "aes"
+        integrityProtectionAlgorithm: "aes"
+    correlation_keys:
+      rnti: 0x003D
+      c_rnti: 0x003D
+
+  - order: 8
+    layer: "RRC"
+    direction: "UE→eNB"
+    message_type: "RRCConnectionReconfigurationComplete"
+    message_json:
+      messageType: "RRCConnectionReconfigurationComplete"
+      rrcTransactionIdentifier: 1
+      criticalExtensions:
+        rrcConnectionReconfigurationCompleteR8:
+          dedicatedInfoNAS: "NAS_ATTACH_ACCEPT"
+    expected_params:
+      rrcTransactionIdentifier: 1
+    correlation_keys:
+      rnti: 0x003D
+      c_rnti: 0x003D
+
+  - order: 9
+    layer: "S1AP"
+    direction: "eNB→MME"
+    message_type: "InitialContextSetupResponse"
+    message_json:
+      messageType: "InitialContextSetupResponse"
+      protocolIEs:
+        mMEUEID:
+          id: 0
+          criticality: "ignore"
+          value:
+            mMEUEID: 1
+        eNBUEID:
+          id: 1
+          criticality: "ignore"
+          value:
+            eNBUEID: 1
+        eRABSetupListCtxtSURes:
+          id: 25
+          criticality: "reject"
+          value:
+            eRABSetupListCtxtSURes:
+              - eRABID: 5
+                transportLayerAddress: "192.168.1.2"
+                gTPTEID: "0x87654321"
+    expected_params:
+      mMEUEID: 1
+      eNBUEID: 1
+      eRABSetupListCtxtSURes:
+        - eRABID: 5
+    correlation_keys:
+      mme_ue_id: 1
+      enb_ue_id: 1
+      erab_id: 5
+
+  - order: 10
+    layer: "NAS"
+    direction: "MME→UE"
+    message_type: "AttachAccept"
+    message_json:
+      messageType: "AttachAccept"
+      securityHeaderType: "IntegrityProtected"
+      protocolDiscriminator: "EPSMobilityManagement"
+      epsAttachResult: "EPSAttach"
+      t3412Value: 54
+      taiList:
+        - pLMNidentity: "00101"
+          tAC: "0001"
+      epsMobileIdentity:
+        type: "GUTI"
+        guti:
+          pLMNidentity: "00101"
+          mmeGroupID: 1
+          mmeCode: 1
+          mTMSI: "0x87654321"
+      esmMessageContainer: "ESM_ATTACH_ACCEPT"
+    expected_params:
+      epsAttachResult: "EPSAttach"
+      t3412Value: 54
+      epsMobileIdentity:
+        type: "GUTI"
+        guti:
+          pLMNidentity: "00101"
+          mmeGroupID: 1
+          mmeCode: 1
+          mTMSI: "0x87654321"
+    correlation_keys:
+      guti: "001010000100187654321"
+      plmn_id: "00101"
+      tac: "0001"
+
+  - order: 11
+    layer: "NAS"
+    direction: "UE→MME"
+    message_type: "AttachComplete"
+    message_json:
+      messageType: "AttachComplete"
+      securityHeaderType: "IntegrityProtected"
+      protocolDiscriminator: "EPSMobilityManagement"
+      esmMessageContainer: "ESM_ATTACH_COMPLETE"
+    expected_params:
+      securityHeaderType: "IntegrityProtected"
+    correlation_keys:
+      guti: "001010000100187654321"
+      plmn_id: "00101"
+
+# Expected Results
+expected_results:
+  attach_success: true
+  authentication_success: true
+  context_establishment_success: true
+  security_activation_success: true
+  default_bearer_setup_success: true
+  total_duration: "30s"
+  message_count: 11

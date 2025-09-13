@@ -1,0 +1,85 @@
+# V2X PC5 Sidelink Communication - TS 23.285 5.1.1
+id: "pc5-sidelink-001"
+title: "V2X PC5 Sidelink Communication"
+suite_type: "v2x"
+threegpp_ref: "TS 23.285 5.1.1"
+description: "Verify V2X PC5 sidelink communication with successful message exchange"
+complexity: "advanced"
+expected_duration: 50
+
+# Default Parameters
+default_parameters:
+  ue:
+    imsi: "001010123456789"
+    s_tmsi: "0x12345678"
+    rnti: 0x003D
+    plmn_id: "00101"
+    tac: "0001"
+    cell_id: "0x000001"
+    v2x_ue_id: "V2X-UE-001"
+    layer2_id: "0x12345678"
+    service_type: "safety"
+  network:
+    enb_id: "eNB-001"
+    mme_id: "MME-001"
+    plmn_id: "00101"
+    tac: "0001"
+    cell_id: "0x000001"
+    v2x_service_id: "V2X-SERVICE-001"
+    pc5_frequency: 5900
+    pc5_bandwidth: 10
+
+# Test Case Steps
+steps:
+  - order: 1
+    layer: "PC5"
+    direction: "UE→UE"
+    message_type: "V2XMessage"
+    message_json:
+      messageType: "V2XMessage"
+      sourceLayer2Id: "0x12345678"
+      destinationLayer2Id: "0x87654321"
+      serviceType: "safety"
+      messageId: "V2X-MSG-001"
+      payload: "Safety message content"
+      priority: 1
+      reliability: "high"
+      latency: "low"
+    expected_params:
+      sourceLayer2Id: "0x12345678"
+      destinationLayer2Id: "0x87654321"
+      serviceType: "safety"
+      priority: 1
+    correlation_keys:
+      source_layer2_id: "0x12345678"
+      destination_layer2_id: "0x87654321"
+      service_type: "safety"
+
+  - order: 2
+    layer: "PC5"
+    direction: "UE→UE"
+    message_type: "V2XAcknowledgment"
+    message_json:
+      messageType: "V2XAcknowledgment"
+      sourceLayer2Id: "0x87654321"
+      destinationLayer2Id: "0x12345678"
+      messageId: "V2X-MSG-001"
+      acknowledgmentStatus: "received"
+      timestamp: "2024-01-01T12:00:00Z"
+    expected_params:
+      sourceLayer2Id: "0x87654321"
+      destinationLayer2Id: "0x12345678"
+      messageId: "V2X-MSG-001"
+      acknowledgmentStatus: "received"
+    correlation_keys:
+      source_layer2_id: "0x87654321"
+      destination_layer2_id: "0x12345678"
+      message_id: "V2X-MSG-001"
+
+# Expected Results
+expected_results:
+  pc5_sidelink_success: true
+  v2x_message_sent: true
+  acknowledgment_received: true
+  total_duration: "50s"
+  message_count: 2

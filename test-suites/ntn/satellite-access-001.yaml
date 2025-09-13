@@ -1,0 +1,113 @@
+# NTN Satellite Access Procedure - TS 38.821 5.1.1
+id: "satellite-access-001"
+title: "NTN Satellite Access Procedure"
+suite_type: "ntn"
+threegpp_ref: "TS 38.821 5.1.1"
+description: "Verify NTN satellite access procedure with successful connection establishment"
+complexity: "advanced"
+expected_duration: 60
+
+# Default Parameters
+default_parameters:
+  ue:
+    imsi: "001010123456789"
+    s_tmsi: "0x12345678"
+    rnti: 0x003D
+    plmn_id: "00101"
+    tac: "0001"
+    cell_id: "0x000001"
+    satellite_id: "SAT-001"
+    beam_id: "BEAM-001"
+    elevation_angle: 45
+    azimuth_angle: 180
+  network:
+    gnb_id: "gNB-001"
+    amf_id: "AMF-001"
+    plmn_id: "00101"
+    tac: "0001"
+    cell_id: "0x000001"
+    satellite_id: "SAT-001"
+    beam_id: "BEAM-001"
+    orbital_altitude: 550
+    orbital_inclination: 53
+    orbital_period: 95
+
+# Test Case Steps
+steps:
+  - order: 1
+    layer: "RRC"
+    direction: "UE→gNB"
+    message_type: "RRCConnectionRequest"
+    message_json:
+      messageType: "RRCConnectionRequest"
+      criticalExtensions:
+        rrcConnectionRequest:
+          ueIdentity:
+            sTMSI: "0x12345678"
+          establishmentCause: "mo-Signalling"
+      ntnSpecificInfo:
+        satelliteId: "SAT-001"
+        beamId: "BEAM-001"
+        elevationAngle: 45
+        azimuthAngle: 180
+        propagationDelay: 25
+        dopplerShift: 1000
+    expected_params:
+      establishmentCause: "mo-Signalling"
+      ueIdentity:
+        sTMSI: "0x12345678"
+      ntnSpecificInfo:
+        satelliteId: "SAT-001"
+        beamId: "BEAM-001"
+        elevationAngle: 45
+    correlation_keys:
+      rnti: 0x003D
+      s_tmsi: "0x12345678"
+      satellite_id: "SAT-001"
+      beam_id: "BEAM-001"
+
+  - order: 2
+    layer: "RRC"
+    direction: "gNB→UE"
+    message_type: "RRCConnectionSetup"
+    message_json:
+      messageType: "RRCConnectionSetup"
+      rrcTransactionIdentifier: 0
+      criticalExtensions:
+        rrcConnectionSetupR8:
+          radioResourceConfigDedicated:
+            srbToAddModList:
+              - srbIdentity: 1
+                rlcConfig:
+                  ulRLCConfig:
+                    am:
+                      ulAMRLC:
+                        maxRetxThreshold: "t32"
+                        pollPDU: "p4"
+                        pollByte: "kB25"
+                        tPollRetransmit: "ms45"
+      ntnSpecificInfo:
+        satelliteId: "SAT-001"
+        beamId: "BEAM-001"
+        timingAdvance: 25
+        frequencyOffset: 1000
+    expected_params:
+      rrcTransactionIdentifier: 0
+      srbIdentity: 1
+      ntnSpecificInfo:
+        satelliteId: "SAT-001"
+        beamId: "BEAM-001"
+        timingAdvance: 25
+    correlation_keys:
+      rnti: 0x003D
+      c_rnti: 0x003D
+      satellite_id: "SAT-001"
+      beam_id: "BEAM-001"
+
+# Expected Results
+expected_results:
+  satellite_access_success: true
+  rrc_connection_success: true
+  ntn_specific_info_handled: true
+  total_duration: "60s"
+  message_count: 2

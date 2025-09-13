@@ -1,0 +1,90 @@
+# NB-IoT NPRACH Procedure - TS 36.331 5.3.3.1
+id: "nprach-procedure-001"
+title: "NB-IoT NPRACH Procedure"
+suite_type: "nbiot"
+threegpp_ref: "TS 36.331 5.3.3.1"
+description: "Verify NB-IoT NPRACH procedure with successful random access"
+complexity: "intermediate"
+expected_duration: 35
+
+# Default Parameters
+default_parameters:
+  ue:
+    imsi: "001010123456789"
+    s_tmsi: "0x12345678"
+    rnti: 0x003D
+    plmn_id: "00101"
+    tac: "0001"
+    cell_id: "0x000001"
+    coverage_class: 0
+    repetition_number: 1
+  network:
+    enb_id: "eNB-001"
+    mme_id: "MME-001"
+    plmn_id: "00101"
+    tac: "0001"
+    cell_id: "0x000001"
+    nprs_id: 0
+    nprs_periodicity: 160
+    nprs_offset: 0
+    nprs_subframe_offset: 0
+
+# Test Case Steps
+steps:
+  - order: 1
+    layer: "RRC"
+    direction: "UE→eNB"
+    message_type: "NPRACH"
+    message_json:
+      messageType: "NPRACH"
+      nprsId: 0
+      nprsPeriodicity: 160
+      nprsOffset: 0
+      nprsSubframeOffset: 0
+      coverageClass: 0
+      repetitionNumber: 1
+      preambleIndex: 0
+      timeAdvance: 0
+    expected_params:
+      nprsId: 0
+      nprsPeriodicity: 160
+      coverageClass: 0
+      repetitionNumber: 1
+    correlation_keys:
+      nprs_id: 0
+      coverage_class: 0
+      cell_id: "0x000001"
+
+  - order: 2
+    layer: "RRC"
+    direction: "eNB→UE"
+    message_type: "NPRACHResponse"
+    message_json:
+      messageType: "NPRACHResponse"
+      nprsId: 0
+      raRnti: 0x003D
+      timeAdvance: 0
+      uplinkGrant:
+        subcarrierSpacing: "kHz15"
+        subcarrierIndication: 0
+        schedulingDelay: 0
+        repititionNumber: 1
+        modulationCodingScheme: 0
+        redundancyVersion: 0
+        resourceAllocation: 0
+    expected_params:
+      nprsId: 0
+      raRnti: 0x003D
+      timeAdvance: 0
+    correlation_keys:
+      nprs_id: 0
+      ra_rnti: 0x003D
+      cell_id: "0x000001"
+
+# Expected Results
+expected_results:
+  nprach_success: true
+  random_access_success: true
+  uplink_grant_received: true
+  total_duration: "35s"
+  message_count: 2
