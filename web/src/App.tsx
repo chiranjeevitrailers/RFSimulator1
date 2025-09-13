@@ -13,7 +13,7 @@ const AdminDashboard = React.lazy(() => import('./pages/admin/AdminDashboard'))
 const UserDashboard = React.lazy(() => import('./pages/user/UserDashboard'))
 
 // Main app pages
-const AppLayout = React.lazy(() => import('./components/layout/AppLayout'))
+const AppLayout = React.lazy(() => import('./components/layout/SimpleAppLayout'))
 const DashboardPage = React.lazy(() => import('./pages/app/SimpleDashboardPage'))
 const TestSuitesPage = React.lazy(() => import('./pages/app/SimpleTestSuitesPage'))
 const AnalyzerPage = React.lazy(() => import('./pages/app/SimpleAnalyzerPage'))
@@ -120,15 +120,7 @@ const App: React.FC = () => {
               <Route path="/user/dashboard" element={<UserDashboard />} />
 
               {/* Main App Routes */}
-              <Route path="/app" element={
-                <SimpleAuthProvider>
-                  <SimpleBillingProvider>
-                    <SimpleWebSocketProvider>
-                      <AppLayout />
-                    </SimpleWebSocketProvider>
-                  </SimpleBillingProvider>
-                </SimpleAuthProvider>
-              }>
+              <Route path="/app" element={<AppLayout />}>
                 <Route path="dashboard" element={<DashboardPage />} />
                 <Route path="test-suites" element={<TestSuitesPage />} />
                 <Route path="analyzer" element={<AnalyzerPage />} />
