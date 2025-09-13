@@ -1,11 +1,6 @@
 [build]
-  # Build command - Static HTML, no build needed
-  command = "echo 'Static HTML build - no build needed'"
-  
-  # Directory to publish
-  publish = "web/public"
-  
-  # Functions directory
+  command = "./build-robust.sh"
+  publish = "web/dist"
   functions = "netlify/functions"
 
 [build.environment]
@@ -115,13 +110,13 @@
 
 # Branch deploy settings
 [context.production]
-  command = "echo 'Static HTML build - no build needed'"
+  command = "./build-robust.sh"
 
 [context.deploy-preview]
-  command = "echo 'Static HTML build - no build needed'"
+  command = "./build-robust.sh"
 
 [context.branch-deploy]
-  command = "echo 'Static HTML build - no build needed'"
+  command = "./build-robust.sh"
 
 # Environment-specific settings
 [context.production.environment]
