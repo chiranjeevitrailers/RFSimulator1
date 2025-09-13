@@ -1,248 +1,225 @@
-# 5GLabX Cloud - Subscription-Based 4G/5G Protocol Analyzer & 3GPP Test-Suite Platform
+# 5GLabX Cloud
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)](https://reactjs.org/)
-[![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com/)
-[![Stripe](https://img.shields.io/badge/Stripe-635BFF?logo=stripe&logoColor=white)](https://stripe.com/)
+**Professional 4G/5G Protocol Analysis Platform**
 
-## 🚀 Overview
+A cloud-native, subscription-based protocol analyzer with 1000+ 3GPP test cases, real-time monitoring, and enterprise-grade security.
 
-5GLabX Cloud is a professional-grade, cloud-native 4G/5G protocol analyzer and 3GPP test suite platform. It provides a comprehensive solution for protocol analysis, test execution, and real-time monitoring of 4G/5G networks, including specialized support for O-RAN, NB-IoT, NTN, V2X, and IMS protocols.
+## 🚀 Features
 
-### ✨ Key Features
-
-- **🔬 Professional Protocol Analysis**: Industry-standard dual-pane log viewer with real-time message correlation
-- **📚 Comprehensive Test Suite**: 1000+ 3GPP-compliant test cases across all major protocol categories
-- **⚡ Real-time Execution**: Live protocol analysis with WebSocket streaming and fault injection
-- **👥 Team Collaboration**: Enterprise-grade team management with role-based access control
-- **📊 Advanced Analytics**: AI-powered insights and comprehensive performance reporting
-- **🔌 API Integration**: Complete REST API and webhook system for third-party integrations
-- **🛡️ Enterprise Security**: SOC 2, ISO 27001, and GDPR compliant with comprehensive audit logging
-- **☁️ Cloud-Native**: Scalable, subscription-based platform with 99.9% uptime SLA
+- **Real-time Protocol Analysis**: Live 4G/5G protocol monitoring with instant insights
+- **1000+ 3GPP Test Cases**: Comprehensive test suite covering all protocol layers
+- **Enterprise Security**: Bank-grade security with role-based access control
+- **Advanced Analytics**: AI-powered insights and performance optimization
+- **Multi-Protocol Support**: RRC, NAS, S1AP, NGAP, SIP, DIAMETER, O-RAN, NB-IoT, NTN, V2X
+- **Fault Injection**: Controlled error simulation for testing
+- **Team Collaboration**: Real-time collaboration and sharing capabilities
 
 ## 🏗️ Architecture
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │   API Gateway   │    │   Log Engine    │
-│   (React/Vite)  │◄──►│   (Netlify)     │◄──►│   (Node.js)     │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         │                       │                       │
-         ▼                       ▼                       ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   CDN/Static    │    │   Supabase      │    │   Redis Cache   │
-│   (Netlify)     │    │   (PostgreSQL)  │    │   (Redis)       │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-                                │
-                                ▼
-                       ┌─────────────────┐
-                       │   Stripe        │
-                       │   (Billing)     │
-                       └─────────────────┘
-```
-
-## 🛠️ Technology Stack
-
 ### Frontend
-- **React 18** with TypeScript for type-safe development
-- **Vite** for fast development and optimized builds
-- **TailwindCSS + DaisyUI** for modern, responsive UI
-- **React Query** for efficient server state management
-- **WebSocket** integration for real-time updates
+- **React 18** with TypeScript
+- **Vite** for fast development and building
+- **TailwindCSS** + **DaisyUI** for styling
+- **React Query** for state management
+- **React Router** for navigation
 
 ### Backend
-- **Node.js + Express.js** for API services
-- **Supabase** for database, authentication, and real-time features
-- **Redis** for high-performance caching
-- **Stripe** for subscription billing and payments
+- **Supabase** for database and authentication
+- **Netlify Functions** for serverless API
+- **PostgreSQL** with Row Level Security
+- **Real-time subscriptions** for live updates
 
 ### Infrastructure
-- **Netlify** for frontend hosting and serverless functions
-- **Railway** for containerized backend services
-- **Docker** for containerization and deployment
-- **Nginx** for reverse proxy and load balancing
-
-### Monitoring & Security
-- **Prometheus + Grafana** for metrics and monitoring
-- **ELK Stack** for centralized logging
-- **Security scanning** with Snyk and OWASP ZAP
-- **Comprehensive audit logging** for compliance
+- **Netlify** for hosting and CDN
+- **GitHub Actions** for CI/CD
+- **Docker** for containerization
+- **Monitoring** with built-in analytics
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ and npm/pnpm
-- Docker and Docker Compose
-- Git
+- Node.js 18+
+- npm or yarn
+- Supabase account
+- Netlify account
 
-### Local Development Setup
+### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/5glabx/5glabx-cloud.git
-   cd 5glabx-cloud
+   git clone https://github.com/chiranjeevitrailers/RFSimulator1.git
+   cd RFSimulator1
    ```
 
 2. **Install dependencies**
    ```bash
+   cd web
    npm install
    ```
 
 3. **Set up environment variables**
    ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
+   cp .env.example .env.local
+   # Edit .env.local with your Supabase credentials
    ```
 
-4. **Start development services**
+4. **Set up Supabase database**
+   - Create a new Supabase project
+   - Run the SQL migrations in order:
+     ```sql
+     -- Run these files in the Supabase SQL editor:
+     -- 1. supabase/migrations/001_initial_schema.sql
+     -- 2. supabase/migrations/002_rls_policies.sql
+     -- 3. supabase/migrations/003_auth_setup.sql
+     -- 4. supabase/migrations/004_simple_auth.sql
+     -- 5. supabase/migrations/005_comprehensive_protocol_schema.sql
+     -- 6. supabase/migrations/006_protocol_data_seed.sql
+     -- 7. supabase/migrations/007_comprehensive_test_cases.sql
+     ```
+
+5. **Start development server**
    ```bash
-   # Start infrastructure services
-   docker-compose up -d
-
-   # Start frontend development server
-   cd web && npm run dev
-
-   # Start API development server
-   cd api && npm run dev
-
-   # Start log engine
-   cd log-engine && npm run dev
+   npm run dev
    ```
 
-5. **Access the application**
-   - Frontend: http://localhost:5173
-   - API: http://localhost:3001
-   - Log Engine: http://localhost:3002
+6. **Access the application**
+   - Open [http://localhost:3000](http://localhost:3000)
+   - Admin login: `admin` / `admin123`
+   - Create user accounts through the signup page
 
-### Production Deployment
+## 📁 Project Structure
 
-1. **Configure production environment**
-   ```bash
-   # Set production environment variables
-   export NODE_ENV=production
-   export SUPABASE_URL=your-production-url
-   export STRIPE_SECRET_KEY=your-stripe-key
-   ```
+```
+5GLabX-Cloud/
+├── web/                          # Frontend application
+│   ├── src/
+│   │   ├── components/           # Reusable components
+│   │   ├── pages/               # Page components
+│   │   ├── lib/                 # Utilities and configurations
+│   │   ├── hooks/               # Custom React hooks
+│   │   └── types/               # TypeScript type definitions
+│   ├── public/                  # Static assets
+│   └── package.json
+├── netlify/                     # Netlify functions
+│   └── functions/               # Serverless functions
+├── supabase/                    # Database migrations
+│   └── migrations/              # SQL migration files
+├── .github/                     # GitHub Actions workflows
+├── netlify.toml                 # Netlify configuration
+└── README.md
+```
 
-2. **Deploy using Docker Compose**
-   ```bash
-   docker-compose -f docker-compose.prod.yml up -d
-   ```
+## 🗄️ Database Schema
 
-3. **Run database migrations**
-   ```bash
-   supabase db push --project-ref your-project-ref
-   ```
+The platform uses a comprehensive PostgreSQL schema with:
 
-## 📚 Documentation
+- **User Management**: Admin credentials and user accounts
+- **Test Suites**: Organized test case collections
+- **Protocol Specifications**: 3GPP-compliant message definitions
+- **Test Cases**: 1000+ ready-to-execute test scenarios
+- **Execution Logs**: Detailed test execution tracking
+- **Performance Metrics**: Comprehensive analytics data
 
-- **[User Guide](docs/USER_GUIDE.md)** - Comprehensive user documentation
-- **[Technical Documentation](docs/TECHNICAL_DOCUMENTATION.md)** - Developer and system documentation
-- **[API Reference](docs/API_REFERENCE.md)** - Complete API documentation
-- **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - Production deployment instructions
+## 🔐 Authentication
 
-## 🧪 Test Suite Categories
+### Admin Access
+- **Username**: `admin`
+- **Password**: `admin123`
+- Access to user management and system administration
 
-### Core Protocols
-- **RRC** - Radio Resource Control procedures
-- **NAS** - Non-Access Stratum protocols
-- **S1AP/NGAP** - Core network interfaces
-- **SIP** - Session Initiation Protocol
+### User Access
+- Self-registration through signup page
+- Email-based authentication
+- Role-based access control
 
-### Specialized Technologies
-- **O-RAN** - Open RAN procedures (E2AP, O1, A1, E1, F1)
-- **NB-IoT** - Narrowband IoT optimizations
-- **NTN** - Non-terrestrial network procedures
-- **V2X** - Vehicle-to-everything communications
-- **IMS** - IP Multimedia Subsystem (VoLTE, VoWiFi)
-- **Security** - 5G-AKA, EAP-AKA, SUPI/SUCI procedures
+## 🚀 Deployment
 
-### Test Categories
-- **Functional** - Basic protocol procedures
-- **Mobility** - Handover and mobility management
-- **Performance** - KPI validation and optimization
-- **Security** - Authentication and encryption
-- **Fault Injection** - Error simulation and testing
+### Netlify Deployment
+1. **Connect GitHub repository** to Netlify
+2. **Set environment variables** in Netlify dashboard
+3. **Configure build settings**:
+   - Build command: `npm run build`
+   - Publish directory: `web/dist`
+   - Functions directory: `netlify/functions`
 
-## 💰 Subscription Plans
+### Environment Variables
+```bash
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_APP_ENV=production
+```
 
-### Trial Plan (Free)
-- 10 test executions per month
-- Basic protocol analysis
-- Community support
-- 7-day trial period
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md).
 
-### Pro Plan ($99/month)
-- 1,000 test executions per month
-- Advanced analytics and reporting
-- API access and webhooks
-- Priority support
-- Team collaboration (up to 5 members)
+## 🧪 Testing
 
-### Enterprise Plan ($499/month)
-- Unlimited test executions
-- Custom test case development
-- Advanced security features
-- 24/7 dedicated support
-- Unlimited team members
-- On-premise deployment options
-- Custom integrations
+### Run Tests
+```bash
+# Unit tests
+npm run test
 
-## 🔒 Security & Compliance
+# Test with UI
+npm run test:ui
 
-- **SOC 2 Type II** compliant
-- **ISO 27001** certified
-- **GDPR** compliant with data subject rights
-- **CCPA** compliant for California residents
-- **Multi-factor authentication** support
-- **Role-based access control** (RBAC)
-- **Comprehensive audit logging**
-- **End-to-end encryption**
+# Coverage report
+npm run test:coverage
+```
+
+### Test Cases
+The platform includes 1000+ test cases covering:
+- **Functional Tests**: Basic protocol procedures
+- **Mobility Tests**: Handover and mobility management
+- **Performance Tests**: KPI validation and optimization
+- **Security Tests**: Authentication and encryption
+- **Specialized Tests**: O-RAN, NB-IoT, NTN, V2X
+
+## 📊 Monitoring
+
+### Built-in Analytics
+- User activity tracking
+- Test execution metrics
+- Performance monitoring
+- Error tracking and reporting
+
+### Logs
+- Application logs
+- API request logs
+- Database query logs
+- Security audit logs
 
 ## 🤝 Contributing
 
-We welcome contributions from the community! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### Development Workflow
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Add tests for new functionality
+4. Add tests if applicable
 5. Submit a pull request
 
-### Code Standards
-- TypeScript for type safety
-- ESLint for code quality
-- Prettier for code formatting
-- Comprehensive test coverage
-
-## 📞 Support
-
-- **Documentation**: [docs.5glabx.com](https://docs.5glabx.com)
-- **Community Forum**: [community.5glabx.com](https://community.5glabx.com)
-- **Email Support**: support@5glabx.com
-- **Enterprise Support**: enterprise@5glabx.com
+### Development Guidelines
+- Follow TypeScript best practices
+- Use ESLint and Prettier for code formatting
+- Write meaningful commit messages
+- Add documentation for new features
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 🆘 Support
 
-- 3GPP for protocol specifications
-- Open source community for foundational technologies
-- Our beta users for valuable feedback
-- Industry partners for collaboration and support
+- **Documentation**: [DEPLOYMENT.md](./DEPLOYMENT.md)
+- **Issues**: [GitHub Issues](https://github.com/chiranjeevitrailers/RFSimulator1/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/chiranjeevitrailers/RFSimulator1/discussions)
 
-## 🔗 Links
+## 🏆 Acknowledgments
 
-- **Website**: [5glabx.com](https://5glabx.com)
-- **Documentation**: [docs.5glabx.com](https://docs.5glabx.com)
-- **API Reference**: [api.5glabx.com](https://api.5glabx.com)
-- **Status Page**: [status.5glabx.com](https://status.5glabx.com)
+- **3GPP** for protocol specifications
+- **Supabase** for backend infrastructure
+- **Netlify** for hosting and deployment
+- **React** and **Vite** communities
 
 ---
 
-**Built with ❤️ for the 5G community**
+**5GLabX Cloud** - The industry's most comprehensive 4G/5G protocol analysis platform.
+
+Built with ❤️ for the telecom industry.

@@ -1,6 +1,6 @@
 [build]
-  # Build command for the frontend
-  command = "cd web && npm run build"
+  # Build command
+  command = "npm run build"
   
   # Directory to publish
   publish = "web/dist"
@@ -14,37 +14,79 @@
   
   # Build environment variables
   NODE_ENV = "production"
+  
+  # Vite build settings
+  VITE_APP_TITLE = "5GLabX Cloud"
+  VITE_APP_VERSION = "1.0.0"
 
-# Redirect rules
+# Redirect rules for SPA routing
 [[redirects]]
-  # API routes to Netlify functions
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from = "/*"
+  to = "/index.html"
   status = 200
 
-# Headers for security
+# Headers for security and performance
 [[headers]]
   for = "/*"
   [headers.values]
+    # Security headers
     X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com; frame-src https://js.stripe.com https://hooks.stripe.com;"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    
+    # Content Security Policy
+    Content-Security-Policy = """
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net;
+      font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net;
+      img-src 'self' data: https: blob:;
+      connect-src 'self' https://*.supabase.co https://*.netlify.app wss://*.supabase.co;
+      frame-src 'none';
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self';
+    """
 
-# Headers for API routes
-[[headers]]
-  for = "/api/*"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Headers = "Content-Type, Authorization"
-    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
-
-# Headers for static assets
+# Cache static assets
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache images
+[[headers]]
+  for = "*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "*.ico"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+# API routes
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Edge Functions
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
 
 # Form handling
 [build.processing]
@@ -61,11 +103,6 @@
 [build.processing.html]
   pretty_urls = true
 
-# Edge functions (if needed)
-# [[edge_functions]]
-#   function = "hello"
-#   path = "/hello"
-
 # Plugin configuration
 [[plugins]]
   package = "@netlify/plugin-lighthouse"
@@ -73,25 +110,31 @@
   [plugins.inputs.thresholds]
     performance = 0.8
     accessibility = 0.9
-    best-practices = 0.8
-    seo = 0.8
+    best-practices = 0.9
+    seo = 0.9
 
-# Branch deploy configuration
+# Branch deploy settings
 [context.production]
-  command = "cd web && npm run build"
+  command = "npm run build:production"
 
 [context.deploy-preview]
-  command = "cd web && npm run build"
+  command = "npm run build:preview"
 
 [context.branch-deploy]
-  command = "cd web && npm run build"
+  command = "npm run build:preview"
 
-# Environment variables for different contexts
+# Environment-specific settings
 [context.production.environment]
-  NODE_ENV = "production"
+  VITE_APP_ENV = "production"
+  VITE_SUPABASE_URL = "https://your-project.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "your-anon-key"
 
 [context.deploy-preview.environment]
-  NODE_ENV = "staging"
+  VITE_APP_ENV = "preview"
+  VITE_SUPABASE_URL = "https://your-project.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "your-anon-key"
 
 [context.branch-deploy.environment]
-  NODE_ENV = "development"
+  VITE_APP_ENV = "development"
+  VITE_SUPABASE_URL = "https://your-project.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "your-anon-key"
