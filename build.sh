@@ -13,8 +13,12 @@ cd web
 echo "📦 Installing dependencies..."
 npm install --legacy-peer-deps
 
+echo "🔍 Checking TypeScript installation..."
+which tsc || echo "TypeScript not found in PATH"
+npx tsc --version || echo "TypeScript not available via npx"
+
 echo "🔍 Running type checking..."
-npm run type-check
+npx tsc --noEmit
 
 echo "🧹 Running linting..."
 npm run lint

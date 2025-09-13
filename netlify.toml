@@ -1,6 +1,6 @@
 [build]
   # Build command
-  command = "./build.sh"
+  command = "./build-production.sh"
   
   # Directory to publish
   publish = "web/dist"
@@ -115,13 +115,13 @@
 
 # Branch deploy settings
 [context.production]
-  command = "./build.sh"
+  command = "./build-production.sh"
 
 [context.deploy-preview]
-  command = "./build.sh"
+  command = "./build-production.sh"
 
 [context.branch-deploy]
-  command = "./build.sh"
+  command = "./build-production.sh"
 
 # Environment-specific settings
 [context.production.environment]
