@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase Connection Test</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Supabase Connection Test</h1>
+    
+    <div class="info">
+        <h3>Configuration</h3>
+        <p><strong>URL:</strong> <span id="url">Loading...</span></p>
+        <p><strong>Key:</strong> <span id="key">Loading...</span></p>
+    </div>
+
+    <div>
+        <button onclick="testConnection()">Test Basic Connection</button>
+        <button onclick="testTables()">Test Database Tables</button>
+        <button onclick="testAuth()">Test Authentication</button>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+        // Get environment variables (you'll need to set these)
+        const supabaseUrl = 'http://localhost:54321'; // Change this to your actual URL
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0';
+
+        // Display configuration
+        document.getElementById('url').textContent = supabaseUrl;
+        document.getElementById('key').textContent = supabaseKey.substring(0, 20) + '...';
+
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test ${type}`;
+            div.innerHTML = message;
+            document.getElementById('results').appendChild(div);
+        }
+
+        async function testConnection() {
+            addResult('🔍 Testing basic connection...', 'info');
+            
+            try {
+                const { data, error } = await supabase.from('test_case_templates').select('count').limit(1);
+                
+                if (error) {
+                    addResult(`❌ Connection failed: ${error.message}`, 'error');
+                } else {
+                    addResult('✅ Basic connection successful!', 'success');
+                }
+            } catch (err) {
+                addResult(`❌ Connection error: ${err.message}`, 'error');
+            }
+        }
+
+        async function testTables() {
+            addResult('📊 Testing database tables...', 'info');
+            
+            const tables = [
+                'test_case_templates',
+                'protocol_specifications',
+                'message_definitions',
+                'ie_definitions'
+            ];
+
+            for (const table of tables) {
+                try {
+                    const { count, error } = await supabase
+                        .from(table)
+                        .select('*', { count: 'exact', head: true });
+                    
+                    if (error) {
+                        addResult(`❌ ${table}: ${error.message}`, 'error');
+                    } else {
+                        addResult(`✅ ${table}: ${count} records`, 'success');
+                    }
+                } catch (err) {
+                    addResult(`❌ ${table}: ${err.message}`, 'error');
+                }
+            }
+        }
+
+        async function testAuth() {
+            addResult('🔐 Testing authentication...', 'info');
+            
+            try {
+                const { data, error } = await supabase.rpc('verify_admin_credentials', {
+                    username: 'admin',
+                    password: 'admin123'
+                });
+                
+                if (error) {
+                    addResult(`❌ Auth test failed: ${error.message}`, 'error');
+                } else {
+                    addResult('✅ Authentication function working', 'success');
+                }
+            } catch (err) {
+                addResult(`❌ Auth test error: ${err.message}`, 'error');
+            }
+        }
+
+        // Auto-run basic test on load
+        window.onload = function() {
+            addResult('🚀 Ready to test! Click the buttons above to test different aspects.', 'info');
+        };
+    </script>
+</body>
+</html>
