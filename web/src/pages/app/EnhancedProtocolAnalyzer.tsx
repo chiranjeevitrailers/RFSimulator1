@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useSimpleAuth } from '../../components/auth/SimpleAuthProvider'
 import { useSimpleBilling } from '../../components/billing/SimpleBillingProvider'
+import { TestExecutionDataFlow } from '../../services/TestExecutionDataFlow'
+import ProfessionalLogAnalyzer from '../../components/analysis/ProfessionalLogAnalyzer'
 import { 
   Eye,
   Filter,
@@ -34,7 +36,8 @@ import {
   TrendingUp,
   Users,
   Wifi,
-  Signal
+  Signal,
+  TestTube
 } from 'lucide-react'
 
 export const EnhancedProtocolAnalyzer: React.FC = () => {
@@ -44,6 +47,64 @@ export const EnhancedProtocolAnalyzer: React.FC = () => {
   const [selectedProtocol, setSelectedProtocol] = useState('5g-core')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
+  const [activeExecutionId, setActiveExecutionId] = useState<string | null>(null)
+  const [showLogAnalyzer, setShowLogAnalyzer] = useState(false)
+  const dataFlow = TestExecutionDataFlow.getInstance()
+
+  // Start test execution for a specific protocol
+  const startTestExecution = async (protocolId: string, testCaseId: string) => {
+    if (!user?.id) return
+    
+    try {
+      setIsAnalyzing(true)
+      const executionId = await dataFlow.startTestExecution(testCaseId, user.id)
+      setActiveExecutionId(executionId)
+      setShowLogAnalyzer(true)
+    } catch (error) {
+      console.error('Error starting test execution:', error)
+    } finally {
+      setIsAnalyzing(false)
+    }
+  }
+
+  // Get test cases for a specific protocol
+  const getTestCasesForProtocol = (protocolId: string) => {
+    // This would typically fetch from Supabase, but for now we'll return mock data
+    const testCases = {
+      '5g-core': [
+        { id: '1', name: 'AMF Registration Test', category: 'rrc', subcategory: '5g-core' },
+        { id: '2', name: 'SMF Session Management', category: 'nas', subcategory: '5g-core' },
+        { id: '3', name: 'UPF Data Plane Test', category: 'pdcp', subcategory: '5g-core' }
+      ],
+      '4g-core': [
+        { id: '4', name: 'MME Attach Procedure', category: 'rrc', subcategory: '4g-core' },
+        { id: '5', name: 'SGW Bearer Setup', category: 'pdcp', subcategory: '4g-core' },
+        { id: '6', name: 'PGW IP Allocation', category: 'nas', subcategory: '4g-core' }
+      ],
+      'oran': [
+        { id: '7', name: 'O-RAN E1 Interface Test', category: 'rrc', subcategory: 'oran' },
+        { id: '8', name: 'O-RAN F1 Interface Test', category: 'mac', subcategory: 'oran' },
+        { id: '9', name: 'O-RAN Performance Test', category: 'phy', subcategory: 'oran' }
+      ],
+      'nbiot': [
+        { id: '10', name: 'NB-IoT Coverage Test', category: 'phy', subcategory: 'nbiot' },
+        { id: '11', name: 'NB-IoT Power Control', category: 'mac', subcategory: 'nbiot' },
+        { id: '12', name: 'NB-IoT RRC Test', category: 'rrc', subcategory: 'nbiot' }
+      ],
+      'v2x': [
+        { id: '13', name: 'V2V Communication Test', category: 'mac', subcategory: 'v2x' },
+        { id: '14', name: 'V2I Sidelink Test', category: 'phy', subcategory: 'v2x' },
+        { id: '15', name: 'V2X Safety Message', category: 'nas', subcategory: 'v2x' }
+      ],
+      'ntn': [
+        { id: '16', name: 'NTN Satellite Handover', category: 'rrc', subcategory: 'ntn' },
+        { id: '17', name: 'NTN Doppler Compensation', category: 'phy', subcategory: 'ntn' },
+        { id: '18', name: 'NTN Timing Advance', category: 'mac', subcategory: 'ntn' }
+      ]
+    }
+    
+    return testCases[protocolId] || []
+  }
 
   const protocols = [
     {
@@ -550,6 +611,47 @@ export const EnhancedProtocolAnalyzer: React.FC = () => {
         </div>
       )}
 
+      {/* Test Execution Integration */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h3 className="card-title mb-4">Test Execution & Analysis</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {getTestCasesForProtocol(selectedProtocol).map((testCase) => (
+              <div key={testCase.id} className="card bg-base-100">
+                <div className="card-body p-4">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="text-primary">
+                      <TestTube className="w-5 h-5" />
+                    </div>
+                    <h4 className="font-semibold">{testCase.name}</h4>
+                  </div>
+                  <p className="text-sm text-base-content/70 mb-3">
+                    {testCase.category.toUpperCase()} - {testCase.subcategory}
+                  </p>
+                  <button
+                    onClick={() => startTestExecution(selectedProtocol, testCase.id)}
+                    disabled={isAnalyzing}
+                    className="btn btn-primary btn-sm w-full"
+                  >
+                    {isAnalyzing ? (
+                      <>
+                        <Activity className="w-4 h-4 animate-spin" />
+                        Starting...
+                      </>
+                    ) : (
+                      <>
+                        <Play className="w-4 h-4" />
+                        Execute Test
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Analysis Status */}
       <div className="card bg-base-200">
         <div className="card-body">
@@ -560,7 +662,7 @@ export const EnhancedProtocolAnalyzer: React.FC = () => {
                 {isAnalyzing ? 'Analysis Active' : 'Analysis Stopped'}
               </span>
               <span className="text-sm text-base-content/70">
-                {isAnalyzing ? 'Real-time monitoring enabled' : 'Click Start to begin analysis'}
+                {isAnalyzing ? 'Real-time monitoring enabled' : 'Execute a test to begin analysis'}
               </span>
             </div>
             <div className="flex items-center gap-4 text-sm">
@@ -571,6 +673,21 @@ export const EnhancedProtocolAnalyzer: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Professional Log Analyzer Modal */}
+      {showLogAnalyzer && activeExecutionId && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-7xl max-h-[90vh] overflow-auto">
+            <ProfessionalLogAnalyzer
+              executionId={activeExecutionId}
+              onClose={() => {
+                setShowLogAnalyzer(false)
+                setActiveExecutionId(null)
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
