@@ -29,7 +29,21 @@ echo "✅ TypeScript: $(npx tsc --version)"
 echo "✅ Vite: $(npx vite --version)"
 echo "✅ React plugin: $(npm list @vitejs/plugin-react)"
 
+echo "🔧 Checking TypeScript configuration..."
+if [ -f "tsconfig.json" ]; then
+    echo "✅ tsconfig.json found"
+    echo "📋 JSX configuration: $(grep -o '"jsx": "[^"]*"' tsconfig.json || echo 'Not found')"
+    echo "📋 Module resolution: $(grep -o '"moduleResolution": "[^"]*"' tsconfig.json || echo 'Not found')"
+else
+    echo "⚠️ tsconfig.json not found"
+fi
+
 echo "🏗️ Building application..."
+echo "📋 Build command: npm run build"
+echo "📋 Current directory: $(pwd)"
+echo "📋 Files in current directory:"
+ls -la | head -10
+
 npm run build
 
 echo "✅ Robust build completed successfully!"
