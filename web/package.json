@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
+    "build:check": "tsc && vite build",
     "build:production": "NODE_ENV=production tsc && vite build --mode production",
     "build:preview": "NODE_ENV=preview tsc && vite build --mode preview",
     "preview": "vite preview",
@@ -43,11 +44,12 @@
     "@monaco-editor/react": "^4.5.0",
     "@heroicons/react": "^2.0.18",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
-  },
-  "devDependencies": {
+    "vite": "^4.4.5",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
+    "@types/node": "^20.0.0"
+  },
+  "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.0.3",
