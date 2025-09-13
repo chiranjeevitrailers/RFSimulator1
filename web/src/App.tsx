@@ -17,9 +17,9 @@ const AppLayout = React.lazy(() => import('./components/layout/SimpleAppLayout')
 const DashboardPage = React.lazy(() => import('./pages/app/SimpleDashboardPage'))
 const TestSuitesPage = React.lazy(() => import('./pages/app/SimpleTestSuitesPage'))
 const AnalyzerPage = React.lazy(() => import('./pages/app/SimpleAnalyzerPage'))
-const ExecutionsPage = React.lazy(() => import('./pages/app/ExecutionsPage'))
-const AnalyticsPage = React.lazy(() => import('./pages/app/AdvancedAnalyticsPage'))
-const AccountPage = React.lazy(() => import('./pages/app/AccountPage'))
+const ExecutionsPage = React.lazy(() => import('./pages/app/SimpleExecutionsPage'))
+const AnalyticsPage = React.lazy(() => import('./pages/app/SimpleAnalyticsPage'))
+const AccountPage = React.lazy(() => import('./pages/app/SimpleAccountPage'))
 
 // Providers
 const SimpleAuthProvider = React.lazy(() => import('./components/auth/SimpleAuthProvider'))
