@@ -1,0 +1,175 @@
+groups:
+  - name: 5glabx-system-alerts
+    rules:
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is above 80% for more than 5 minutes on {{ $labels.instance }}"
+
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is above 85% for more than 5 minutes on {{ $labels.instance }}"
+
+      # High disk usage
+      - alert: HighDiskUsage
+        expr: (1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+          service: system
+        annotations:
+          summary: "High disk usage detected"
+          description: "Disk usage is above 90% for more than 5 minutes on {{ $labels.instance }}"
+
+      # Service down
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: availability
+        annotations:
+          summary: "Service is down"
+          description: "{{ $labels.job }} service is down on {{ $labels.instance }}"
+
+  - name: 5glabx-application-alerts
+    rules:
+      # High error rate
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          service: application
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is above 5% for more than 5 minutes"
+
+      # High response time
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+          service: application
+        annotations:
+          summary: "High response time detected"
+          description: "95th percentile response time is above 2 seconds for more than 5 minutes"
+
+      # Low throughput
+      - alert: LowThroughput
+        expr: rate(http_requests_total[5m]) < 10
+        for: 10m
+        labels:
+          severity: info
+          service: application
+        annotations:
+          summary: "Low throughput detected"
+          description: "Request rate is below 10 requests per second for more than 10 minutes"
+
+  - name: 5glabx-database-alerts
+    rules:
+      # High database connections
+      - alert: HighDatabaseConnections
+        expr: redis_connected_clients / redis_max_connections * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "High database connections"
+          description: "Database connection usage is above 80% for more than 5 minutes"
+
+      # Redis memory usage
+      - alert: HighRedisMemoryUsage
+        expr: redis_memory_used_bytes / redis_memory_max_bytes * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "High Redis memory usage"
+          description: "Redis memory usage is above 85% for more than 5 minutes"
+
+  - name: 5glabx-business-alerts
+    rules:
+      # High execution failure rate
+      - alert: HighExecutionFailureRate
+        expr: rate(executions_total{status="failed"}[1h]) / rate(executions_total[1h]) > 0.1
+        for: 10m
+        labels:
+          severity: warning
+          service: business
+        annotations:
+          summary: "High execution failure rate"
+          description: "Test execution failure rate is above 10% for more than 10 minutes"
+
+      # Low user activity
+      - alert: LowUserActivity
+        expr: rate(active_users_total[1h]) < 1
+        for: 30m
+        labels:
+          severity: info
+          service: business
+        annotations:
+          summary: "Low user activity"
+          description: "User activity is below 1 user per hour for more than 30 minutes"
+
+      # Quota threshold reached
+      - alert: QuotaThresholdReached
+        expr: (executions_used / executions_limit) * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+          service: business
+        annotations:
+          summary: "Quota threshold reached"
+          description: "Execution quota usage is above 90% for user {{ $labels.user_id }}"
+
+  - name: 5glabx-security-alerts
+    rules:
+      # High authentication failures
+      - alert: HighAuthFailures
+        expr: rate(auth_failures_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: critical
+          service: security
+        annotations:
+          summary: "High authentication failures"
+          description: "Authentication failure rate is above 10 per minute for more than 5 minutes"
+
+      # Suspicious activity
+      - alert: SuspiciousActivity
+        expr: rate(http_requests_total{status="401"}[5m]) > 50
+        for: 5m
+        labels:
+          severity: critical
+          service: security
+        annotations:
+          summary: "Suspicious activity detected"
+          description: "High rate of 401 responses detected for more than 5 minutes"
+
+      # API abuse
+      - alert: APIAbuse
+        expr: rate(http_requests_total[1m]) > 1000
+        for: 2m
+        labels:
+          severity: warning
+          service: security
+        annotations:
+          summary: "Potential API abuse"
+          description: "Request rate is above 1000 per minute for more than 2 minutes"

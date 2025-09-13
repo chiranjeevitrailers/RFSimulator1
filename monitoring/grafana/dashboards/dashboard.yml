@@ -1,0 +1,12 @@
+apiVersion: 1
+
+providers:
+  - name: '5GLabX Dashboards'
+    orgId: 1
+    folder: '5GLabX'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards
