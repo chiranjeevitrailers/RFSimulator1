@@ -1001,122 +1001,158 @@ export const UserDashboard: React.FC = () => {
               if (ActiveComponent) {
                 return <ActiveComponent />
               } else {
-                // Default dashboard view - clean and focused
+                // Default dashboard view - clean 2-column layout with Logs Viewer at top
                 return (
-                  <div className="h-full">
-                    {/* Welcome Dashboard */}
-                    <div className="card bg-base-200 h-full">
-                      <div className="card-body p-6">
-                        <div className="flex items-center justify-between mb-6">
-                          <div>
-                            <h1 className="text-3xl font-bold text-base-content">5GLabX Protocol Analyzer</h1>
-                            <p className="text-base-content/70 mt-2">Professional 4G/5G Protocol Analysis & Test Suite Platform</p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-success rounded-full animate-pulse"></div>
-                            <span className="text-sm text-base-content/70">System Online</span>
-                          </div>
+                  <div className="h-full flex flex-col">
+                    {/* Header Section */}
+                    <div className="mb-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h1 className="text-2xl font-bold text-base-content">5GLabX Protocol Analyzer</h1>
+                          <p className="text-base-content/70 text-sm">Professional 4G/5G Protocol Analysis & Test Suite Platform</p>
                         </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+                          <span className="text-sm text-base-content/70">System Online</span>
+                        </div>
+                      </div>
+                    </div>
 
+                    {/* Main Content - 2 Column Layout */}
+                    <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      {/* Left Column - Quick Stats & Actions */}
+                      <div className="lg:col-span-1 space-y-4">
                         {/* Quick Stats */}
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                          <div className="stat bg-base-100 rounded-lg">
-                            <div className="stat-title text-xs">Active Executions</div>
-                            <div className="stat-value text-2xl text-primary">{testExecutions.filter(e => e.status === 'running').length}</div>
-                            <div className="stat-desc text-xs">Currently running</div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="stat bg-base-100 rounded-lg p-3">
+                            <div className="stat-title text-xs">Active</div>
+                            <div className="stat-value text-lg text-primary">{testExecutions.filter(e => e.status === 'running').length}</div>
                           </div>
-                          <div className="stat bg-base-100 rounded-lg">
+                          <div className="stat bg-base-100 rounded-lg p-3">
                             <div className="stat-title text-xs">Test Cases</div>
-                            <div className="stat-value text-2xl text-secondary">{testCases.length}</div>
-                            <div className="stat-desc text-xs">Available tests</div>
+                            <div className="stat-value text-lg text-secondary">{testCases.length}</div>
                           </div>
-                          <div className="stat bg-base-100 rounded-lg">
-                            <div className="stat-title text-xs">Analytics Metrics</div>
-                            <div className="stat-value text-2xl text-accent">{analyticsMetrics.length}</div>
-                            <div className="stat-desc text-xs">Real-time data</div>
+                          <div className="stat bg-base-100 rounded-lg p-3">
+                            <div className="stat-title text-xs">Metrics</div>
+                            <div className="stat-value text-lg text-accent">{analyticsMetrics.length}</div>
                           </div>
-                          <div className="stat bg-base-100 rounded-lg">
-                            <div className="stat-title text-xs">System Status</div>
-                            <div className="stat-value text-2xl text-success">Online</div>
-                            <div className="stat-desc text-xs">All systems operational</div>
+                          <div className="stat bg-base-100 rounded-lg p-3">
+                            <div className="stat-title text-xs">Status</div>
+                            <div className="stat-value text-lg text-success">Online</div>
                           </div>
                         </div>
 
                         {/* Quick Actions */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          <div className="card bg-base-100 shadow-lg">
-                            <div className="card-body p-4">
-                              <h3 className="card-title text-sm"><TestTube className="w-5 h-5" /> Test Suites</h3>
-                              <p className="text-xs text-base-content/70">Browse and execute 3GPP test cases</p>
-                              <div className="card-actions justify-end mt-2">
-                                <button 
-                                  onClick={() => setActiveComponent('test-suites')}
-                                  className="btn btn-primary btn-sm"
-                                >
-                                  Open
+                        <div className="space-y-2">
+                          <button 
+                            onClick={() => setActiveComponent('test-suites')}
+                            className="btn btn-primary btn-sm w-full justify-start"
+                          >
+                            <TestTube className="w-4 h-4" />
+                            Test Suites
+                          </button>
+                          <button 
+                            onClick={() => setActiveComponent('analytics')}
+                            className="btn btn-secondary btn-sm w-full justify-start"
+                          >
+                            <BarChart3 className="w-4 h-4" />
+                            Analytics
+                          </button>
+                          <button 
+                            onClick={() => setActiveComponent('logs-viewer')}
+                            className="btn btn-accent btn-sm w-full justify-start"
+                          >
+                            <FileText className="w-4 h-4" />
+                            Logs Viewer
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Right Column - Logs Viewer */}
+                      <div className="lg:col-span-2">
+                        <div className="card bg-base-100 shadow-lg h-full">
+                          <div className="card-body p-4">
+                            {/* Logs Viewer Header */}
+                            <div className="flex items-center justify-between mb-4">
+                              <h3 className="card-title text-lg">Real-time Log Analysis</h3>
+                              <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+                                <span className="text-sm text-base-content/70">Live</span>
+                                <button className="btn btn-ghost btn-xs">
+                                  <RefreshCw className="w-4 h-4" />
+                                </button>
+                                <button className="btn btn-ghost btn-xs">
+                                  <Download className="w-4 h-4" />
                                 </button>
                               </div>
                             </div>
-                          </div>
 
-                          <div className="card bg-base-100 shadow-lg">
-                            <div className="card-body p-4">
-                              <h3 className="card-title text-sm"><BarChart3 className="w-5 h-5" /> Analytics</h3>
-                              <p className="text-xs text-base-content/70">Real-time performance metrics</p>
-                              <div className="card-actions justify-end mt-2">
-                                <button 
-                                  onClick={() => setActiveComponent('analytics')}
-                                  className="btn btn-secondary btn-sm"
-                                >
-                                  View
-                                </button>
+                            {/* Log Filters */}
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              <select className="select select-bordered select-sm">
+                                <option>All Layers</option>
+                                <option>PHY</option>
+                                <option>MAC</option>
+                                <option>RLC</option>
+                                <option>PDCP</option>
+                                <option>RRC</option>
+                                <option>NAS</option>
+                                <option>IMS</option>
+                              </select>
+                              <select className="select select-bordered select-sm">
+                                <option>All Levels</option>
+                                <option>ERROR</option>
+                                <option>WARN</option>
+                                <option>INFO</option>
+                                <option>DEBUG</option>
+                              </select>
+                              <select className="select select-bordered select-sm">
+                                <option>All Channels</option>
+                                <option>Channel 1</option>
+                                <option>Channel 2</option>
+                                <option>Channel 3</option>
+                              </select>
+                              <div className="relative">
+                                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-base-content/50" size={14} />
+                                <input
+                                  type="text"
+                                  placeholder="Search logs..."
+                                  className="input input-bordered input-sm pl-8 w-40"
+                                />
                               </div>
                             </div>
-                          </div>
-
-                          <div className="card bg-base-100 shadow-lg">
-                            <div className="card-body p-4">
-                              <h3 className="card-title text-sm"><FileText className="w-5 h-5" /> Logs Viewer</h3>
-                              <p className="text-xs text-base-content/70">Protocol message analysis</p>
-                              <div className="card-actions justify-end mt-2">
-                                <button 
-                                  onClick={() => setActiveComponent('logs-viewer')}
-                                  className="btn btn-accent btn-sm"
-                                >
-                                  Analyze
-                                </button>
-                              </div>
+                            
+                            {/* Log Display */}
+                            <div className="bg-base-200 rounded-lg p-3 flex-1 overflow-y-auto font-mono text-sm">
+                              {logs.length === 0 ? (
+                                <div className="text-center text-base-content/50 py-8">
+                                  <Activity className="w-8 h-8 mx-auto mb-2" />
+                                  <p>Click Start in sidebar to begin real-time log analysis</p>
+                                </div>
+                              ) : (
+                                <div className="space-y-1">
+                                  {logs.map((log) => (
+                                    <div key={log.id} className="flex items-start gap-2 py-1 hover:bg-base-300 rounded px-2">
+                                      <span className="text-xs text-base-content/50 w-16 flex-shrink-0">
+                                        {log.timestamp}
+                                      </span>
+                                      <span className={`text-xs w-12 flex-shrink-0 font-semibold ${getLevelColor(log.level)}`}>
+                                        {log.level}
+                                      </span>
+                                      <div className="flex items-center gap-1 w-12 flex-shrink-0">
+                                        {getComponentIcon(log.component)}
+                                        <span className="text-xs">{log.component}</span>
+                                      </div>
+                                      <span className="text-xs flex-1 break-all">
+                                        {log.message}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
-
-                        {/* Recent Activity */}
-                        {logs.length > 0 && (
-                          <div className="mt-6">
-                            <h3 className="text-lg font-semibold mb-3">Recent Activity</h3>
-                            <div className="bg-base-300 rounded-lg p-4 max-h-48 overflow-y-auto">
-                              <div className="space-y-1">
-                                {logs.slice(-10).map((log) => (
-                                  <div key={log.id} className="flex items-start gap-2 py-1 text-sm">
-                                    <span className="text-xs text-base-content/50 w-16 flex-shrink-0">
-                                      {log.timestamp}
-                                    </span>
-                                    <span className={`text-xs w-12 flex-shrink-0 ${getLevelColor(log.level)}`}>
-                                      {log.level}
-                                    </span>
-                                    <div className="flex items-center gap-1 w-12 flex-shrink-0">
-                                      {getComponentIcon(log.component)}
-                                      <span className="text-xs">{log.component}</span>
-                                    </div>
-                                    <span className="text-xs flex-1 break-all">
-                                      {log.message}
-                                    </span>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        )}
                       </div>
                     </div>
                   </div>
