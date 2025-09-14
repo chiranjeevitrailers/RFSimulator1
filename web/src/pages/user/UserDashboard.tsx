@@ -335,53 +335,91 @@ export const UserDashboard: React.FC = () => {
     if (!currentExecution) return null
     const id = currentExecution.id
     switch (activeComponent) {
-      case 'layer-phy-layer':
-        return { title: 'PHY Layer Analysis', queryKey: ['phy', id], fetcher: () => fiveGLabXDataService.getPHYLayerAnalysis(id) }
-      case 'layer-mac-layer':
-        return { title: 'MAC Layer Analysis', queryKey: ['mac', id], fetcher: () => fiveGLabXDataService.getMACLayerAnalysis(id) }
-      case 'layer-rlc-layer':
-        return { title: 'RLC Layer Analysis', queryKey: ['rlc', id], fetcher: () => fiveGLabXDataService.getRLCLayerAnalysis(id) }
-      case 'layer-pdcp-layer':
-        return { title: 'PDCP Layer Analysis', queryKey: ['pdcp', id], fetcher: () => fiveGLabXDataService.getPDCPLayerAnalysis(id) }
-      case 'layer-rrc-layer':
-        return { title: 'RRC Layer Analysis', queryKey: ['rrc', id], fetcher: () => fiveGLabXDataService.getRRCLayerAnalysis(id) }
-      case 'layer-nas-layer':
-        return { title: 'NAS Layer Analysis', queryKey: ['nas', id], fetcher: () => fiveGLabXDataService.getNASLayerAnalysis(id) }
-      case 'layer-ims-layer':
-        return { title: 'IMS Layer Analysis', queryKey: ['ims', id], fetcher: () => fiveGLabXDataService.getIMSAnalysis(id) }
-      case 'analyzer-amf-analyzer':
-        return { title: 'AMF Analyzer', queryKey: ['amf', id], fetcher: () => fiveGLabXDataService.getAMFAnalysis(id) }
-      case 'analyzer-smf-analyzer':
-        return { title: 'SMF Analyzer', queryKey: ['smf', id], fetcher: () => fiveGLabXDataService.getSMFAnalysis(id) }
-      case 'analyzer-upf-analyzer':
-        return { title: 'UPF Analyzer', queryKey: ['upf', id], fetcher: () => fiveGLabXDataService.getUPFAnalysis(id) }
-      case 'analyzer-ausf-analyzer':
-        return { title: 'AUSF Analyzer', queryKey: ['ausf', id], fetcher: () => fiveGLabXDataService.getAUSFAnalysis(id) }
-      case 'analyzer-udm-analyzer':
-        return { title: 'UDM Analyzer', queryKey: ['udm', id], fetcher: () => fiveGLabXDataService.getUDMAnalysis(id) }
-      case 'oran-overview':
-        return { title: 'O-RAN Overview', queryKey: ['oran-overview', id], fetcher: () => fiveGLabXDataService.getORANOverview(id) }
-      case 'oran-interfaces':
-        return { title: 'O-RAN Interfaces', queryKey: ['oran-interfaces', id], fetcher: () => fiveGLabXDataService.getORANInterfaces(id) }
-      case 'oran-cu-analysis':
-        return { title: 'O-RAN CU Analysis', queryKey: ['cu', id], fetcher: () => fiveGLabXDataService.getCUAnalysis(id) }
-      case 'oran-du-analysis':
-        return { title: 'O-RAN DU Analysis', queryKey: ['du', id], fetcher: () => fiveGLabXDataService.getDUAnalysis(id) }
-      case 'nbiot-overview':
-        return { title: 'NB-IoT Overview', queryKey: ['nbiot-over', id], fetcher: () => fiveGLabXDataService.getNBIoTOverview(id) }
-      case 'nbiot-callflow':
-        return { title: 'NB-IoT Call Flow', queryKey: ['nbiot-call', id], fetcher: () => fiveGLabXDataService.getNBIoTCallFlow(id) }
-      case 'v2x-overview':
-        return { title: 'V2X Overview', queryKey: ['v2x-over', id], fetcher: () => fiveGLabXDataService.getV2XOverview(id) }
-      case 'v2x-sidelink':
-        return { title: 'PC5 Sidelink', queryKey: ['pc5', id], fetcher: () => fiveGLabXDataService.getPC5Sidelink(id) }
-      case 'ntn-overview':
-        return { title: 'NTN Overview', queryKey: ['ntn-over', id], fetcher: () => fiveGLabXDataService.getNTNOverview(id) }
-      case 'ntn-sib19':
-        return { title: 'SIB19 Analysis', queryKey: ['sib19', id], fetcher: () => fiveGLabXDataService.getSIB19Analysis(id) }
+      // MAIN VIEWS
+      case 'analytics':
+        return { title: 'Analytics Metrics', queryKey: ['analytics', id], fetcher: () => fiveGLabXDataService.getAnalyticsMetrics(id) }
+      // O-RAN
+      case 'oran-e1-interface':
+        return { title: 'E1 Interface', queryKey: ['oran-e1', id], fetcher: () => fiveGLabXDataService.getORANInterfaces(id) }
+      case 'oran-f1-interface':
+        return { title: 'F1 Interface', queryKey: ['oran-f1', id], fetcher: () => fiveGLabXDataService.getORANInterfaces(id) }
+      case 'oran-performance':
+        return { title: 'O-RAN Performance', queryKey: ['oran-perf', id], fetcher: () => fiveGLabXDataService.getORANPerformance(id) }
+      case 'oran-xapps':
+        return { title: 'O-RAN xApps', queryKey: ['oran-xapps', id], fetcher: () => fiveGLabXDataService.getORANxApps(id) }
+      case 'oran-smo':
+        return { title: 'O-RAN SMO Analysis', queryKey: ['oran-smo', id], fetcher: () => fiveGLabXDataService.getORANSMO(id) }
+      // NB-IOT
+      case 'nbiot-analytics':
+        return { title: 'NB-IoT Analytics', queryKey: ['nbiot-analytics', id], fetcher: () => fiveGLabXDataService.getNBIoTAnalytics(id) }
+      case 'nbiot-phy-layer':
+        return { title: 'NB-IoT PHY Layer', queryKey: ['nbiot-phy', id], fetcher: () => fiveGLabXDataService.getNBIoTPHY(id) }
+      case 'nbiot-mac-layer':
+        return { title: 'NB-IoT MAC Layer', queryKey: ['nbiot-mac', id], fetcher: () => fiveGLabXDataService.getNBIoTMAC(id) }
+      case 'nbiot-rrc-layer':
+        return { title: 'NB-IoT RRC', queryKey: ['nbiot-rrc', id], fetcher: () => fiveGLabXDataService.getNBIoTRRC(id) }
+      case 'nbiot-testing':
+        return { title: 'NB-IoT Testing', queryKey: ['nbiot-testing', id], fetcher: () => fiveGLabXDataService.getNBIoTTesting(id) }
+      // V2X
+      case 'v2x-analytics':
+        return { title: 'V2X Analytics', queryKey: ['v2x-analytics', id], fetcher: () => fiveGLabXDataService.getV2XAnalytics(id) }
+      case 'v2x-phy-layer':
+        return { title: 'V2X PHY Layer', queryKey: ['v2x-phy', id], fetcher: () => fiveGLabXDataService.getV2XPHY(id) }
+      case 'v2x-mac-layer':
+        return { title: 'V2X MAC Layer', queryKey: ['v2x-mac', id], fetcher: () => fiveGLabXDataService.getV2XMAC(id) }
+      case 'v2x-testing':
+        return { title: 'V2X Testing', queryKey: ['v2x-testing', id], fetcher: () => fiveGLabXDataService.getV2XTesting(id) }
+      case 'v2x-scenarios':
+        return { title: 'V2X Scenarios', queryKey: ['v2x-scenarios', id], fetcher: () => fiveGLabXDataService.getV2XScenarios(id) }
+      // NTN
+      case 'ntn-satellites':
+        return { title: 'Satellite Links', queryKey: ['ntn-sat', id], fetcher: () => fiveGLabXDataService.getNTNSatelliteLinks(id) }
+      case 'ntn-analytics':
+        return { title: 'NTN Analytics', queryKey: ['ntn-analytics', id], fetcher: () => fiveGLabXDataService.getNTNAnalytics(id) }
+      case 'ntn-timing':
+        return { title: 'Timing & Delay', queryKey: ['ntn-timing', id], fetcher: () => fiveGLabXDataService.getNTNTiming(id) }
+      case 'ntn-doppler':
+        return { title: 'Doppler Analysis', queryKey: ['ntn-doppler', id], fetcher: () => fiveGLabXDataService.getNTNDoppler(id) }
+      case 'ntn-scenarios':
+        return { title: 'NTN Scenarios', queryKey: ['ntn-scenarios', id], fetcher: () => fiveGLabXDataService.getNTNScenarios(id) }
+      // CORE NETWORK – Config Manager
+      case 'analyzer-config-manager':
+        return { title: 'Config Manager', queryKey: ['config-manager', id], fetcher: () => fiveGLabXDataService.getConfigManagerAnalysis(id) }
+      // 4G Legacy
+      case 'analyzer-mme-analyzer':
+        return { title: 'MME Analyzer', queryKey: ['mme', id], fetcher: () => fiveGLabXDataService.getMMEAnalysis(id) }
+      case 'analyzer-sgw-analyzer':
+        return { title: 'SGW Analyzer', queryKey: ['sgw', id], fetcher: () => fiveGLabXDataService.getSGWAnalysis(id) }
+      case 'analyzer-pgw-analyzer':
+        return { title: 'PGW Analyzer', queryKey: ['pgw', id], fetcher: () => fiveGLabXDataService.getPGWAnalysis(id) }
+      // Utilities
+      case 'report-generator':
+        return { title: 'Generated Reports', queryKey: ['reports', id], fetcher: () => fiveGLabXDataService.getGeneratedReports() }
+      case 'export-manager':
+        return { title: 'Export Manager', queryKey: ['export', id], fetcher: async () => [] }
       default:
-        return null
+        return getDataViewerConfigStatic(activeComponent, id)
     }
+  }
+
+  // static map helper outside switch for protocol/core etc
+  const getDataViewerConfigStatic = (key: string, execId: string) => {
+    const mapper: Record<string, { title: string; method: (id: string) => Promise<any[]> }> = {
+      'oran-overview': { title: 'O-RAN Overview', method: fiveGLabXDataService.getORANOverview },
+      'oran-interfaces': { title: 'O-RAN Interfaces', method: fiveGLabXDataService.getORANInterfaces },
+      'oran-cu-analysis': { title: 'O-RAN CU Analysis', method: fiveGLabXDataService.getCUAnalysis },
+      'oran-du-analysis': { title: 'O-RAN DU Analysis', method: fiveGLabXDataService.getDUAnalysis },
+      'nbiot-overview': { title: 'NB-IoT Overview', method: fiveGLabXDataService.getNBIoTOverview },
+      'nbiot-callflow': { title: 'NB-IoT Call Flow', method: fiveGLabXDataService.getNBIoTCallFlow },
+      'v2x-overview': { title: 'V2X Overview', method: fiveGLabXDataService.getV2XOverview },
+      'v2x-sidelink': { title: 'PC5 Sidelink', method: fiveGLabXDataService.getPC5Sidelink },
+      'ntn-overview': { title: 'NTN Overview', method: fiveGLabXDataService.getNTNOverview },
+      'ntn-sib19': { title: 'SIB19 Analysis', method: fiveGLabXDataService.getSIB19Analysis },
+      // Protocol layers handled above earlier
+    }
+    const cfg = mapper[key]
+    if (!cfg) return null
+    return { title: cfg.title, queryKey: [key, execId], fetcher: () => cfg.method(execId) }
   }
 
   if (!user) {
