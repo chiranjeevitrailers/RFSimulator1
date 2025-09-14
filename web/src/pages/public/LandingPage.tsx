@@ -14,7 +14,7 @@ import {
   ArrowUpTrayIcon,
   UsersIcon,
   TrophyIcon,
-  TrendingUpIcon,
+  ChartBarSquareIcon,
   GlobeAltIcon,
   ShieldCheckIcon,
   CheckCircleIcon,
@@ -345,7 +345,7 @@ const LandingPage: React.FC = () => {
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mx-auto mb-4">
-                <TrendingUpIcon className="h-8 w-8" />
+                <ChartBarSquareIcon className="h-8 w-8" />
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-1">70%</div>
               <div className="text-lg font-semibold text-gray-700 mb-1">Time Saved</div>
