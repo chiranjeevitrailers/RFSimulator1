@@ -772,6 +772,96 @@ export const UserDashboard: React.FC = () => {
               })}
             </div>
 
+            {/* Protocol Stack Log Analysis */}
+            <div className="space-y-1 mt-6">
+              <h3 className="text-xs font-semibold text-base-content/50 uppercase tracking-wider mb-2">
+                Protocol Stack Log Analysis
+              </h3>
+              
+              {/* Processing Controls */}
+              <div className="bg-base-300 rounded-lg p-3 mb-3">
+                <h4 className="text-xs font-semibold mb-2">Processing Controls</h4>
+                <div className="space-y-2">
+                  <div className="form-control">
+                    <label className="label py-1">
+                      <span className="label-text text-xs">Test Case</span>
+                    </label>
+                    <select 
+                      className="select select-bordered select-xs"
+                      onChange={(e) => {
+                        const testCase = testCases.find(tc => tc.id === e.target.value)
+                        if (testCase) {
+                          setCurrentExecution({ test_case: testCase })
+                        }
+                      }}
+                    >
+                      <option value="">Choose...</option>
+                      {testCases.slice(0, 5).map((testCase) => (
+                        <option key={testCase.id} value={testCase.id}>
+                          {testCase.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex gap-1">
+                    <button
+                      onClick={() => {
+                        const selectedTestCase = currentExecution?.test_case || testCases[0]
+                        if (selectedTestCase) {
+                          isProcessing ? stopTestExecution() : startTestExecution(selectedTestCase.id)
+                        }
+                      }}
+                      className={`btn btn-xs flex-1 ${isProcessing ? 'btn-error' : 'btn-success'}`}
+                      disabled={!testCases.length}
+                    >
+                      {isProcessing ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+                      {isProcessing ? 'Stop' : 'Start'}
+                    </button>
+                    <button className="btn btn-xs btn-outline">
+                      <RotateCcw className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* System Status */}
+              <div className="bg-base-300 rounded-lg p-3 mb-3">
+                <h4 className="text-xs font-semibold mb-2">System Status</h4>
+                <div className="space-y-1 text-xs">
+                  <div className="flex justify-between">
+                    <span>Active</span>
+                    <span className="font-bold">{testExecutions.filter(e => e.status === 'running').length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Test Cases</span>
+                    <span className="font-bold">{testCases.length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Metrics</span>
+                    <span className="font-bold">{analyticsMetrics.length}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Real-time</span>
+                    <div className={`w-2 h-2 rounded-full ${realTimeDataService.isConnectedToRealTime() ? 'bg-success' : 'bg-error'}`}></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* CLI Integrations */}
+              <div className="bg-base-300 rounded-lg p-3">
+                <h4 className="text-xs font-semibold mb-2">CLI Integrations</h4>
+                <div className="space-y-1">
+                  {cliIntegrations.map((cli, index) => (
+                    <div key={index} className="flex items-center gap-2 text-xs">
+                      <cli.icon className="w-3 h-3" />
+                      <span className="flex-1 truncate">{cli.name.split(' ')[0]}</span>
+                      <div className={`w-1.5 h-1.5 rounded-full ${cli.status === 'connected' ? 'bg-success' : 'bg-error'}`}></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
             {/* Utilities */}
             <div className="space-y-1 mt-6">
               <h3 className="text-xs font-semibold text-base-content/50 uppercase tracking-wider mb-2">
@@ -883,128 +973,104 @@ export const UserDashboard: React.FC = () => {
               if (ActiveComponent) {
                 return <ActiveComponent />
               } else {
-                // Default dashboard view with controls
+                // Default dashboard view - clean and focused
                 return (
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
-                    {/* Left Panel - Controls */}
-                    <div className="lg:col-span-1 space-y-4">
-                      {/* Processing Controls */}
-                      <div className="card bg-base-200">
-                        <div className="card-body p-4">
-                          <h3 className="card-title text-sm mb-3">Processing Controls</h3>
-                          <div className="space-y-3">
-                            <div className="form-control">
-                              <label className="label">
-                                <span className="label-text text-xs">Select Test Case</span>
-                              </label>
-                              <select 
-                                className="select select-bordered select-sm"
-                                onChange={(e) => {
-                                  const testCase = testCases.find(tc => tc.id === e.target.value)
-                                  if (testCase) {
-                                    setCurrentExecution({ test_case: testCase })
-                                  }
-                                }}
-                              >
-                                <option value="">Choose test case...</option>
-                                {testCases.slice(0, 10).map((testCase) => (
-                                  <option key={testCase.id} value={testCase.id}>
-                                    {testCase.name} ({testCase.category})
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() => {
-                                  const selectedTestCase = currentExecution?.test_case || testCases[0]
-                                  if (selectedTestCase) {
-                                    isProcessing ? stopTestExecution() : startTestExecution(selectedTestCase.id)
-                                  }
-                                }}
-                                className={`btn btn-sm flex-1 ${isProcessing ? 'btn-error' : 'btn-success'}`}
-                                disabled={!testCases.length}
-                              >
-                                {isProcessing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                                {isProcessing ? 'Stop' : 'Start'}
-                              </button>
-                              <button className="btn btn-sm btn-outline">
-                                <RotateCcw className="w-4 h-4" />
-                                Reset
-                              </button>
-                            </div>
+                  <div className="h-full">
+                    {/* Welcome Dashboard */}
+                    <div className="card bg-base-200 h-full">
+                      <div className="card-body p-6">
+                        <div className="flex items-center justify-between mb-6">
+                          <div>
+                            <h1 className="text-3xl font-bold text-base-content">5GLabX Protocol Analyzer</h1>
+                            <p className="text-base-content/70 mt-2">Professional 4G/5G Protocol Analysis & Test Suite Platform</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 bg-success rounded-full animate-pulse"></div>
+                            <span className="text-sm text-base-content/70">System Online</span>
                           </div>
                         </div>
-                      </div>
 
-                      {/* System Status */}
-                      <div className="card bg-base-200">
-                        <div className="card-body p-4">
-                          <h3 className="card-title text-sm mb-3">System Status</h3>
-                          <div className="space-y-2">
-                            <div className="flex justify-between text-sm">
-                              <span>Active Executions</span>
-                              <span className="font-bold">{testExecutions.filter(e => e.status === 'running').length}</span>
-                            </div>
-                            <div className="flex justify-between text-sm">
-                              <span>Total Test Cases</span>
-                              <span className="font-bold">{testCases.length}</span>
-                            </div>
-                            <div className="flex justify-between text-sm">
-                              <span>Analytics Metrics</span>
-                              <span className="font-bold">{analyticsMetrics.length}</span>
-                            </div>
-                            <div className="flex justify-between text-sm">
-                              <span>Real-time Status</span>
-                              <span className={`font-bold ${realTimeDataService.isConnectedToRealTime() ? 'text-success' : 'text-error'}`}>
-                                {realTimeDataService.getConnectionStatus()}
-                              </span>
-                            </div>
+                        {/* Quick Stats */}
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                          <div className="stat bg-base-100 rounded-lg">
+                            <div className="stat-title text-xs">Active Executions</div>
+                            <div className="stat-value text-2xl text-primary">{testExecutions.filter(e => e.status === 'running').length}</div>
+                            <div className="stat-desc text-xs">Currently running</div>
+                          </div>
+                          <div className="stat bg-base-100 rounded-lg">
+                            <div className="stat-title text-xs">Test Cases</div>
+                            <div className="stat-value text-2xl text-secondary">{testCases.length}</div>
+                            <div className="stat-desc text-xs">Available tests</div>
+                          </div>
+                          <div className="stat bg-base-100 rounded-lg">
+                            <div className="stat-title text-xs">Analytics Metrics</div>
+                            <div className="stat-value text-2xl text-accent">{analyticsMetrics.length}</div>
+                            <div className="stat-desc text-xs">Real-time data</div>
+                          </div>
+                          <div className="stat bg-base-100 rounded-lg">
+                            <div className="stat-title text-xs">System Status</div>
+                            <div className="stat-value text-2xl text-success">Online</div>
+                            <div className="stat-desc text-xs">All systems operational</div>
                           </div>
                         </div>
-                      </div>
 
-                      {/* CLI Integrations */}
-                      <div className="card bg-base-200">
-                        <div className="card-body p-4">
-                          <h3 className="card-title text-sm mb-3">CLI Integrations</h3>
-                          <div className="space-y-2">
-                            {cliIntegrations.map((cli, index) => (
-                              <div key={index} className="flex items-center gap-2 text-sm">
-                                <cli.icon className="w-4 h-4" />
-                                <span className="flex-1">{cli.name}</span>
-                                <div className={`w-2 h-2 rounded-full ${cli.status === 'connected' ? 'bg-success' : 'bg-error'}`}></div>
+                        {/* Quick Actions */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          <div className="card bg-base-100 shadow-lg">
+                            <div className="card-body p-4">
+                              <h3 className="card-title text-sm"><TestTube className="w-5 h-5" /> Test Suites</h3>
+                              <p className="text-xs text-base-content/70">Browse and execute 3GPP test cases</p>
+                              <div className="card-actions justify-end mt-2">
+                                <button 
+                                  onClick={() => setActiveComponent('test-suites')}
+                                  className="btn btn-primary btn-sm"
+                                >
+                                  Open
+                                </button>
                               </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right Panel - Log Display */}
-                    <div className="lg:col-span-2">
-                      <div className="card bg-base-200 h-full">
-                        <div className="card-body p-4">
-                          <div className="flex items-center justify-between mb-4">
-                            <h3 className="card-title text-sm">Real-time Log Analysis</h3>
-                            <div className="flex items-center gap-2">
-                              <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
-                              <span className="text-sm text-base-content/70">Live</span>
                             </div>
                           </div>
-                          
-                          {/* Log Display */}
-                          <div className="bg-base-300 rounded-lg p-4 h-[calc(100%-4rem)] overflow-y-auto font-mono text-sm">
-                            {logs.length === 0 ? (
-                              <div className="text-center text-base-content/50 py-8">
-                                <Activity className="w-8 h-8 mx-auto mb-2" />
-                                <p>Click Start to begin real-time log analysis</p>
+
+                          <div className="card bg-base-100 shadow-lg">
+                            <div className="card-body p-4">
+                              <h3 className="card-title text-sm"><BarChart3 className="w-5 h-5" /> Analytics</h3>
+                              <p className="text-xs text-base-content/70">Real-time performance metrics</p>
+                              <div className="card-actions justify-end mt-2">
+                                <button 
+                                  onClick={() => setActiveComponent('analytics')}
+                                  className="btn btn-secondary btn-sm"
+                                >
+                                  View
+                                </button>
                               </div>
-                            ) : (
+                            </div>
+                          </div>
+
+                          <div className="card bg-base-100 shadow-lg">
+                            <div className="card-body p-4">
+                              <h3 className="card-title text-sm"><FileText className="w-5 h-5" /> Logs Viewer</h3>
+                              <p className="text-xs text-base-content/70">Protocol message analysis</p>
+                              <div className="card-actions justify-end mt-2">
+                                <button 
+                                  onClick={() => setActiveComponent('logs-viewer')}
+                                  className="btn btn-accent btn-sm"
+                                >
+                                  Analyze
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Recent Activity */}
+                        {logs.length > 0 && (
+                          <div className="mt-6">
+                            <h3 className="text-lg font-semibold mb-3">Recent Activity</h3>
+                            <div className="bg-base-300 rounded-lg p-4 max-h-48 overflow-y-auto">
                               <div className="space-y-1">
-                                {logs.map((log) => (
-                                  <div key={log.id} className="flex items-start gap-2 py-1">
-                                    <span className="text-xs text-base-content/50 w-20 flex-shrink-0">
+                                {logs.slice(-10).map((log) => (
+                                  <div key={log.id} className="flex items-start gap-2 py-1 text-sm">
+                                    <span className="text-xs text-base-content/50 w-16 flex-shrink-0">
                                       {log.timestamp}
                                     </span>
                                     <span className={`text-xs w-12 flex-shrink-0 ${getLevelColor(log.level)}`}>
@@ -1020,9 +1086,9 @@ export const UserDashboard: React.FC = () => {
                                   </div>
                                 ))}
                               </div>
-                            )}
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                   </div>
