@@ -10,7 +10,7 @@ import {
   CloudIcon,
   BeakerIcon,
   ChartBarIcon,
-  DownloadIcon,
+  ArrowDownTrayIcon,
   ArrowUpTrayIcon,
   UsersIcon,
   AwardIcon,
@@ -216,7 +216,7 @@ const LandingPage: React.FC = () => {
                   03
                 </div>
                 <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-6">
-                  <DownloadIcon className="h-8 w-8" />
+                  <ArrowDownTrayIcon className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Execute & Analyze</h3>
                 <p className="text-gray-600 mb-6">
