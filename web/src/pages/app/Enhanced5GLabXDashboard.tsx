@@ -167,7 +167,7 @@ import {
 export const Enhanced5GLabXDashboard: React.FC = () => {
   const { user } = useSimpleAuth()
   const { quotaInfo, canExecute } = useSimpleBilling()
-  const [activeTab, setActiveTab] = useState('overview')
+  const [activeView, setActiveView] = useState('dashboard')
   const [realTimeData, setRealTimeData] = useState({
     activeConnections: 1247,
     messagesProcessed: 45632,
@@ -224,6 +224,204 @@ export const Enhanced5GLabXDashboard: React.FC = () => {
     if (hour < 12) return 'Good morning'
     if (hour < 18) return 'Good afternoon'
     return 'Good evening'
+  }
+
+  const renderContent = () => {
+    switch (activeView) {
+      case 'dashboard':
+        return (
+          <div className="space-y-6">
+            {/* Protocol Analyzers - Top Section */}
+            <div className="card bg-base-200">
+              <div className="card-body">
+                <h2 className="card-title mb-4">Protocol Analyzers</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {protocolAnalyzers.map((analyzer, index) => (
+                    <div key={index} className="card bg-base-100 hover:bg-base-300 transition-colors cursor-pointer">
+                      <div className="card-body p-4">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className={`p-2 rounded-lg ${analyzer.color} text-white`}>
+                            {analyzer.icon}
+                          </div>
+                          <h3 className="font-semibold text-sm">{analyzer.name}</h3>
+                        </div>
+                        <p className="text-xs text-base-content/70 mb-2">{analyzer.components.join(', ')}</p>
+                        <div className="flex items-center justify-between">
+                          <div className={`w-2 h-2 rounded-full ${analyzer.status === 'active' ? 'bg-success' : 'bg-error'}`}></div>
+                          <span className="text-xs text-base-content/50">Click to analyze</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* System Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {systemMetrics.map((metric, index) => (
+                <div key={index} className="card bg-base-200">
+                  <div className="card-body p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-base-content/70">{metric.name}</p>
+                        <p className="text-2xl font-bold">{metric.value}</p>
+                        <p className={`text-sm ${metric.trend === 'up' ? 'text-success' : 'text-error'}`}>
+                          {metric.change}
+                        </p>
+                      </div>
+                      <div className="text-primary">
+                        {metric.icon}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+
+      case 'logs-viewer':
+        return (
+          <div className="space-y-6">
+            <div className="card bg-base-200">
+              <div className="card-body">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="card-title">Real-time Log Analysis</h2>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+                    <span className="text-sm text-base-content/70">Live</span>
+                    <button className="btn btn-ghost btn-sm">
+                      <RotateCcw className="w-4 h-4" />
+                      Refresh
+                    </button>
+                    <button className="btn btn-ghost btn-sm">
+                      <Download className="w-4 h-4" />
+                      Export
+                    </button>
+                  </div>
+                </div>
+
+                {/* Log Filters */}
+                <div className="flex flex-wrap gap-3 mb-4">
+                  <select className="select select-bordered select-sm">
+                    <option>All Layers</option>
+                    <option>PHY</option>
+                    <option>MAC</option>
+                    <option>RLC</option>
+                    <option>PDCP</option>
+                    <option>RRC</option>
+                    <option>NAS</option>
+                    <option>IMS</option>
+                  </select>
+                  <select className="select select-bordered select-sm">
+                    <option>All Levels</option>
+                    <option>ERROR</option>
+                    <option>WARN</option>
+                    <option>INFO</option>
+                    <option>DEBUG</option>
+                  </select>
+                  <select className="select select-bordered select-sm">
+                    <option>All Channels</option>
+                    <option>Channel 1</option>
+                    <option>Channel 2</option>
+                    <option>Channel 3</option>
+                  </select>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-base-content/50" size={16} />
+                    <input
+                      type="text"
+                      placeholder="Search logs..."
+                      className="input input-bordered input-sm pl-10 w-48"
+                    />
+                  </div>
+                  <button className="btn btn-primary btn-sm">
+                    <Filter className="w-4 h-4" />
+                    Apply Filters
+                  </button>
+                </div>
+                
+                {/* Log Display */}
+                <div className="bg-base-100 rounded-lg p-4 h-64 overflow-y-auto font-mono text-sm">
+                  <div className="flex items-center justify-center h-full text-center text-base-content/50">
+                    <div>
+                      <Activity className="w-12 h-12 mx-auto mb-4" />
+                      <p className="text-lg font-medium mb-2">No logs available</p>
+                      <p className="text-sm">Click "Analyze Logs" to begin real-time log analysis</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'test-suites':
+        return (
+          <div className="space-y-6">
+            <div className="card bg-base-200">
+              <div className="card-body">
+                <h2 className="card-title mb-4">Test Suites Library</h2>
+                <div className="space-y-3">
+                  {testSuites.map((suite, index) => (
+                    <div key={index} className="card bg-base-100 hover:bg-base-300 transition-colors">
+                      <div className="card-body p-4">
+                        <div className="flex items-center gap-3">
+                          <div className="text-primary">
+                            {suite.icon}
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-sm">{suite.name}</h3>
+                            <p className="text-xs text-base-content/70">{suite.description}</p>
+                          </div>
+                          <span className="badge badge-primary badge-sm">{suite.count}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'oran-overview':
+        return (
+          <div className="space-y-6">
+            <div className="card bg-base-200">
+              <div className="card-body">
+                <h2 className="card-title mb-4">O-RAN Overview</h2>
+                <p className="text-base-content/70 mb-4">Complete O-RAN Analysis and Monitoring</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="card bg-base-100">
+                    <div className="card-body p-4">
+                      <h3 className="font-semibold mb-2">O-RAN Interfaces</h3>
+                      <p className="text-sm text-base-content/70">E1, F1 Interface Analysis</p>
+                    </div>
+                  </div>
+                  <div className="card bg-base-100">
+                    <div className="card-body p-4">
+                      <h3 className="font-semibold mb-2">CU/DU Analysis</h3>
+                      <p className="text-sm text-base-content/70">Centralized/Distributed Unit</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      default:
+        return (
+          <div className="flex items-center justify-center h-full text-center text-base-content/50">
+            <div>
+              <Activity className="w-12 h-12 mx-auto mb-4" />
+              <p className="text-lg font-medium mb-2">Select a component from the sidebar</p>
+              <p className="text-sm">Choose an analysis tool to get started</p>
+            </div>
+          </div>
+        )
+    }
   }
 
   const protocolAnalyzers = [
@@ -398,20 +596,64 @@ export const Enhanced5GLabXDashboard: React.FC = () => {
           ))}
         </div>
 
-        {/* Quick Actions */}
-        <div className="space-y-2 mb-4">
-          <Link to="/app/test-suites" className="btn btn-primary btn-sm w-full justify-start">
-            <TestTube className="w-4 h-4" />
-            Test Suites
-          </Link>
-          <Link to="/app/analyzer" className="btn btn-secondary btn-sm w-full justify-start">
+        {/* Main Navigation */}
+        <div className="space-y-1 mb-4">
+          <h3 className="text-xs font-semibold text-base-content/50 uppercase tracking-wider mb-2">Main Views</h3>
+          <button
+            onClick={() => setActiveView('dashboard')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'dashboard' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
             <BarChart3 className="w-4 h-4" />
-            Protocol Analyzer
-          </Link>
-          <Link to="/app/executions" className="btn btn-accent btn-sm w-full justify-start">
-            <Activity className="w-4 h-4" />
-            Executions
-          </Link>
+            <span>Dashboard</span>
+          </button>
+          <button
+            onClick={() => setActiveView('logs-viewer')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'logs-viewer' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            <span>Logs Viewer</span>
+          </button>
+          <button
+            onClick={() => setActiveView('enhanced-logs')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'enhanced-logs' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            <span>Enhanced Logs</span>
+          </button>
+          <button
+            onClick={() => setActiveView('layer-trace')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'layer-trace' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span>Layer Trace</span>
+          </button>
+          <button
+            onClick={() => setActiveView('call-flow')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'call-flow' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <GitBranch className="w-4 h-4" />
+            <span>Call Flow</span>
+          </button>
+          <button
+            onClick={() => setActiveView('analytics')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'analytics' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <BarChart3 className="w-4 h-4" />
+            <span>Analytics</span>
+            <span className="badge badge-xs badge-success">LIVE</span>
+          </button>
         </div>
 
         {/* System Status */}
@@ -440,25 +682,132 @@ export const Enhanced5GLabXDashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Test Suites Component */}
-        <div className="bg-base-200 rounded-lg p-3 mb-4">
-          <h4 className="text-sm font-semibold mb-3">Test Suites</h4>
-          <div className="space-y-3">
-            {testSuites.map((suite, index) => (
-              <div key={index} className="bg-base-100 rounded p-2">
-                <div className="flex items-center gap-2 mb-1">
-                  <suite.icon className="w-3 h-3 text-primary" />
-                  <span className="text-xs font-medium flex-1 truncate">{suite.name}</span>
-                  <span className="badge badge-xs badge-primary">{suite.count}</span>
-                </div>
-                <p className="text-xs text-base-content/60 leading-tight">{suite.description}</p>
-              </div>
-            ))}
-            <Link to="/app/test-suites" className="btn btn-primary btn-xs w-full mt-3">
-              <TestTube className="w-3 h-3" />
-              Manage Test Suites
-            </Link>
-          </div>
+        {/* O-RAN Analysis */}
+        <div className="space-y-1 mb-4">
+          <h3 className="text-xs font-semibold text-base-content/50 uppercase tracking-wider mb-2">O-RAN Analysis</h3>
+          <button
+            onClick={() => setActiveView('oran-overview')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'oran-overview' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <Globe className="w-4 h-4" />
+            <span>O-RAN Overview</span>
+          </button>
+          <button
+            onClick={() => setActiveView('oran-interfaces')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'oran-interfaces' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <GitBranch className="w-4 h-4" />
+            <span>Interfaces</span>
+          </button>
+          <button
+            onClick={() => setActiveView('oran-cu-analysis')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'oran-cu-analysis' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <Cpu className="w-4 h-4" />
+            <span>CU Analysis</span>
+          </button>
+          <button
+            onClick={() => setActiveView('oran-du-analysis')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'oran-du-analysis' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <Cpu className="w-4 h-4" />
+            <span>DU Analysis</span>
+          </button>
+          <button
+            onClick={() => setActiveView('oran-e1-interface')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'oran-e1-interface' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <Network className="w-4 h-4" />
+            <span>E1 Interface</span>
+          </button>
+          <button
+            onClick={() => setActiveView('oran-f1-interface')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'oran-f1-interface' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <Network className="w-4 h-4" />
+            <span>F1 Interface</span>
+          </button>
+          <button
+            onClick={() => setActiveView('oran-performance')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'oran-performance' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <Gauge className="w-4 h-4" />
+            <span>Performance</span>
+            <span className="badge badge-xs badge-success">LIVE</span>
+          </button>
+          <button
+            onClick={() => setActiveView('oran-xapps')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'oran-xapps' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <Smartphone className="w-4 h-4" />
+            <span>xApps</span>
+          </button>
+          <button
+            onClick={() => setActiveView('oran-smo')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'oran-smo' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <Cloud className="w-4 h-4" />
+            <span>SMO Analysis</span>
+          </button>
+        </div>
+
+        {/* Test Suites */}
+        <div className="space-y-1 mb-4">
+          <h3 className="text-xs font-semibold text-base-content/50 uppercase tracking-wider mb-2">Test Suites</h3>
+          <button
+            onClick={() => setActiveView('test-suites')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'test-suites' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <TestTube className="w-4 h-4" />
+            <span>Test Suites Library</span>
+          </button>
+          <button
+            onClick={() => setActiveView('test-execution')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'test-execution' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <Play className="w-4 h-4" />
+            <span>Test Execution</span>
+          </button>
+          <button
+            onClick={() => setActiveView('test-results')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'test-results' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <BarChart3 className="w-4 h-4" />
+            <span>Test Results</span>
+          </button>
+          <button
+            onClick={() => setActiveView('test-automation')}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activeView === 'test-automation' ? 'bg-primary text-primary-content' : 'text-base-content hover:bg-base-300'
+            }`}
+          >
+            <Settings className="w-4 h-4" />
+            <span>Test Automation</span>
+          </button>
         </div>
 
         {/* CLI Integrations */}
@@ -498,111 +847,10 @@ export const Enhanced5GLabXDashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Dashboard Content - Scrollable */}
+        {/* Dynamic Content Area - Scrollable */}
         <div className="flex-1 bg-base-100 p-4 overflow-y-auto">
-          <div className="space-y-6">
-            {/* Protocol Analyzers - Top Section */}
-            <div className="card bg-base-200">
-              <div className="card-body">
-                <h2 className="card-title mb-4">Protocol Analyzers</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {protocolAnalyzers.map((analyzer, index) => (
-                    <Link key={index} to={analyzer.link} className="card bg-base-100 hover:bg-base-300 transition-colors">
-                      <div className="card-body p-4">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className={`p-2 rounded-lg ${analyzer.color} text-white`}>
-                            {analyzer.icon}
-                          </div>
-                          <h3 className="font-semibold text-sm">{analyzer.name}</h3>
-                        </div>
-                        <p className="text-xs text-base-content/70 mb-2">{analyzer.components.join(', ')}</p>
-                        <div className="flex items-center justify-between">
-                          <div className={`w-2 h-2 rounded-full ${analyzer.status === 'active' ? 'bg-success' : 'bg-error'}`}></div>
-                          <span className="text-xs text-base-content/50">Click to analyze</span>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-                <div className="mt-4 text-center">
-                  <Link to="/app/analyzer" className="btn btn-primary btn-sm">
-                    <Eye className="w-4 h-4" />
-                    View All Protocol Analyzers
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* Real-time Log Analysis Section */}
-            <div className="card bg-base-200">
-              <div className="card-body">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="card-title">Real-time Log Analysis</h2>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
-                    <span className="text-sm text-base-content/70">Live</span>
-                    <button className="btn btn-ghost btn-sm">
-                      <RotateCcw className="w-4 h-4" />
-                      Refresh
-                    </button>
-                    <button className="btn btn-ghost btn-sm">
-                      <Download className="w-4 h-4" />
-                      Export
-                    </button>
-                  </div>
-                </div>
-
-                {/* Log Filters */}
-                <div className="flex flex-wrap gap-3 mb-4">
-                  <select className="select select-bordered select-sm">
-                    <option>All Layers</option>
-                    <option>PHY</option>
-                    <option>MAC</option>
-                    <option>RLC</option>
-                    <option>PDCP</option>
-                    <option>RRC</option>
-                    <option>NAS</option>
-                    <option>IMS</option>
-                  </select>
-                  <select className="select select-bordered select-sm">
-                    <option>All Levels</option>
-                    <option>ERROR</option>
-                    <option>WARN</option>
-                    <option>INFO</option>
-                    <option>DEBUG</option>
-                  </select>
-                  <select className="select select-bordered select-sm">
-                    <option>All Channels</option>
-                    <option>Channel 1</option>
-                    <option>Channel 2</option>
-                    <option>Channel 3</option>
-                  </select>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-base-content/50" size={16} />
-                    <input
-                      type="text"
-                      placeholder="Search logs..."
-                      className="input input-bordered input-sm pl-10 w-48"
-                    />
-                  </div>
-                  <button className="btn btn-primary btn-sm">
-                    <Filter className="w-4 h-4" />
-                    Apply Filters
-                  </button>
-                </div>
-                
-                {/* Log Display */}
-                <div className="bg-base-100 rounded-lg p-4 h-64 overflow-y-auto font-mono text-sm">
-                  <div className="flex items-center justify-center h-full text-center text-base-content/50">
-                    <div>
-                      <Activity className="w-12 h-12 mx-auto mb-4" />
-                      <p className="text-lg font-medium mb-2">No logs available</p>
-                      <p className="text-sm">Click "Analyze Logs" to begin real-time log analysis</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          {renderContent()}
+        </div>
 
             {/* System Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -962,75 +1210,6 @@ export const Enhanced5GLabXDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Real-time Monitoring */}
-      <div className="card bg-base-200">
-        <div className="card-body">
-          <h2 className="card-title mb-4">Real-time Monitoring</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="stat bg-base-100 rounded-lg">
-              <div className="stat-figure text-primary">
-                <Activity className="w-8 h-8" />
-              </div>
-              <div className="stat-title">Live Messages</div>
-              <div className="stat-value text-primary">{realTimeData.messagesProcessed.toLocaleString()}</div>
-              <div className="stat-desc">Messages processed today</div>
-            </div>
-            <div className="stat bg-base-100 rounded-lg">
-              <div className="stat-figure text-secondary">
-                <Network className="w-8 h-8" />
-              </div>
-              <div className="stat-title">Active Connections</div>
-              <div className="stat-value text-secondary">{realTimeData.activeConnections.toLocaleString()}</div>
-              <div className="stat-desc">Current connections</div>
-            </div>
-            <div className="stat bg-base-100 rounded-lg">
-              <div className="stat-figure text-accent">
-                <TestTube className="w-8 h-8" />
-              </div>
-              <div className="stat-title">Test Executions</div>
-              <div className="stat-value text-accent">{realTimeData.testExecutions}</div>
-              <div className="stat-desc">Tests running now</div>
-            </div>
-            <div className="stat bg-base-100 rounded-lg">
-              <div className="stat-figure text-success">
-                <Gauge className="w-8 h-8" />
-              </div>
-              <div className="stat-title">System Health</div>
-              <div className="stat-value text-success">{realTimeData.systemHealth}%</div>
-              <div className="stat-desc">Overall system health</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Quota Information */}
-      {quotaInfo && (
-        <div className="card bg-base-200">
-          <div className="card-body">
-            <h2 className="card-title mb-4">Usage & Quotas</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-primary">{quotaInfo.used_executions}</p>
-                <p className="text-sm text-base-content/70">Tests Executed</p>
-                <p className="text-xs text-base-content/50">of {quotaInfo.max_test_executions}</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-secondary">{quotaInfo.used_test_suites}</p>
-                <p className="text-sm text-base-content/70">Test Suites</p>
-                <p className="text-xs text-base-content/50">of {quotaInfo.max_test_suites}</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-accent">{quotaInfo.plan_type}</p>
-                <p className="text-sm text-base-content/70">Current Plan</p>
-                <p className="text-xs text-base-content/50">Upgrade available</p>
-              </div>
-            </div>
-          </div>
-        </div>
-            )}
-          </div>
-        </div>
-      </div>
     </div>
   )
 }
