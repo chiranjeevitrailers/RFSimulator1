@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getCurrentUser, logoutUser } from '../../lib/auth/simpleAuth'
-import { User } from '../../lib/auth/simpleAuth'
+import { useSimpleAuth } from '../../components/auth/SimpleAuthProvider'
 import { 
   TestTube, 
   BarChart3, 
@@ -74,8 +73,7 @@ import {
 } from 'lucide-react'
 
 export const UserDashboard: React.FC = () => {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
+  const { user, signOut } = useSimpleAuth()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [activeComponent, setActiveComponent] = useState('dashboard')
   const [isProcessing, setIsProcessing] = useState(false)
@@ -83,21 +81,13 @@ export const UserDashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const navigate = useNavigate()
 
-  useEffect(() => {
-    // Check if user is logged in
-    const currentUser = getCurrentUser()
-    if (!currentUser) {
+  const handleLogout = async () => {
+    try {
+      await signOut()
       navigate('/login')
-      return
+    } catch (error) {
+      console.error('Error signing out:', error)
     }
-    
-    setUser(currentUser)
-    setLoading(false)
-  }, [navigate])
-
-  const handleLogout = () => {
-    logoutUser()
-    navigate('/login')
   }
 
   // 5GLabX Navigation Components
@@ -218,7 +208,7 @@ export const UserDashboard: React.FC = () => {
     }
   }
 
-  if (loading) {
+  if (!user) {
     return (
       <div className="min-h-screen bg-base-100 flex items-center justify-center">
         <div className="text-center">
