@@ -92,13 +92,61 @@ export const UserDashboard: React.FC = () => {
   }
 
   // 5GLabX Navigation Components
-  const navigation = [
+  const mainViews = [
     { name: 'Dashboard', href: 'dashboard', icon: BarChart3 },
-    { name: 'Test Suites', href: 'test-suites', icon: TestTube },
-    { name: 'Protocol Analyzer', href: 'analyzer', icon: BarChart3 },
-    { name: 'Executions', href: 'executions', icon: Clock },
-    { name: 'Analytics', href: 'analytics', icon: BarChart3 },
-    { name: 'Account', href: 'account', icon: User },
+    { name: 'Logs Viewer', href: 'logs-viewer', icon: FileText },
+    { name: 'Enhanced Logs', href: 'enhanced-logs', icon: FileText },
+    { name: 'Layer Trace', href: 'layer-trace', icon: Layers },
+    { name: 'Call Flow', href: 'callflow', icon: GitBranch },
+    { name: 'Analytics', href: 'analytics', icon: BarChart3, badge: 'LIVE' },
+  ]
+
+  const oranAnalysis = [
+    { name: 'O-RAN Overview', href: 'oran-overview', icon: Globe },
+    { name: 'Interfaces', href: 'oran-interfaces', icon: GitBranch },
+    { name: 'CU Analysis', href: 'oran-cu-analysis', icon: Cpu },
+    { name: 'DU Analysis', href: 'oran-du-analysis', icon: Cpu },
+    { name: 'E1 Interface', href: 'oran-e1-interface', icon: Network },
+    { name: 'F1 Interface', href: 'oran-f1-interface', icon: Network },
+    { name: 'Performance', href: 'oran-performance', icon: Gauge, badge: 'LIVE' },
+    { name: 'xApps', href: 'oran-xapps', icon: Smartphone },
+    { name: 'SMO Analysis', href: 'oran-smo', icon: Cloud },
+  ]
+
+  const nbiotAnalysis = [
+    { name: 'NB-IoT Overview', href: 'nbiot-overview', icon: Wifi },
+    { name: 'NB-IoT Call Flow', href: 'nbiot-callflow', icon: GitBranch },
+    { name: 'NB-IoT Analytics', href: 'nbiot-analytics', icon: BarChart3, badge: 'LIVE' },
+    { name: 'NB-IoT PHY', href: 'nbiot-phy-layer', icon: Radio },
+    { name: 'NB-IoT MAC', href: 'nbiot-mac-layer', icon: Network },
+    { name: 'NB-IoT RRC', href: 'nbiot-rrc-layer', icon: Settings },
+    { name: 'NB-IoT Testing', href: 'nbiot-testing', icon: TestTube },
+  ]
+
+  const v2xAnalysis = [
+    { name: 'V2X Overview', href: 'v2x-overview', icon: Car },
+    { name: 'PC5 Sidelink', href: 'v2x-sidelink', icon: Car },
+    { name: 'V2X Analytics', href: 'v2x-analytics', icon: BarChart3, badge: 'LIVE' },
+    { name: 'V2X PHY', href: 'v2x-phy-layer', icon: Radio },
+    { name: 'V2X MAC', href: 'v2x-mac-layer', icon: Network },
+    { name: 'V2X Testing', href: 'v2x-testing', icon: TestTube },
+    { name: 'Test Scenarios', href: 'v2x-scenarios', icon: Target },
+  ]
+
+  const ntnAnalysis = [
+    { name: 'NTN Overview', href: 'ntn-overview', icon: Satellite },
+    { name: 'Satellite Links', href: 'ntn-satellites', icon: Satellite },
+    { name: 'NTN Analytics', href: 'ntn-analytics', icon: BarChart3, badge: 'LIVE' },
+    { name: 'SIB19 Analysis', href: 'ntn-sib19', icon: FileText },
+    { name: 'Timing & Delay', href: 'ntn-timing', icon: Clock },
+    { name: 'Doppler Analysis', href: 'ntn-doppler', icon: Activity },
+    { name: 'NTN Scenarios', href: 'ntn-scenarios', icon: Target },
+  ]
+
+  const utilities = [
+    { name: 'Report Generator', href: 'report-generator', icon: FileText },
+    { name: 'Export Manager', href: 'export-manager', icon: Download },
+    { name: 'Help & Support', href: 'help-support', icon: HelpCircle },
   ]
 
   const protocolLayers = [
@@ -117,6 +165,10 @@ export const UserDashboard: React.FC = () => {
     { name: 'UPF Analyzer', icon: Network, description: 'User Plane Function', technology: '5G' },
     { name: 'AUSF Analyzer', icon: Shield, description: 'Authentication Server Function', technology: '5G' },
     { name: 'UDM Analyzer', icon: Database, description: 'Unified Data Management', technology: '5G' },
+    { name: 'Config Manager', icon: Settings, description: 'Configuration Management', technology: '5G' },
+  ]
+
+  const legacy4G = [
     { name: 'MME Analyzer', icon: Server, description: 'Mobility Management Entity', technology: '4G' },
     { name: 'SGW Analyzer', icon: Router, description: 'Serving Gateway', technology: '4G' },
     { name: 'PGW Analyzer', icon: Network, description: 'Packet Data Network Gateway', technology: '4G' }
@@ -274,12 +326,12 @@ export const UserDashboard: React.FC = () => {
 
           {/* Navigation */}
           <nav className="flex-1 overflow-y-auto p-4 space-y-2">
-            {/* Core Navigation */}
+            {/* Main Views */}
             <div className="space-y-1">
               <h3 className="text-xs font-semibold text-base-content/50 uppercase tracking-wider mb-2">
-                Core Features
+                Main Views
               </h3>
-              {navigation.map((item) => {
+              {mainViews.map((item) => {
                 const Icon = item.icon
                 return (
                   <button
@@ -295,7 +347,102 @@ export const UserDashboard: React.FC = () => {
                     }`}
                   >
                     <Icon className="w-5 h-5" />
-                    {item.name}
+                    <span className="flex-1">{item.name}</span>
+                    {item.badge && (
+                      <span className="badge badge-xs badge-success">{item.badge}</span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* O-RAN Analysis */}
+            <div className="space-y-1 mt-6">
+              <h3 className="text-xs font-semibold text-base-content/50 uppercase tracking-wider mb-2">
+                O-RAN Analysis
+              </h3>
+              {oranAnalysis.map((item, index) => {
+                const Icon = item.icon
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setActiveComponent(item.href)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left text-base-content hover:bg-base-300"
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="flex-1">{item.name}</span>
+                    {item.badge && (
+                      <span className="badge badge-xs badge-success">{item.badge}</span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* NB-IoT Analysis */}
+            <div className="space-y-1 mt-6">
+              <h3 className="text-xs font-semibold text-base-content/50 uppercase tracking-wider mb-2">
+                NB-IoT Analysis
+              </h3>
+              {nbiotAnalysis.map((item, index) => {
+                const Icon = item.icon
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setActiveComponent(item.href)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left text-base-content hover:bg-base-300"
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="flex-1">{item.name}</span>
+                    {item.badge && (
+                      <span className="badge badge-xs badge-success">{item.badge}</span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* C-V2X Analysis */}
+            <div className="space-y-1 mt-6">
+              <h3 className="text-xs font-semibold text-base-content/50 uppercase tracking-wider mb-2">
+                C-V2X Analysis
+              </h3>
+              {v2xAnalysis.map((item, index) => {
+                const Icon = item.icon
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setActiveComponent(item.href)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left text-base-content hover:bg-base-300"
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="flex-1">{item.name}</span>
+                    {item.badge && (
+                      <span className="badge badge-xs badge-success">{item.badge}</span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* NTN Analysis */}
+            <div className="space-y-1 mt-6">
+              <h3 className="text-xs font-semibold text-base-content/50 uppercase tracking-wider mb-2">
+                NTN Analysis
+              </h3>
+              {ntnAnalysis.map((item, index) => {
+                const Icon = item.icon
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setActiveComponent(item.href)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left text-base-content hover:bg-base-300"
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="flex-1">{item.name}</span>
+                    {item.badge && (
+                      <span className="badge badge-xs badge-success">{item.badge}</span>
+                    )}
                   </button>
                 )
               })}
@@ -322,12 +469,12 @@ export const UserDashboard: React.FC = () => {
               })}
             </div>
 
-            {/* Core Network Analyzers */}
+            {/* Core Network */}
             <div className="space-y-1 mt-6">
               <h3 className="text-xs font-semibold text-base-content/50 uppercase tracking-wider mb-2">
                 Core Network
               </h3>
-              {coreNetworkAnalyzers.slice(0, 4).map((analyzer, index) => {
+              {coreNetworkAnalyzers.map((analyzer, index) => {
                 const Icon = analyzer.icon
                 return (
                   <button
@@ -340,6 +487,47 @@ export const UserDashboard: React.FC = () => {
                     <span className={`badge badge-xs ${analyzer.technology === '5G' ? 'badge-primary' : 'badge-secondary'}`}>
                       {analyzer.technology}
                     </span>
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* 4G Legacy */}
+            <div className="space-y-1 mt-6">
+              <h3 className="text-xs font-semibold text-base-content/50 uppercase tracking-wider mb-2">
+                4G Legacy
+              </h3>
+              {legacy4G.map((analyzer, index) => {
+                const Icon = analyzer.icon
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setActiveComponent(`analyzer-${analyzer.name.toLowerCase().replace(' ', '-')}`)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left text-base-content hover:bg-base-300"
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="flex-1">{analyzer.name}</span>
+                    <span className="badge badge-xs badge-secondary">{analyzer.technology}</span>
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* Utilities */}
+            <div className="space-y-1 mt-6">
+              <h3 className="text-xs font-semibold text-base-content/50 uppercase tracking-wider mb-2">
+                Utilities
+              </h3>
+              {utilities.map((item, index) => {
+                const Icon = item.icon
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setActiveComponent(item.href)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left text-base-content hover:bg-base-300"
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="flex-1">{item.name}</span>
                   </button>
                 )
               })}
