@@ -675,7 +675,10 @@ export class FiveGLabXDataService {
       'O-RAN Overview': 'oran_overview',
       'Interfaces': 'oran_interfaces',
       'CU Analysis': 'cu_analysis',
-      'DU Analysis': 'du_analysis'
+      'DU Analysis': 'du_analysis',
+      'Performance': 'oran_performance',
+      'xApps': 'oran_xapps',
+      'SMO Analysis': 'oran_smo'
     }
 
     const tableName = tableMap[subcategory]
@@ -709,7 +712,12 @@ export class FiveGLabXDataService {
   private async simulateNBIoTData(executionId: string, subcategory: string): Promise<void> {
     const tableMap: { [key: string]: string } = {
       'NB-IoT Overview': 'nbiot_overview',
-      'NB-IoT Call Flow': 'nbiot_call_flow'
+      'NB-IoT Call Flow': 'nbiot_call_flow',
+      'NB-IoT Analytics': 'nbiot_analytics',
+      'NB-IoT PHY': 'nbiot_phy_layer',
+      'NB-IoT MAC': 'nbiot_mac_layer',
+      'NB-IoT RRC': 'nbiot_rrc_layer',
+      'NB-IoT Testing': 'nbiot_testing'
     }
 
     const tableName = tableMap[subcategory]
@@ -743,7 +751,12 @@ export class FiveGLabXDataService {
   private async simulateV2XData(executionId: string, subcategory: string): Promise<void> {
     const tableMap: { [key: string]: string } = {
       'V2X Overview': 'v2x_overview',
-      'PC5 Sidelink': 'pc5_sidelink'
+      'PC5 Sidelink': 'pc5_sidelink',
+      'V2X Analytics': 'v2x_analytics',
+      'V2X PHY': 'v2x_phy_layer',
+      'V2X MAC': 'v2x_mac_layer',
+      'V2X Testing': 'v2x_testing',
+      'Test Scenarios': 'v2x_scenarios'
     }
 
     const tableName = tableMap[subcategory]
@@ -777,7 +790,12 @@ export class FiveGLabXDataService {
   private async simulateNTNData(executionId: string, subcategory: string): Promise<void> {
     const tableMap: { [key: string]: string } = {
       'NTN Overview': 'ntn_overview',
-      'SIB19 Analysis': 'sib19_analysis'
+      'Satellite Links': 'ntn_satellites',
+      'SIB19 Analysis': 'sib19_analysis',
+      'Timing & Delay': 'ntn_timing',
+      'Doppler Analysis': 'ntn_doppler',
+      'NTN Analytics': 'ntn_analytics',
+      'NTN Scenarios': 'ntn_scenarios'
     }
 
     const tableName = tableMap[subcategory]
@@ -1048,6 +1066,269 @@ export class FiveGLabXDataService {
       efficiency: 85 + Math.random() * 15,
       reliability: 95 + Math.random() * 5
     }
+  }
+
+  // ==============================================
+  // ADDITIONAL O-RAN ANALYSIS (Performance, xApps, SMO)
+  // ==============================================
+  async getORANPerformance(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('oran_performance')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  async getORANxApps(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('oran_xapps')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  async getORANSMO(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('oran_smo')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  // ==============================================
+  // ADDITIONAL NB-IOT ANALYSIS
+  // ==============================================
+  async getNBIoTAnalytics(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('nbiot_analytics')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  async getNBIoTPHY(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('nbiot_phy_layer')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  async getNBIoTMAC(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('nbiot_mac_layer')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  async getNBIoTRRC(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('nbiot_rrc_layer')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  async getNBIoTTesting(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('nbiot_testing')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  // ==============================================
+  // ADDITIONAL V2X ANALYSIS
+  // ==============================================
+  async getV2XAnalytics(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('v2x_analytics')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  async getV2XPHY(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('v2x_phy_layer')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  async getV2XMAC(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('v2x_mac_layer')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  async getV2XTesting(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('v2x_testing')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  async getV2XScenarios(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('v2x_scenarios')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  // ==============================================
+  // ADDITIONAL NTN ANALYSIS
+  // ==============================================
+  async getNTNSatelliteLinks(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('ntn_satellites')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  async getNTNAnalytics(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('ntn_analytics')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  async getNTNTiming(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('ntn_timing')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  async getNTNDoppler(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('ntn_doppler')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  async getNTNScenarios(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('ntn_scenarios')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  // ==============================================
+  // CORE NETWORK – CONFIG MANAGER & 4G LEGACY
+  // ==============================================
+  async getConfigManagerAnalysis(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('config_manager_analysis')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
+  async getMMEAnalysis(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('mme_analysis')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+    if (error) throw error
+    return data || []
+  }
+
+  async getSGWAnalysis(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('sgw_analysis')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+    if (error) throw error
+    return data || []
+  }
+
+  async getPGWAnalysis(executionId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('pgw_analysis')
+      .select('*')
+      .eq('execution_id', executionId)
+      .order('timestamp', { ascending: true })
+    if (error) throw error
+    return data || []
+  }
+
+  // ==============================================
+  // UTILITIES – EXPORT MANAGER
+  // ==============================================
+  async exportExecutionData(executionId: string, format: 'json' | 'csv' | 'xlsx'): Promise<Blob> {
+    const { data, error } = await supabase.rpc('export_execution_data', { p_execution_id: executionId, p_format: format })
+    if (error) throw error
+    return data as unknown as Blob
   }
 }
 
