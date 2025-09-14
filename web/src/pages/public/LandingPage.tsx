@@ -26,9 +26,9 @@ import {
   PhoneIcon,
   MapPinIcon,
   ChatBubbleLeftRightIcon as TwitterIcon,
-  LinkedinIcon,
-  GithubIcon,
-  YoutubeIcon
+  ChatBubbleLeftRightIcon as LinkedinIcon,
+  ChatBubbleLeftRightIcon as GithubIcon,
+  ChatBubbleLeftRightIcon as YoutubeIcon
 } from '@heroicons/react/24/outline'
 
 const LandingPage: React.FC = () => {
