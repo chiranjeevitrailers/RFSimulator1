@@ -75,6 +75,7 @@ import {
   Globe
 } from 'lucide-react'
 import EnhancedLogViewer from '../../components/analyzer/EnhancedLogViewer'
+import SimpleDataViewer from '../../components/common/SimpleDataViewer'
 
 export const UserDashboard: React.FC = () => {
   const { user, signOut } = useSimpleAuth()
@@ -326,6 +327,60 @@ export const UserDashboard: React.FC = () => {
         return <Cloud className="w-4 h-4 text-cyan-500" />
       default:
         return <Activity className="w-4 h-4 text-gray-500" />
+    }
+  }
+
+  // Helper: map activeComponent to data fetcher
+  const getDataViewerConfig = () => {
+    if (!currentExecution) return null
+    const id = currentExecution.id
+    switch (activeComponent) {
+      case 'layer-phy-layer':
+        return { title: 'PHY Layer Analysis', queryKey: ['phy', id], fetcher: () => fiveGLabXDataService.getPHYLayerAnalysis(id) }
+      case 'layer-mac-layer':
+        return { title: 'MAC Layer Analysis', queryKey: ['mac', id], fetcher: () => fiveGLabXDataService.getMACLayerAnalysis(id) }
+      case 'layer-rlc-layer':
+        return { title: 'RLC Layer Analysis', queryKey: ['rlc', id], fetcher: () => fiveGLabXDataService.getRLCLayerAnalysis(id) }
+      case 'layer-pdcp-layer':
+        return { title: 'PDCP Layer Analysis', queryKey: ['pdcp', id], fetcher: () => fiveGLabXDataService.getPDCPLayerAnalysis(id) }
+      case 'layer-rrc-layer':
+        return { title: 'RRC Layer Analysis', queryKey: ['rrc', id], fetcher: () => fiveGLabXDataService.getRRCLayerAnalysis(id) }
+      case 'layer-nas-layer':
+        return { title: 'NAS Layer Analysis', queryKey: ['nas', id], fetcher: () => fiveGLabXDataService.getNASLayerAnalysis(id) }
+      case 'layer-ims-layer':
+        return { title: 'IMS Layer Analysis', queryKey: ['ims', id], fetcher: () => fiveGLabXDataService.getIMSAnalysis(id) }
+      case 'analyzer-amf-analyzer':
+        return { title: 'AMF Analyzer', queryKey: ['amf', id], fetcher: () => fiveGLabXDataService.getAMFAnalysis(id) }
+      case 'analyzer-smf-analyzer':
+        return { title: 'SMF Analyzer', queryKey: ['smf', id], fetcher: () => fiveGLabXDataService.getSMFAnalysis(id) }
+      case 'analyzer-upf-analyzer':
+        return { title: 'UPF Analyzer', queryKey: ['upf', id], fetcher: () => fiveGLabXDataService.getUPFAnalysis(id) }
+      case 'analyzer-ausf-analyzer':
+        return { title: 'AUSF Analyzer', queryKey: ['ausf', id], fetcher: () => fiveGLabXDataService.getAUSFAnalysis(id) }
+      case 'analyzer-udm-analyzer':
+        return { title: 'UDM Analyzer', queryKey: ['udm', id], fetcher: () => fiveGLabXDataService.getUDMAnalysis(id) }
+      case 'oran-overview':
+        return { title: 'O-RAN Overview', queryKey: ['oran-overview', id], fetcher: () => fiveGLabXDataService.getORANOverview(id) }
+      case 'oran-interfaces':
+        return { title: 'O-RAN Interfaces', queryKey: ['oran-interfaces', id], fetcher: () => fiveGLabXDataService.getORANInterfaces(id) }
+      case 'oran-cu-analysis':
+        return { title: 'O-RAN CU Analysis', queryKey: ['cu', id], fetcher: () => fiveGLabXDataService.getCUAnalysis(id) }
+      case 'oran-du-analysis':
+        return { title: 'O-RAN DU Analysis', queryKey: ['du', id], fetcher: () => fiveGLabXDataService.getDUAnalysis(id) }
+      case 'nbiot-overview':
+        return { title: 'NB-IoT Overview', queryKey: ['nbiot-over', id], fetcher: () => fiveGLabXDataService.getNBIoTOverview(id) }
+      case 'nbiot-callflow':
+        return { title: 'NB-IoT Call Flow', queryKey: ['nbiot-call', id], fetcher: () => fiveGLabXDataService.getNBIoTCallFlow(id) }
+      case 'v2x-overview':
+        return { title: 'V2X Overview', queryKey: ['v2x-over', id], fetcher: () => fiveGLabXDataService.getV2XOverview(id) }
+      case 'v2x-sidelink':
+        return { title: 'PC5 Sidelink', queryKey: ['pc5', id], fetcher: () => fiveGLabXDataService.getPC5Sidelink(id) }
+      case 'ntn-overview':
+        return { title: 'NTN Overview', queryKey: ['ntn-over', id], fetcher: () => fiveGLabXDataService.getNTNOverview(id) }
+      case 'ntn-sib19':
+        return { title: 'SIB19 Analysis', queryKey: ['sib19', id], fetcher: () => fiveGLabXDataService.getSIB19Analysis(id) }
+      default:
+        return null
     }
   }
 
@@ -838,9 +893,19 @@ export const UserDashboard: React.FC = () => {
             </div>
           )}
           {activeComponent !== 'dashboard' && activeComponent !== 'logs-viewer' && (
-            <div className="h-[calc(100vh-8rem)] flex items-center justify-center">
-              <span className="text-base-content/70">Feature under construction...</span>
-            </div>
+            (() => {
+              const config = getDataViewerConfig()
+              if (!config) {
+                return (
+                  <div className="h-[calc(100vh-8rem)] flex items-center justify-center text-base-content/70">
+                    {currentExecution ? 'Feature coming soon...' : 'Please start a test execution first.'}
+                  </div>
+                )
+              }
+              return (
+                <SimpleDataViewer {...config} />
+              )
+            })()
           )}
         </main>
       </div>
