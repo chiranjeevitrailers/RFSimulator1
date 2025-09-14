@@ -998,8 +998,8 @@ export const UserDashboard: React.FC = () => {
           <div className="w-full lg:w-80 bg-base-100 border-b lg:border-b-0 lg:border-r border-base-300 p-4 flex flex-col lg:max-h-full max-h-96 overflow-y-auto">
             {/* Header Section */}
             <div className="mb-4">
-              <h1 className="text-xl font-bold text-base-content">5GLabX Protocol Analyzer</h1>
-              <p className="text-base-content/70 text-sm">Professional 4G/5G Protocol Analysis</p>
+              <h1 className="text-xl font-bold text-base-content">5GLabX Cloud</h1>
+              <p className="text-base-content/70 text-sm">Professional 4G/5G Protocol Analysis & Test Suite Platform</p>
               <div className="flex items-center gap-2 mt-2">
                 <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
                 <span className="text-sm text-base-content/70">System Online</span>
