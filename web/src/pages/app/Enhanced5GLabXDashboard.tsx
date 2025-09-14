@@ -380,8 +380,8 @@ export const Enhanced5GLabXDashboard: React.FC = () => {
       <div className="w-full lg:w-80 bg-base-100 border-b lg:border-b-0 lg:border-r border-base-300 p-4 flex flex-col lg:max-h-full max-h-96 overflow-y-auto">
         {/* Header Section */}
         <div className="mb-4">
-          <h1 className="text-xl font-bold text-base-content">5GLabX Cloud Platform</h1>
-          <p className="text-base-content/70 text-sm">Professional 4G/5G Protocol Analysis</p>
+          <h1 className="text-xl font-bold text-base-content">5GLabX Cloud</h1>
+          <p className="text-base-content/70 text-sm">Professional 4G/5G Protocol Analysis & Test Suite Platform</p>
           <div className="flex items-center gap-2 mt-2">
             <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
             <span className="text-sm text-base-content/70">System Online</span>
@@ -440,6 +440,24 @@ export const Enhanced5GLabXDashboard: React.FC = () => {
           </div>
         </div>
 
+        {/* Test Suites Component */}
+        <div className="bg-base-200 rounded-lg p-3 mb-4">
+          <h4 className="text-sm font-semibold mb-2">Test Suites</h4>
+          <div className="space-y-2">
+            {testSuites.slice(0, 3).map((suite, index) => (
+              <div key={index} className="flex items-center gap-2 text-xs">
+                <suite.icon className="w-3 h-3 text-primary" />
+                <span className="flex-1 truncate">{suite.name}</span>
+                <span className="badge badge-xs badge-primary">{suite.count}</span>
+              </div>
+            ))}
+            <Link to="/app/test-suites" className="btn btn-primary btn-xs w-full mt-2">
+              <TestTube className="w-3 h-3" />
+              View All
+            </Link>
+          </div>
+        </div>
+
         {/* CLI Integrations */}
         <div className="bg-base-200 rounded-lg p-3">
           <h4 className="text-sm font-semibold mb-2">CLI Integrations</h4>
@@ -457,14 +475,14 @@ export const Enhanced5GLabXDashboard: React.FC = () => {
 
       {/* Right Column - Main Content Area */}
       <div className="flex-1 flex flex-col">
-        {/* Welcome Header - Fixed at Top */}
+        {/* Main Content Header - Fixed at Top */}
         <div className="bg-base-100 border-b border-base-300 p-4">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold text-base-content">
                 {getGreeting()}, {user?.full_name || 'Engineer'}! 🚀
               </h2>
-              <p className="text-sm text-base-content/70">Welcome to your comprehensive 5GLabX Cloud platform</p>
+              <p className="text-sm text-base-content/70">Professional 4G/5G Protocol Analysis & Test Suite Platform</p>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
@@ -480,6 +498,67 @@ export const Enhanced5GLabXDashboard: React.FC = () => {
         {/* Main Dashboard Content - Scrollable */}
         <div className="flex-1 bg-base-100 p-4 overflow-y-auto">
           <div className="space-y-6">
+            {/* Protocol Analysis & Test Suites - Top Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Protocol Analyzers */}
+              <div className="card bg-base-200">
+                <div className="card-body">
+                  <h2 className="card-title mb-4">Protocol Analyzers</h2>
+                  <div className="grid grid-cols-1 gap-3">
+                    {protocolAnalyzers.slice(0, 3).map((analyzer, index) => (
+                      <Link key={index} to={analyzer.link} className="card bg-base-100 hover:bg-base-300 transition-colors">
+                        <div className="card-body p-3">
+                          <div className="flex items-center gap-3">
+                            <div className={`p-2 rounded-lg ${analyzer.color} text-white`}>
+                              {analyzer.icon}
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-sm">{analyzer.name}</h3>
+                              <p className="text-xs text-base-content/70">{analyzer.components.join(', ')}</p>
+                            </div>
+                            <div className={`w-2 h-2 rounded-full ${analyzer.status === 'active' ? 'bg-success' : 'bg-error'}`}></div>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                  <Link to="/app/analyzer" className="btn btn-primary btn-sm w-full mt-3">
+                    <Eye className="w-4 h-4" />
+                    View All Analyzers
+                  </Link>
+                </div>
+              </div>
+
+              {/* Test Suites */}
+              <div className="card bg-base-200">
+                <div className="card-body">
+                  <h2 className="card-title mb-4">Test Suites</h2>
+                  <div className="space-y-3">
+                    {testSuites.map((suite, index) => (
+                      <Link key={index} to={suite.link} className="card bg-base-100 hover:bg-base-300 transition-colors">
+                        <div className="card-body p-3">
+                          <div className="flex items-center gap-3">
+                            <div className="text-primary">
+                              {suite.icon}
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-sm">{suite.name}</h3>
+                              <p className="text-xs text-base-content/70">{suite.description}</p>
+                            </div>
+                            <span className="badge badge-primary badge-sm">{suite.count}</span>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                  <Link to="/app/test-suites" className="btn btn-secondary btn-sm w-full mt-3">
+                    <TestTube className="w-4 h-4" />
+                    View All Test Suites
+                  </Link>
+                </div>
+              </div>
+            </div>
+
             {/* Real-time Log Analysis Section */}
             <div className="card bg-base-200">
               <div className="card-body">
