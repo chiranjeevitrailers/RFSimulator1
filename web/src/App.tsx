@@ -21,6 +21,9 @@ const ExecutionsPage = React.lazy(() => import('./pages/app/EnhancedExecutionsPa
 const AnalyticsPage = React.lazy(() => import('./pages/app/AdvancedAnalyticsPage'))
 const AccountPage = React.lazy(() => import('./pages/app/AccountPage'))
 
+// Protocol Analyzer
+const ProtocolAnalyzerPage = React.lazy(() => import('./pages/protocol/ProtocolAnalyzerPage'))
+
 // Providers
 const SimpleAuthProvider = React.lazy(() => import('./components/auth/SimpleAuthProvider'))
 const SimpleBillingProvider = React.lazy(() => import('./components/billing/SimpleBillingProvider'))
@@ -145,6 +148,17 @@ const App: React.FC = () => {
                 <Route path="account" element={<AccountPage />} />
                 <Route index element={<Navigate to="/app/dashboard" replace />} />
               </Route>
+
+              {/* Protocol Analyzer Routes */}
+              <Route path="/app/protocol" element={
+                <SimpleAuthProvider>
+                  <SimpleBillingProvider>
+                    <SimpleWebSocketProvider>
+                      <ProtocolAnalyzerPage />
+                    </SimpleWebSocketProvider>
+                  </SimpleBillingProvider>
+                </SimpleAuthProvider>
+              } />
 
               {/* Catch-all route */}
               <Route path="*" element={<Navigate to="/" replace />} />

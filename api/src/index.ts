@@ -11,6 +11,7 @@ import { rateLimiter } from './middleware/rateLimiter'
 import { healthRouter } from './routes/health'
 import { executeRouter } from './routes/execute'
 import { websocketRouter } from './routes/websocket'
+import protocolRouter from './routes/protocol'
 import { WebSocketManager } from './websocket/WebSocketManager'
 import { TestExecutor } from './test-execution/TestExecutor'
 import { MessageFlowGenerator } from './parsers/MessageFlowGenerator'
@@ -64,6 +65,7 @@ app.use((req, res, next) => {
 app.use('/health', healthRouter)
 app.use('/execute', executeRouter)
 app.use('/ws', websocketRouter)
+app.use('/api/protocol', protocolRouter)
 
 // WebSocket connection handling
 wss.on('connection', (ws, req) => {
