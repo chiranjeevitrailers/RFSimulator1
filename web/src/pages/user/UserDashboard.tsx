@@ -69,7 +69,8 @@ import {
   Thermometer,
   HardDrive,
   MemoryStick,
-  Terminal
+  Terminal,
+  Globe
 } from 'lucide-react'
 
 export const UserDashboard: React.FC = () => {
