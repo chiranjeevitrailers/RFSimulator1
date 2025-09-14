@@ -361,35 +361,35 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Company Logos */}
+          {/* 5GLabX Device Features */}
           <div className="mb-16">
             <div className="text-center mb-8">
-              <h3 className="text-xl font-semibold text-gray-700 mb-4">Trusted by leading companies worldwide</h3>
+              <h3 className="text-xl font-semibold text-gray-700 mb-4">5GLabX Device Capabilities</h3>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-8 items-center opacity-60">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-8 items-center">
               <div className="flex items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
-                <div className="text-gray-400 font-semibold text-sm">Ericsson</div>
+                <div className="text-gray-600 font-semibold text-sm">O-RAN</div>
               </div>
               <div className="flex items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
-                <div className="text-gray-400 font-semibold text-sm">Nokia</div>
+                <div className="text-gray-600 font-semibold text-sm">NB-IoT</div>
               </div>
               <div className="flex items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
-                <div className="text-gray-400 font-semibold text-sm">Qualcomm</div>
+                <div className="text-gray-600 font-semibold text-sm">V2X</div>
               </div>
               <div className="flex items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
-                <div className="text-gray-400 font-semibold text-sm">Vodafone</div>
+                <div className="text-gray-600 font-semibold text-sm">NTN</div>
               </div>
               <div className="flex items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
-                <div className="text-gray-400 font-semibold text-sm">NTT DOCOMO</div>
+                <div className="text-gray-600 font-semibold text-sm">LTE</div>
               </div>
               <div className="flex items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
-                <div className="text-gray-400 font-semibold text-sm">Huawei</div>
+                <div className="text-gray-600 font-semibold text-sm">5G NR</div>
               </div>
               <div className="flex items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
-                <div className="text-gray-400 font-semibold text-sm">Samsung</div>
+                <div className="text-gray-600 font-semibold text-sm">IMS</div>
               </div>
               <div className="flex items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
-                <div className="text-gray-400 font-semibold text-sm">Intel</div>
+                <div className="text-gray-600 font-semibold text-sm">SIP</div>
               </div>
             </div>
           </div>
@@ -425,8 +425,8 @@ const LandingPage: React.FC = () => {
                         <CheckIcon className="w-3 h-3 text-white" />
                       </div>
                     </div>
-                    <p className="text-gray-600">Senior 5G Engineer at Ericsson</p>
-                    <p className="text-sm text-gray-500">Stockholm, Sweden</p>
+                    <p className="text-gray-600">Senior 5G Engineer</p>
+                    <p className="text-sm text-gray-500">Network Professional</p>
                   </div>
                 </div>
               </div>
