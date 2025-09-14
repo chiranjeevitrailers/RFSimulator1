@@ -992,167 +992,213 @@ export const UserDashboard: React.FC = () => {
           </div>
         </header>
 
-        {/* Page Content */}
-        <main className="p-6">
-          {/* Render Active Component */}
-          <div className="h-[calc(100vh-8rem)]">
+        {/* Page Content - Clean 2-Column Layout */}
+        <main className="h-[calc(100vh-4rem)] flex flex-col lg:flex-row">
+          {/* Left Column - Quick Stats & Actions (Fixed Width) */}
+          <div className="w-full lg:w-80 bg-base-100 border-b lg:border-b-0 lg:border-r border-base-300 p-4 flex flex-col lg:max-h-full max-h-96 overflow-y-auto">
+            {/* Header Section */}
+            <div className="mb-4">
+              <h1 className="text-xl font-bold text-base-content">5GLabX Protocol Analyzer</h1>
+              <p className="text-base-content/70 text-sm">Professional 4G/5G Protocol Analysis</p>
+              <div className="flex items-center gap-2 mt-2">
+                <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+                <span className="text-sm text-base-content/70">System Online</span>
+              </div>
+            </div>
+
+            {/* Quick Stats */}
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="stat bg-base-200 rounded-lg p-3">
+                <div className="stat-title text-xs">Active</div>
+                <div className="stat-value text-lg text-primary">{testExecutions.filter(e => e.status === 'running').length}</div>
+              </div>
+              <div className="stat bg-base-200 rounded-lg p-3">
+                <div className="stat-title text-xs">Test Cases</div>
+                <div className="stat-value text-lg text-secondary">{testCases.length}</div>
+              </div>
+              <div className="stat bg-base-200 rounded-lg p-3">
+                <div className="stat-title text-xs">Metrics</div>
+                <div className="stat-value text-lg text-accent">{analyticsMetrics.length}</div>
+              </div>
+              <div className="stat bg-base-200 rounded-lg p-3">
+                <div className="stat-title text-xs">Status</div>
+                <div className="stat-value text-lg text-success">Online</div>
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="space-y-2 mb-4">
+              <button 
+                onClick={() => setActiveComponent('test-suites')}
+                className="btn btn-primary btn-sm w-full justify-start"
+              >
+                <TestTube className="w-4 h-4" />
+                Test Suites
+              </button>
+              <button 
+                onClick={() => setActiveComponent('analytics')}
+                className="btn btn-secondary btn-sm w-full justify-start"
+              >
+                <BarChart3 className="w-4 h-4" />
+                Analytics
+              </button>
+              <button 
+                onClick={() => setActiveComponent('logs-viewer')}
+                className="btn btn-accent btn-sm w-full justify-start"
+              >
+                <FileText className="w-4 h-4" />
+                Logs Viewer
+              </button>
+            </div>
+
+            {/* System Status */}
+            <div className="bg-base-200 rounded-lg p-3 mb-4">
+              <h4 className="text-sm font-semibold mb-2">System Status</h4>
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span>Active Executions</span>
+                  <span className="font-bold">{testExecutions.filter(e => e.status === 'running').length}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Test Cases</span>
+                  <span className="font-bold">{testCases.length}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Metrics</span>
+                  <span className="font-bold">{analyticsMetrics.length}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Real-time</span>
+                  <div className={`w-2 h-2 rounded-full ${realTimeDataService.isConnectedToRealTime() ? 'bg-success' : 'bg-error'}`}></div>
+                </div>
+              </div>
+            </div>
+
+            {/* CLI Integrations */}
+            <div className="bg-base-200 rounded-lg p-3">
+              <h4 className="text-sm font-semibold mb-2">CLI Integrations</h4>
+              <div className="space-y-1">
+                {cliIntegrations.map((cli, index) => (
+                  <div key={index} className="flex items-center gap-2 text-xs">
+                    <cli.icon className="w-3 h-3" />
+                    <span className="flex-1 truncate">{cli.name.split(' ')[0]}</span>
+                    <div className={`w-1.5 h-1.5 rounded-full ${cli.status === 'connected' ? 'bg-success' : 'bg-error'}`}></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Main Content Area */}
+          <div className="flex-1 flex flex-col">
             {(() => {
               const ActiveComponent = componentMap[activeComponent]
               if (ActiveComponent) {
-                return <ActiveComponent />
-              } else {
-                // Default UserDashboard view - clean 2-column layout with Logs Viewer at top-right
                 return (
-                  <div className="h-full flex flex-col">
-                    {/* Header Section */}
-                    <div className="mb-4">
+                  <div className="flex-1 p-6">
+                    <ActiveComponent />
+                  </div>
+                )
+              } else {
+                // Default Logs Viewer - positioned at top with no wasted space
+                return (
+                  <div className="flex-1 flex flex-col">
+                    {/* Logs Viewer Header - Fixed at Top */}
+                    <div className="bg-base-100 border-b border-base-300 p-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h1 className="text-2xl font-bold text-base-content">5GLabX Protocol Analyzer</h1>
-                          <p className="text-base-content/70 text-sm">Professional 4G/5G Protocol Analysis & Test Suite Platform</p>
+                          <h2 className="text-lg font-semibold text-base-content">Real-time Log Analysis</h2>
+                          <p className="text-sm text-base-content/70">Live protocol analysis and monitoring</p>
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
-                          <span className="text-sm text-base-content/70">System Online</span>
+                          <span className="text-sm text-base-content/70">Live</span>
+                          <button className="btn btn-ghost btn-sm">
+                            <RefreshCw className="w-4 h-4" />
+                            Refresh
+                          </button>
+                          <button className="btn btn-ghost btn-sm">
+                            <Download className="w-4 h-4" />
+                            Export
+                          </button>
                         </div>
                       </div>
                     </div>
 
-                    {/* Main Content - 2 Column Layout */}
-                    <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6">
-                      {/* Left Column - Quick Stats & Actions */}
-                      <div className="lg:col-span-1 space-y-4">
-                        {/* Quick Stats */}
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="stat bg-base-100 rounded-lg p-3">
-                            <div className="stat-title text-xs">Active</div>
-                            <div className="stat-value text-lg text-primary">{testExecutions.filter(e => e.status === 'running').length}</div>
-                          </div>
-                          <div className="stat bg-base-100 rounded-lg p-3">
-                            <div className="stat-title text-xs">Test Cases</div>
-                            <div className="stat-value text-lg text-secondary">{testCases.length}</div>
-                          </div>
-                          <div className="stat bg-base-100 rounded-lg p-3">
-                            <div className="stat-title text-xs">Metrics</div>
-                            <div className="stat-value text-lg text-accent">{analyticsMetrics.length}</div>
-                          </div>
-                          <div className="stat bg-base-100 rounded-lg p-3">
-                            <div className="stat-title text-xs">Status</div>
-                            <div className="stat-value text-lg text-success">Online</div>
-                          </div>
+                    {/* Log Filters - Fixed Below Header */}
+                    <div className="bg-base-100 border-b border-base-300 p-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                        <select className="select select-bordered select-sm">
+                          <option>All Layers</option>
+                          <option>PHY</option>
+                          <option>MAC</option>
+                          <option>RLC</option>
+                          <option>PDCP</option>
+                          <option>RRC</option>
+                          <option>NAS</option>
+                          <option>IMS</option>
+                        </select>
+                        <select className="select select-bordered select-sm">
+                          <option>All Levels</option>
+                          <option>ERROR</option>
+                          <option>WARN</option>
+                          <option>INFO</option>
+                          <option>DEBUG</option>
+                        </select>
+                        <select className="select select-bordered select-sm">
+                          <option>All Channels</option>
+                          <option>Channel 1</option>
+                          <option>Channel 2</option>
+                          <option>Channel 3</option>
+                        </select>
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-base-content/50" size={16} />
+                          <input
+                            type="text"
+                            placeholder="Search logs..."
+                            className="input input-bordered input-sm pl-10 w-full"
+                          />
                         </div>
-
-                        {/* Quick Actions */}
-                        <div className="space-y-2">
-                          <button 
-                            onClick={() => setActiveComponent('test-suites')}
-                            className="btn btn-primary btn-sm w-full justify-start"
-                          >
-                            <TestTube className="w-4 h-4" />
-                            Test Suites
-                          </button>
-                          <button 
-                            onClick={() => setActiveComponent('analytics')}
-                            className="btn btn-secondary btn-sm w-full justify-start"
-                          >
-                            <BarChart3 className="w-4 h-4" />
-                            Analytics
-                          </button>
-                          <button 
-                            onClick={() => setActiveComponent('logs-viewer')}
-                            className="btn btn-accent btn-sm w-full justify-start"
-                          >
-                            <FileText className="w-4 h-4" />
-                            Logs Viewer
-                          </button>
-                        </div>
+                        <button className="btn btn-primary btn-sm col-span-1 sm:col-span-2 lg:col-span-1">
+                          <Filter className="w-4 h-4" />
+                          <span className="hidden sm:inline">Apply Filters</span>
+                          <span className="sm:hidden">Filter</span>
+                        </button>
                       </div>
-
-                      {/* Right Column - Logs Viewer */}
-                      <div className="lg:col-span-2">
-                        <div className="card bg-base-100 shadow-lg h-full">
-                          <div className="card-body p-4">
-                            {/* Logs Viewer Header */}
-                            <div className="flex items-center justify-between mb-4">
-                              <h3 className="card-title text-lg">Real-time Log Analysis</h3>
-                              <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
-                                <span className="text-sm text-base-content/70">Live</span>
-                                <button className="btn btn-ghost btn-xs">
-                                  <RefreshCw className="w-4 h-4" />
-                                </button>
-                                <button className="btn btn-ghost btn-xs">
-                                  <Download className="w-4 h-4" />
-                                </button>
-                              </div>
-                            </div>
-
-                            {/* Log Filters */}
-                            <div className="flex flex-wrap gap-2 mb-4">
-                              <select className="select select-bordered select-sm">
-                                <option>All Layers</option>
-                                <option>PHY</option>
-                                <option>MAC</option>
-                                <option>RLC</option>
-                                <option>PDCP</option>
-                                <option>RRC</option>
-                                <option>NAS</option>
-                                <option>IMS</option>
-                              </select>
-                              <select className="select select-bordered select-sm">
-                                <option>All Levels</option>
-                                <option>ERROR</option>
-                                <option>WARN</option>
-                                <option>INFO</option>
-                                <option>DEBUG</option>
-                              </select>
-                              <select className="select select-bordered select-sm">
-                                <option>All Channels</option>
-                                <option>Channel 1</option>
-                                <option>Channel 2</option>
-                                <option>Channel 3</option>
-                              </select>
-                              <div className="relative">
-                                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-base-content/50" size={14} />
-                                <input
-                                  type="text"
-                                  placeholder="Search logs..."
-                                  className="input input-bordered input-sm pl-8 w-40"
-                                />
-                              </div>
-                            </div>
-                            
-                            {/* Log Display */}
-                            <div className="bg-base-200 rounded-lg p-3 flex-1 overflow-y-auto font-mono text-sm">
-                              {logs.length === 0 ? (
-                                <div className="text-center text-base-content/50 py-8">
-                                  <Activity className="w-8 h-8 mx-auto mb-2" />
-                                  <p>Click Start in sidebar to begin real-time log analysis</p>
-                                </div>
-                              ) : (
-                                <div className="space-y-1">
-                                  {logs.map((log) => (
-                                    <div key={log.id} className="flex items-start gap-2 py-1 hover:bg-base-300 rounded px-2">
-                                      <span className="text-xs text-base-content/50 w-16 flex-shrink-0">
-                                        {log.timestamp}
-                                      </span>
-                                      <span className={`text-xs w-12 flex-shrink-0 font-semibold ${getLevelColor(log.level)}`}>
-                                        {log.level}
-                                      </span>
-                                      <div className="flex items-center gap-1 w-12 flex-shrink-0">
-                                        {getComponentIcon(log.component)}
-                                        <span className="text-xs">{log.component}</span>
-                                      </div>
-                                      <span className="text-xs flex-1 break-all">
-                                        {log.message}
-                                      </span>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
+                    </div>
+                    
+                    {/* Log Display - Takes Remaining Space */}
+                    <div className="flex-1 bg-base-100 p-4 overflow-hidden">
+                      <div className="bg-base-200 rounded-lg h-full overflow-y-auto font-mono text-sm">
+                        {logs.length === 0 ? (
+                          <div className="flex items-center justify-center h-full text-center text-base-content/50">
+                            <div>
+                              <Activity className="w-12 h-12 mx-auto mb-4" />
+                              <p className="text-lg font-medium mb-2">No logs available</p>
+                              <p className="text-sm">Click Start in sidebar to begin real-time log analysis</p>
                             </div>
                           </div>
-                        </div>
+                        ) : (
+                          <div className="p-4 space-y-1">
+                            {logs.map((log) => (
+                              <div key={log.id} className="flex items-start gap-3 py-2 hover:bg-base-300 rounded px-3 border-b border-base-300/50">
+                                <span className="text-xs text-base-content/50 w-20 flex-shrink-0">
+                                  {log.timestamp}
+                                </span>
+                                <span className={`text-xs w-16 flex-shrink-0 font-semibold ${getLevelColor(log.level)}`}>
+                                  {log.level}
+                                </span>
+                                <div className="flex items-center gap-1 w-16 flex-shrink-0">
+                                  {getComponentIcon(log.component)}
+                                  <span className="text-xs">{log.component}</span>
+                                </div>
+                                <span className="text-xs flex-1 break-all">
+                                  {log.message}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
