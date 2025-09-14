@@ -19,7 +19,7 @@ import {
   ShieldCheckIcon,
   CheckCircleIcon,
   LockClosedIcon,
-  QuoteIcon,
+  ChatBubbleLeftRightIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   MailIcon,
@@ -399,7 +399,7 @@ const LandingPage: React.FC = () => {
             <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
               <div className="flex justify-center mb-8">
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-                  <QuoteIcon className="h-8 w-8 text-blue-600" />
+                  <ChatBubbleLeftRightIcon className="h-8 w-8 text-blue-600" />
                 </div>
               </div>
               <div className="text-center mb-8">
