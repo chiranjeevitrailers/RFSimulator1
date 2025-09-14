@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSimpleAuth } from '../../components/auth/SimpleAuthProvider'
+import { fiveGLabXDataService } from '../../services/5GLabXDataService'
+import { realTimeDataService } from '../../services/RealTimeDataService'
 import { 
   TestTube, 
   BarChart3, 
@@ -80,6 +82,10 @@ export const UserDashboard: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false)
   const [logs, setLogs] = useState<any[]>([])
   const [searchQuery, setSearchQuery] = useState('')
+  const [testCases, setTestCases] = useState<any[]>([])
+  const [testExecutions, setTestExecutions] = useState<any[]>([])
+  const [analyticsMetrics, setAnalyticsMetrics] = useState<any[]>([])
+  const [currentExecution, setCurrentExecution] = useState<any>(null)
   const navigate = useNavigate()
 
   const handleLogout = async () => {
@@ -196,34 +202,95 @@ export const UserDashboard: React.FC = () => {
     { name: 'Kamailio CLI', icon: Terminal, description: 'Kamailio Integration', status: 'disconnected' }
   ]
 
-  // Generate sample logs for real-time appearance
+  // Load test cases and executions on component mount
   useEffect(() => {
-    if (isProcessing) {
-      const interval = setInterval(() => {
-        const sampleLogs = [
-          '[PHY] [I] [931.6] PDSCH: rnti=0x4601 h_id=0 k1=4 prb=[0,87) symb=[1,14) mod=QPSK rv=0 tbs=309 t=135.5us',
-          '[MAC] [I] [938.5] DL PDU: ue=0 rnti=0x4601 size=169: SDU: lcid=1 nof_sdus=1 total_size=55',
-          '[RLC] [I] du=0 ue=0 SRB1 DL: TX PDU. dc=data p=1 si=full sn=0 pdu_len=53 grant_len=55',
-          '[PDCP] [I] PDCP TX: ue=0 drb=1 sn=0 pdu_len=53',
-          '[RRC] [I] RRC Connection Setup: ue=0 rnti=0x4601',
-          '[NAS] [I] NAS Attach Request: imsi=123456789012345',
-          '[IMS] [I] SIP INVITE: from=user1@domain.com to=user2@domain.com'
-        ]
+    const loadData = async () => {
+      try {
+        const [cases, executions, metrics] = await Promise.all([
+          fiveGLabXDataService.getAllTestCases(),
+          fiveGLabXDataService.getTestExecutions(),
+          fiveGLabXDataService.getAnalyticsMetrics()
+        ])
         
-        const newLog = {
-          id: Date.now() + Math.random(),
-          timestamp: new Date().toLocaleTimeString(),
-          level: ['DEBUG', 'INFO', 'WARN', 'ERROR'][Math.floor(Math.random() * 4)],
-          component: ['PHY', 'MAC', 'RLC', 'PDCP', 'RRC', 'NAS', 'IMS'][Math.floor(Math.random() * 7)],
-          message: sampleLogs[Math.floor(Math.random() * sampleLogs.length)]
-        }
-        
-        setLogs(prev => [...prev.slice(-50), newLog])
-      }, 1000 + Math.random() * 2000)
-      
-      return () => clearInterval(interval)
+        setTestCases(cases)
+        setTestExecutions(executions)
+        setAnalyticsMetrics(metrics)
+      } catch (error) {
+        console.error('Error loading data:', error)
+      }
     }
-  }, [isProcessing])
+
+    loadData()
+  }, [])
+
+  // Connect to real-time data service
+  useEffect(() => {
+    const connectRealTime = async () => {
+      try {
+        await realTimeDataService.connect()
+        
+        // Add real-time listeners
+        const removeLogListener = realTimeDataService.addLogListener((log) => {
+          setLogs(prev => [...prev.slice(-99), log])
+        })
+
+        const removeMetricListener = realTimeDataService.addMetricListener((metric) => {
+          setAnalyticsMetrics(prev => [metric, ...prev.slice(0, 99)])
+        })
+
+        const removeExecutionListener = realTimeDataService.addExecutionListener((execution) => {
+          setTestExecutions(prev => prev.map(e => 
+            e.id === execution.id ? execution : e
+          ))
+        })
+
+        return () => {
+          removeLogListener()
+          removeMetricListener()
+          removeExecutionListener()
+        }
+      } catch (error) {
+        console.error('Error connecting to real-time service:', error)
+      }
+    }
+
+    const cleanup = connectRealTime()
+    return () => {
+      cleanup?.then(cleanupFn => cleanupFn?.())
+    }
+  }, [])
+
+  // Start test execution
+  const startTestExecution = async (testCaseId: string) => {
+    try {
+      setIsProcessing(true)
+      const execution = await fiveGLabXDataService.simulateTestExecution(testCaseId)
+      setCurrentExecution(execution)
+      
+      // Start real-time simulation
+      await realTimeDataService.startRealTimeSimulation(execution.id, testCaseId)
+      
+      // Update executions list
+      const executions = await fiveGLabXDataService.getTestExecutions()
+      setTestExecutions(executions)
+    } catch (error) {
+      console.error('Error starting test execution:', error)
+      setIsProcessing(false)
+    }
+  }
+
+  // Stop test execution
+  const stopTestExecution = async () => {
+    try {
+      setIsProcessing(false)
+      if (currentExecution) {
+        await fiveGLabXDataService.updateTestExecutionStatus(currentExecution.id, 'completed')
+        setCurrentExecution(null)
+      }
+    } catch (error) {
+      console.error('Error stopping test execution:', error)
+    }
+  }
 
   const getLevelColor = (level: string) => {
     switch (level) {
@@ -621,18 +688,47 @@ export const UserDashboard: React.FC = () => {
               <div className="card bg-base-200">
                 <div className="card-body p-4">
                   <h3 className="card-title text-sm mb-3">Processing Controls</h3>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setIsProcessing(!isProcessing)}
-                      className={`btn btn-sm ${isProcessing ? 'btn-error' : 'btn-success'}`}
-                    >
-                      {isProcessing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                      {isProcessing ? 'Stop' : 'Start'}
-                    </button>
-                    <button className="btn btn-sm btn-outline">
-                      <RotateCcw className="w-4 h-4" />
-                      Reset
-                    </button>
+                  <div className="space-y-3">
+                    <div className="form-control">
+                      <label className="label">
+                        <span className="label-text text-xs">Select Test Case</span>
+                      </label>
+                      <select 
+                        className="select select-bordered select-sm"
+                        onChange={(e) => {
+                          const testCase = testCases.find(tc => tc.id === e.target.value)
+                          if (testCase) {
+                            setCurrentExecution({ test_case: testCase })
+                          }
+                        }}
+                      >
+                        <option value="">Choose test case...</option>
+                        {testCases.slice(0, 10).map((testCase) => (
+                          <option key={testCase.id} value={testCase.id}>
+                            {testCase.name} ({testCase.category})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          const selectedTestCase = currentExecution?.test_case || testCases[0]
+                          if (selectedTestCase) {
+                            isProcessing ? stopTestExecution() : startTestExecution(selectedTestCase.id)
+                          }
+                        }}
+                        className={`btn btn-sm flex-1 ${isProcessing ? 'btn-error' : 'btn-success'}`}
+                        disabled={!testCases.length}
+                      >
+                        {isProcessing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                        {isProcessing ? 'Stop' : 'Start'}
+                      </button>
+                      <button className="btn btn-sm btn-outline">
+                        <RotateCcw className="w-4 h-4" />
+                        Reset
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -641,20 +737,26 @@ export const UserDashboard: React.FC = () => {
               <div className="card bg-base-200">
                 <div className="card-body p-4">
                   <h3 className="card-title text-sm mb-3">System Status</h3>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Messages/sec</span>
-                      <span className="font-bold">1,247</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Buffer</span>
-                      <span className="font-bold">2.3MB</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Uptime</span>
-                      <span className="font-bold">2h 34m</span>
-                    </div>
-                  </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span>Active Executions</span>
+                          <span className="font-bold">{testExecutions.filter(e => e.status === 'running').length}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span>Total Test Cases</span>
+                          <span className="font-bold">{testCases.length}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span>Analytics Metrics</span>
+                          <span className="font-bold">{analyticsMetrics.length}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span>Real-time Status</span>
+                          <span className={`font-bold ${realTimeDataService.isConnectedToRealTime() ? 'text-success' : 'text-error'}`}>
+                            {realTimeDataService.getConnectionStatus()}
+                          </span>
+                        </div>
+                      </div>
                 </div>
               </div>
 
