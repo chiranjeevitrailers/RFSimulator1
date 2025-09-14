@@ -242,28 +242,28 @@ export const UserDashboard: React.FC = () => {
   ]
 
   const protocolLayers = [
-    { name: 'PHY Layer', icon: Radio, description: 'Physical Layer Analysis', status: 'active' },
-    { name: 'MAC Layer', icon: Network, description: 'Medium Access Control', status: 'active' },
-    { name: 'RLC Layer', icon: Layers, description: 'Radio Link Control', status: 'active' },
-    { name: 'PDCP Layer', icon: Database, description: 'Packet Data Convergence Protocol', status: 'active' },
-    { name: 'RRC Layer', icon: Settings, description: 'Radio Resource Control', status: 'active' },
-    { name: 'NAS Layer', icon: MessageSquare, description: 'Non-Access Stratum', status: 'active' },
-    { name: 'IMS Layer', icon: Cloud, description: 'IP Multimedia Subsystem', status: 'active' }
+    { name: 'PHY Layer', href: 'layer-phy-layer', icon: Radio, description: 'Physical Layer Analysis', status: 'active' },
+    { name: 'MAC Layer', href: 'layer-mac-layer', icon: Network, description: 'Medium Access Control', status: 'active' },
+    { name: 'RLC Layer', href: 'layer-rlc-layer', icon: Layers, description: 'Radio Link Control', status: 'active' },
+    { name: 'PDCP Layer', href: 'layer-pdcp-layer', icon: Database, description: 'Packet Data Convergence Protocol', status: 'active' },
+    { name: 'RRC Layer', href: 'layer-rrc-layer', icon: Settings, description: 'Radio Resource Control', status: 'active' },
+    { name: 'NAS Layer', href: 'layer-nas-layer', icon: MessageSquare, description: 'Non-Access Stratum', status: 'active' },
+    { name: 'IMS Layer', href: 'layer-ims-layer', icon: Cloud, description: 'IP Multimedia Subsystem', status: 'active' }
   ]
 
   const coreNetworkAnalyzers = [
-    { name: 'AMF Analyzer', icon: Server, description: 'Access and Mobility Management Function', technology: '5G' },
-    { name: 'SMF Analyzer', icon: Router, description: 'Session Management Function', technology: '5G' },
-    { name: 'UPF Analyzer', icon: Network, description: 'User Plane Function', technology: '5G' },
-    { name: 'AUSF Analyzer', icon: Shield, description: 'Authentication Server Function', technology: '5G' },
-    { name: 'UDM Analyzer', icon: Database, description: 'Unified Data Management', technology: '5G' },
-    { name: 'Config Manager', icon: Settings, description: 'Configuration Management', technology: '5G' },
+    { name: 'AMF Analyzer', href: 'analyzer-amf-analyzer', icon: Server, description: 'Access and Mobility Management Function', technology: '5G' },
+    { name: 'SMF Analyzer', href: 'analyzer-smf-analyzer', icon: Router, description: 'Session Management Function', technology: '5G' },
+    { name: 'UPF Analyzer', href: 'analyzer-upf-analyzer', icon: Network, description: 'User Plane Function', technology: '5G' },
+    { name: 'AUSF Analyzer', href: 'analyzer-ausf-analyzer', icon: Shield, description: 'Authentication Server Function', technology: '5G' },
+    { name: 'UDM Analyzer', href: 'analyzer-udm-analyzer', icon: Database, description: 'Unified Data Management', technology: '5G' },
+    { name: 'Config Manager', href: 'analyzer-config-manager', icon: Settings, description: 'Configuration Management', technology: '5G' },
   ]
 
   const legacy4G = [
-    { name: 'MME Analyzer', icon: Server, description: 'Mobility Management Entity', technology: '4G' },
-    { name: 'SGW Analyzer', icon: Router, description: 'Serving Gateway', technology: '4G' },
-    { name: 'PGW Analyzer', icon: Network, description: 'Packet Data Network Gateway', technology: '4G' }
+    { name: 'MME Analyzer', href: 'analyzer-mme-analyzer', icon: Server, description: 'Mobility Management Entity', technology: '4G' },
+    { name: 'SGW Analyzer', href: 'analyzer-sgw-analyzer', icon: Router, description: 'Serving Gateway', technology: '4G' },
+    { name: 'PGW Analyzer', href: 'analyzer-pgw-analyzer', icon: Network, description: 'Packet Data Network Gateway', technology: '4G' }
   ]
 
   const oranFeatures = [
@@ -602,7 +602,11 @@ export const UserDashboard: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => setActiveComponent(item.href)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left text-base-content hover:bg-base-300"
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+                      activeComponent === item.href
+                        ? 'bg-primary text-primary-content'
+                        : 'text-base-content hover:bg-base-300'
+                    }`}
                   >
                     <Icon className="w-5 h-5" />
                     <span className="flex-1">{item.name}</span>
@@ -625,7 +629,11 @@ export const UserDashboard: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => setActiveComponent(item.href)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left text-base-content hover:bg-base-300"
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+                      activeComponent === item.href
+                        ? 'bg-primary text-primary-content'
+                        : 'text-base-content hover:bg-base-300'
+                    }`}
                   >
                     <Icon className="w-5 h-5" />
                     <span className="flex-1">{item.name}</span>
@@ -648,7 +656,11 @@ export const UserDashboard: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => setActiveComponent(item.href)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left text-base-content hover:bg-base-300"
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+                      activeComponent === item.href
+                        ? 'bg-primary text-primary-content'
+                        : 'text-base-content hover:bg-base-300'
+                    }`}
                   >
                     <Icon className="w-5 h-5" />
                     <span className="flex-1">{item.name}</span>
@@ -671,7 +683,11 @@ export const UserDashboard: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => setActiveComponent(item.href)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left text-base-content hover:bg-base-300"
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+                      activeComponent === item.href
+                        ? 'bg-primary text-primary-content'
+                        : 'text-base-content hover:bg-base-300'
+                    }`}
                   >
                     <Icon className="w-5 h-5" />
                     <span className="flex-1">{item.name}</span>
@@ -693,8 +709,12 @@ export const UserDashboard: React.FC = () => {
                 return (
                   <button
                     key={index}
-                    onClick={() => setActiveComponent(`layer-${layer.name.toLowerCase().replace(' ', '-')}`)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left text-base-content hover:bg-base-300"
+                    onClick={() => setActiveComponent(layer.href)}
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+                      activeComponent === layer.href
+                        ? 'bg-primary text-primary-content'
+                        : 'text-base-content hover:bg-base-300'
+                    }`}
                   >
                     <Icon className="w-5 h-5" />
                     <span className="flex-1">{layer.name}</span>
@@ -714,8 +734,12 @@ export const UserDashboard: React.FC = () => {
                 return (
                   <button
                     key={index}
-                    onClick={() => setActiveComponent(`analyzer-${analyzer.name.toLowerCase().replace(' ', '-')}`)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left text-base-content hover:bg-base-300"
+                    onClick={() => setActiveComponent(analyzer.href)}
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+                      activeComponent === analyzer.href
+                        ? 'bg-primary text-primary-content'
+                        : 'text-base-content hover:bg-base-300'
+                    }`}
                   >
                     <Icon className="w-5 h-5" />
                     <span className="flex-1">{analyzer.name}</span>
@@ -737,8 +761,12 @@ export const UserDashboard: React.FC = () => {
                 return (
                   <button
                     key={index}
-                    onClick={() => setActiveComponent(`analyzer-${analyzer.name.toLowerCase().replace(' ', '-')}`)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left text-base-content hover:bg-base-300"
+                    onClick={() => setActiveComponent(analyzer.href)}
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+                      activeComponent === analyzer.href
+                        ? 'bg-primary text-primary-content'
+                        : 'text-base-content hover:bg-base-300'
+                    }`}
                   >
                     <Icon className="w-5 h-5" />
                     <span className="flex-1">{analyzer.name}</span>
