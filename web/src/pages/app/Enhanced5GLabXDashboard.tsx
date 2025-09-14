@@ -442,18 +442,21 @@ export const Enhanced5GLabXDashboard: React.FC = () => {
 
         {/* Test Suites Component */}
         <div className="bg-base-200 rounded-lg p-3 mb-4">
-          <h4 className="text-sm font-semibold mb-2">Test Suites</h4>
-          <div className="space-y-2">
-            {testSuites.slice(0, 3).map((suite, index) => (
-              <div key={index} className="flex items-center gap-2 text-xs">
-                <suite.icon className="w-3 h-3 text-primary" />
-                <span className="flex-1 truncate">{suite.name}</span>
-                <span className="badge badge-xs badge-primary">{suite.count}</span>
+          <h4 className="text-sm font-semibold mb-3">Test Suites</h4>
+          <div className="space-y-3">
+            {testSuites.map((suite, index) => (
+              <div key={index} className="bg-base-100 rounded p-2">
+                <div className="flex items-center gap-2 mb-1">
+                  <suite.icon className="w-3 h-3 text-primary" />
+                  <span className="text-xs font-medium flex-1 truncate">{suite.name}</span>
+                  <span className="badge badge-xs badge-primary">{suite.count}</span>
+                </div>
+                <p className="text-xs text-base-content/60 leading-tight">{suite.description}</p>
               </div>
             ))}
-            <Link to="/app/test-suites" className="btn btn-primary btn-xs w-full mt-2">
+            <Link to="/app/test-suites" className="btn btn-primary btn-xs w-full mt-3">
               <TestTube className="w-3 h-3" />
-              View All
+              Manage Test Suites
             </Link>
           </div>
         </div>
@@ -498,62 +501,33 @@ export const Enhanced5GLabXDashboard: React.FC = () => {
         {/* Main Dashboard Content - Scrollable */}
         <div className="flex-1 bg-base-100 p-4 overflow-y-auto">
           <div className="space-y-6">
-            {/* Protocol Analysis & Test Suites - Top Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Protocol Analyzers */}
-              <div className="card bg-base-200">
-                <div className="card-body">
-                  <h2 className="card-title mb-4">Protocol Analyzers</h2>
-                  <div className="grid grid-cols-1 gap-3">
-                    {protocolAnalyzers.slice(0, 3).map((analyzer, index) => (
-                      <Link key={index} to={analyzer.link} className="card bg-base-100 hover:bg-base-300 transition-colors">
-                        <div className="card-body p-3">
-                          <div className="flex items-center gap-3">
-                            <div className={`p-2 rounded-lg ${analyzer.color} text-white`}>
-                              {analyzer.icon}
-                            </div>
-                            <div className="flex-1">
-                              <h3 className="font-semibold text-sm">{analyzer.name}</h3>
-                              <p className="text-xs text-base-content/70">{analyzer.components.join(', ')}</p>
-                            </div>
-                            <div className={`w-2 h-2 rounded-full ${analyzer.status === 'active' ? 'bg-success' : 'bg-error'}`}></div>
+            {/* Protocol Analyzers - Top Section */}
+            <div className="card bg-base-200">
+              <div className="card-body">
+                <h2 className="card-title mb-4">Protocol Analyzers</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {protocolAnalyzers.map((analyzer, index) => (
+                    <Link key={index} to={analyzer.link} className="card bg-base-100 hover:bg-base-300 transition-colors">
+                      <div className="card-body p-4">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className={`p-2 rounded-lg ${analyzer.color} text-white`}>
+                            {analyzer.icon}
                           </div>
+                          <h3 className="font-semibold text-sm">{analyzer.name}</h3>
                         </div>
-                      </Link>
-                    ))}
-                  </div>
-                  <Link to="/app/analyzer" className="btn btn-primary btn-sm w-full mt-3">
-                    <Eye className="w-4 h-4" />
-                    View All Analyzers
-                  </Link>
+                        <p className="text-xs text-base-content/70 mb-2">{analyzer.components.join(', ')}</p>
+                        <div className="flex items-center justify-between">
+                          <div className={`w-2 h-2 rounded-full ${analyzer.status === 'active' ? 'bg-success' : 'bg-error'}`}></div>
+                          <span className="text-xs text-base-content/50">Click to analyze</span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
                 </div>
-              </div>
-
-              {/* Test Suites */}
-              <div className="card bg-base-200">
-                <div className="card-body">
-                  <h2 className="card-title mb-4">Test Suites</h2>
-                  <div className="space-y-3">
-                    {testSuites.map((suite, index) => (
-                      <Link key={index} to={suite.link} className="card bg-base-100 hover:bg-base-300 transition-colors">
-                        <div className="card-body p-3">
-                          <div className="flex items-center gap-3">
-                            <div className="text-primary">
-                              {suite.icon}
-                            </div>
-                            <div className="flex-1">
-                              <h3 className="font-semibold text-sm">{suite.name}</h3>
-                              <p className="text-xs text-base-content/70">{suite.description}</p>
-                            </div>
-                            <span className="badge badge-primary badge-sm">{suite.count}</span>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                  <Link to="/app/test-suites" className="btn btn-secondary btn-sm w-full mt-3">
-                    <TestTube className="w-4 h-4" />
-                    View All Test Suites
+                <div className="mt-4 text-center">
+                  <Link to="/app/analyzer" className="btn btn-primary btn-sm">
+                    <Eye className="w-4 h-4" />
+                    View All Protocol Analyzers
                   </Link>
                 </div>
               </div>
