@@ -22,7 +22,7 @@ import {
   ChatBubbleLeftRightIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  MailIcon,
+  EnvelopeIcon,
   PhoneIcon,
   MapPinIcon,
   ChatBubbleLeftRightIcon as TwitterIcon,
@@ -493,7 +493,7 @@ const LandingPage: React.FC = () => {
               </p>
               <div className="space-y-3 mb-6">
                 <div className="flex items-center space-x-3 text-gray-400">
-                  <MailIcon className="h-4 w-4" />
+                  <EnvelopeIcon className="h-4 w-4" />
                   <span>contact@5glabx.com</span>
                 </div>
                 <div className="flex items-center space-x-3 text-gray-400">
