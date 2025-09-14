@@ -375,32 +375,186 @@ export const Enhanced5GLabXDashboard: React.FC = () => {
   ]
 
   return (
-    <div className="space-y-6">
-      {/* Welcome Section */}
-      <div className="card bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
-        <div className="card-body">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">
-                {getGreeting()}, {user?.full_name || 'Engineer'}! 🚀
-              </h1>
-              <p className="text-base-content/70 text-lg">
-                Welcome to your comprehensive 5GLabX Cloud platform. Ready to analyze protocols and run tests?
-              </p>
+    <div className="h-[calc(100vh-4rem)] flex flex-col lg:flex-row">
+      {/* Left Column - Quick Stats & Actions (Fixed Width) */}
+      <div className="w-full lg:w-80 bg-base-100 border-b lg:border-b-0 lg:border-r border-base-300 p-4 flex flex-col lg:max-h-full max-h-96 overflow-y-auto">
+        {/* Header Section */}
+        <div className="mb-4">
+          <h1 className="text-xl font-bold text-base-content">5GLabX Cloud Platform</h1>
+          <p className="text-base-content/70 text-sm">Professional 4G/5G Protocol Analysis</p>
+          <div className="flex items-center gap-2 mt-2">
+            <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+            <span className="text-sm text-base-content/70">System Online</span>
+          </div>
+        </div>
+
+        {/* System Metrics - Compact */}
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          {systemMetrics.slice(0, 4).map((metric, index) => (
+            <div key={index} className="stat bg-base-200 rounded-lg p-3">
+              <div className="stat-title text-xs">{metric.name}</div>
+              <div className="stat-value text-lg text-primary">{metric.value}</div>
             </div>
-            <div className="hidden md:block">
-              <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center">
-                <BarChart3 className="w-10 h-10 text-primary" />
+          ))}
+        </div>
+
+        {/* Quick Actions */}
+        <div className="space-y-2 mb-4">
+          <Link to="/app/test-suites" className="btn btn-primary btn-sm w-full justify-start">
+            <TestTube className="w-4 h-4" />
+            Test Suites
+          </Link>
+          <Link to="/app/analyzer" className="btn btn-secondary btn-sm w-full justify-start">
+            <BarChart3 className="w-4 h-4" />
+            Protocol Analyzer
+          </Link>
+          <Link to="/app/executions" className="btn btn-accent btn-sm w-full justify-start">
+            <Activity className="w-4 h-4" />
+            Executions
+          </Link>
+        </div>
+
+        {/* System Status */}
+        <div className="bg-base-200 rounded-lg p-3 mb-4">
+          <h4 className="text-sm font-semibold mb-2">System Status</h4>
+          <div className="space-y-1 text-xs">
+            <div className="flex justify-between">
+              <span>Active Tests</span>
+              <span className="font-bold">{realTimeData.testExecutions}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Messages</span>
+              <span className="font-bold">{realTimeData.messagesProcessed.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Connections</span>
+              <span className="font-bold">{realTimeData.activeConnections.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span>Health</span>
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-success rounded-full"></div>
+                <span className="font-bold">{realTimeData.systemHealth}%</span>
               </div>
             </div>
           </div>
         </div>
+
+        {/* CLI Integrations */}
+        <div className="bg-base-200 rounded-lg p-3">
+          <h4 className="text-sm font-semibold mb-2">CLI Integrations</h4>
+          <div className="space-y-1">
+            {cliIntegrations.map((cli, index) => (
+              <div key={index} className="flex items-center gap-2 text-xs">
+                <cli.icon className="w-3 h-3" />
+                <span className="flex-1 truncate">{cli.name.split(' ')[0]}</span>
+                <div className={`w-1.5 h-1.5 rounded-full ${cli.status === 'connected' ? 'bg-success' : 'bg-error'}`}></div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* System Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {systemMetrics.map((metric, index) => (
-          <div key={index} className="card bg-base-200">
+      {/* Right Column - Main Content Area */}
+      <div className="flex-1 flex flex-col">
+        {/* Welcome Header - Fixed at Top */}
+        <div className="bg-base-100 border-b border-base-300 p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-base-content">
+                {getGreeting()}, {user?.full_name || 'Engineer'}! 🚀
+              </h2>
+              <p className="text-sm text-base-content/70">Welcome to your comprehensive 5GLabX Cloud platform</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+              <span className="text-sm text-base-content/70">Live</span>
+              <Link to="/app/analyzer" className="btn btn-primary btn-sm">
+                <Eye className="w-4 h-4" />
+                Analyze Logs
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Dashboard Content - Scrollable */}
+        <div className="flex-1 bg-base-100 p-4 overflow-y-auto">
+          <div className="space-y-6">
+            {/* Real-time Log Analysis Section */}
+            <div className="card bg-base-200">
+              <div className="card-body">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="card-title">Real-time Log Analysis</h2>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+                    <span className="text-sm text-base-content/70">Live</span>
+                    <button className="btn btn-ghost btn-sm">
+                      <RotateCcw className="w-4 h-4" />
+                      Refresh
+                    </button>
+                    <button className="btn btn-ghost btn-sm">
+                      <Download className="w-4 h-4" />
+                      Export
+                    </button>
+                  </div>
+                </div>
+
+                {/* Log Filters */}
+                <div className="flex flex-wrap gap-3 mb-4">
+                  <select className="select select-bordered select-sm">
+                    <option>All Layers</option>
+                    <option>PHY</option>
+                    <option>MAC</option>
+                    <option>RLC</option>
+                    <option>PDCP</option>
+                    <option>RRC</option>
+                    <option>NAS</option>
+                    <option>IMS</option>
+                  </select>
+                  <select className="select select-bordered select-sm">
+                    <option>All Levels</option>
+                    <option>ERROR</option>
+                    <option>WARN</option>
+                    <option>INFO</option>
+                    <option>DEBUG</option>
+                  </select>
+                  <select className="select select-bordered select-sm">
+                    <option>All Channels</option>
+                    <option>Channel 1</option>
+                    <option>Channel 2</option>
+                    <option>Channel 3</option>
+                  </select>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-base-content/50" size={16} />
+                    <input
+                      type="text"
+                      placeholder="Search logs..."
+                      className="input input-bordered input-sm pl-10 w-48"
+                    />
+                  </div>
+                  <button className="btn btn-primary btn-sm">
+                    <Filter className="w-4 h-4" />
+                    Apply Filters
+                  </button>
+                </div>
+                
+                {/* Log Display */}
+                <div className="bg-base-100 rounded-lg p-4 h-64 overflow-y-auto font-mono text-sm">
+                  <div className="flex items-center justify-center h-full text-center text-base-content/50">
+                    <div>
+                      <Activity className="w-12 h-12 mx-auto mb-4" />
+                      <p className="text-lg font-medium mb-2">No logs available</p>
+                      <p className="text-sm">Click "Analyze Logs" to begin real-time log analysis</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* System Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {systemMetrics.map((metric, index) => (
+                <div key={index} className="card bg-base-200">
             <div className="card-body p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -820,7 +974,10 @@ export const Enhanced5GLabXDashboard: React.FC = () => {
             </div>
           </div>
         </div>
-      )}
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
