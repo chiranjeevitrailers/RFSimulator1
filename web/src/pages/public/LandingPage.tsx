@@ -25,7 +25,7 @@ import {
   MailIcon,
   PhoneIcon,
   MapPinIcon,
-  TwitterIcon,
+  ChatBubbleLeftRightIcon as TwitterIcon,
   LinkedinIcon,
   GithubIcon,
   YoutubeIcon
