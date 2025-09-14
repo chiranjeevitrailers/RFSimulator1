@@ -74,6 +74,8 @@ import {
   Terminal,
   Globe
 } from 'lucide-react'
+import EnhancedLogViewer from '../../components/analyzer/EnhancedLogViewer'
+import SimpleDataViewer from '../../components/common/SimpleDataViewer'
 
 export const UserDashboard: React.FC = () => {
   const { user, signOut } = useSimpleAuth()
@@ -326,6 +328,98 @@ export const UserDashboard: React.FC = () => {
       default:
         return <Activity className="w-4 h-4 text-gray-500" />
     }
+  }
+
+  // Helper: map activeComponent to data fetcher
+  const getDataViewerConfig = () => {
+    if (!currentExecution) return null
+    const id = currentExecution.id
+    switch (activeComponent) {
+      // MAIN VIEWS
+      case 'analytics':
+        return { title: 'Analytics Metrics', queryKey: ['analytics', id], fetcher: () => fiveGLabXDataService.getAnalyticsMetrics(id) }
+      // O-RAN
+      case 'oran-e1-interface':
+        return { title: 'E1 Interface', queryKey: ['oran-e1', id], fetcher: () => fiveGLabXDataService.getORANInterfaces(id) }
+      case 'oran-f1-interface':
+        return { title: 'F1 Interface', queryKey: ['oran-f1', id], fetcher: () => fiveGLabXDataService.getORANInterfaces(id) }
+      case 'oran-performance':
+        return { title: 'O-RAN Performance', queryKey: ['oran-perf', id], fetcher: () => fiveGLabXDataService.getORANPerformance(id) }
+      case 'oran-xapps':
+        return { title: 'O-RAN xApps', queryKey: ['oran-xapps', id], fetcher: () => fiveGLabXDataService.getORANxApps(id) }
+      case 'oran-smo':
+        return { title: 'O-RAN SMO Analysis', queryKey: ['oran-smo', id], fetcher: () => fiveGLabXDataService.getORANSMO(id) }
+      // NB-IOT
+      case 'nbiot-analytics':
+        return { title: 'NB-IoT Analytics', queryKey: ['nbiot-analytics', id], fetcher: () => fiveGLabXDataService.getNBIoTAnalytics(id) }
+      case 'nbiot-phy-layer':
+        return { title: 'NB-IoT PHY Layer', queryKey: ['nbiot-phy', id], fetcher: () => fiveGLabXDataService.getNBIoTPHY(id) }
+      case 'nbiot-mac-layer':
+        return { title: 'NB-IoT MAC Layer', queryKey: ['nbiot-mac', id], fetcher: () => fiveGLabXDataService.getNBIoTMAC(id) }
+      case 'nbiot-rrc-layer':
+        return { title: 'NB-IoT RRC', queryKey: ['nbiot-rrc', id], fetcher: () => fiveGLabXDataService.getNBIoTRRC(id) }
+      case 'nbiot-testing':
+        return { title: 'NB-IoT Testing', queryKey: ['nbiot-testing', id], fetcher: () => fiveGLabXDataService.getNBIoTTesting(id) }
+      // V2X
+      case 'v2x-analytics':
+        return { title: 'V2X Analytics', queryKey: ['v2x-analytics', id], fetcher: () => fiveGLabXDataService.getV2XAnalytics(id) }
+      case 'v2x-phy-layer':
+        return { title: 'V2X PHY Layer', queryKey: ['v2x-phy', id], fetcher: () => fiveGLabXDataService.getV2XPHY(id) }
+      case 'v2x-mac-layer':
+        return { title: 'V2X MAC Layer', queryKey: ['v2x-mac', id], fetcher: () => fiveGLabXDataService.getV2XMAC(id) }
+      case 'v2x-testing':
+        return { title: 'V2X Testing', queryKey: ['v2x-testing', id], fetcher: () => fiveGLabXDataService.getV2XTesting(id) }
+      case 'v2x-scenarios':
+        return { title: 'V2X Scenarios', queryKey: ['v2x-scenarios', id], fetcher: () => fiveGLabXDataService.getV2XScenarios(id) }
+      // NTN
+      case 'ntn-satellites':
+        return { title: 'Satellite Links', queryKey: ['ntn-sat', id], fetcher: () => fiveGLabXDataService.getNTNSatelliteLinks(id) }
+      case 'ntn-analytics':
+        return { title: 'NTN Analytics', queryKey: ['ntn-analytics', id], fetcher: () => fiveGLabXDataService.getNTNAnalytics(id) }
+      case 'ntn-timing':
+        return { title: 'Timing & Delay', queryKey: ['ntn-timing', id], fetcher: () => fiveGLabXDataService.getNTNTiming(id) }
+      case 'ntn-doppler':
+        return { title: 'Doppler Analysis', queryKey: ['ntn-doppler', id], fetcher: () => fiveGLabXDataService.getNTNDoppler(id) }
+      case 'ntn-scenarios':
+        return { title: 'NTN Scenarios', queryKey: ['ntn-scenarios', id], fetcher: () => fiveGLabXDataService.getNTNScenarios(id) }
+      // CORE NETWORK – Config Manager
+      case 'analyzer-config-manager':
+        return { title: 'Config Manager', queryKey: ['config-manager', id], fetcher: () => fiveGLabXDataService.getConfigManagerAnalysis(id) }
+      // 4G Legacy
+      case 'analyzer-mme-analyzer':
+        return { title: 'MME Analyzer', queryKey: ['mme', id], fetcher: () => fiveGLabXDataService.getMMEAnalysis(id) }
+      case 'analyzer-sgw-analyzer':
+        return { title: 'SGW Analyzer', queryKey: ['sgw', id], fetcher: () => fiveGLabXDataService.getSGWAnalysis(id) }
+      case 'analyzer-pgw-analyzer':
+        return { title: 'PGW Analyzer', queryKey: ['pgw', id], fetcher: () => fiveGLabXDataService.getPGWAnalysis(id) }
+      // Utilities
+      case 'report-generator':
+        return { title: 'Generated Reports', queryKey: ['reports', id], fetcher: () => fiveGLabXDataService.getGeneratedReports() }
+      case 'export-manager':
+        return { title: 'Export Manager', queryKey: ['export', id], fetcher: async () => [] }
+      default:
+        return getDataViewerConfigStatic(activeComponent, id)
+    }
+  }
+
+  // static map helper outside switch for protocol/core etc
+  const getDataViewerConfigStatic = (key: string, execId: string) => {
+    const mapper: Record<string, { title: string; method: (id: string) => Promise<any[]> }> = {
+      'oran-overview': { title: 'O-RAN Overview', method: fiveGLabXDataService.getORANOverview },
+      'oran-interfaces': { title: 'O-RAN Interfaces', method: fiveGLabXDataService.getORANInterfaces },
+      'oran-cu-analysis': { title: 'O-RAN CU Analysis', method: fiveGLabXDataService.getCUAnalysis },
+      'oran-du-analysis': { title: 'O-RAN DU Analysis', method: fiveGLabXDataService.getDUAnalysis },
+      'nbiot-overview': { title: 'NB-IoT Overview', method: fiveGLabXDataService.getNBIoTOverview },
+      'nbiot-callflow': { title: 'NB-IoT Call Flow', method: fiveGLabXDataService.getNBIoTCallFlow },
+      'v2x-overview': { title: 'V2X Overview', method: fiveGLabXDataService.getV2XOverview },
+      'v2x-sidelink': { title: 'PC5 Sidelink', method: fiveGLabXDataService.getPC5Sidelink },
+      'ntn-overview': { title: 'NTN Overview', method: fiveGLabXDataService.getNTNOverview },
+      'ntn-sib19': { title: 'SIB19 Analysis', method: fiveGLabXDataService.getSIB19Analysis },
+      // Protocol layers handled above earlier
+    }
+    const cfg = mapper[key]
+    if (!cfg) return null
+    return { title: cfg.title, queryKey: [key, execId], fetcher: () => cfg.method(execId) }
   }
 
   if (!user) {
@@ -680,148 +774,177 @@ export const UserDashboard: React.FC = () => {
 
         {/* Page Content */}
         <main className="p-6">
-          {/* Real-time Log Display */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-8rem)]">
-            {/* Left Panel - Controls */}
-            <div className="lg:col-span-1 space-y-4">
-              {/* Processing Controls */}
-              <div className="card bg-base-200">
-                <div className="card-body p-4">
-                  <h3 className="card-title text-sm mb-3">Processing Controls</h3>
-                  <div className="space-y-3">
-                    <div className="form-control">
-                      <label className="label">
-                        <span className="label-text text-xs">Select Test Case</span>
-                      </label>
-                      <select 
-                        className="select select-bordered select-sm"
-                        onChange={(e) => {
-                          const testCase = testCases.find(tc => tc.id === e.target.value)
-                          if (testCase) {
-                            setCurrentExecution({ test_case: testCase })
-                          }
-                        }}
-                      >
-                        <option value="">Choose test case...</option>
-                        {testCases.slice(0, 10).map((testCase) => (
-                          <option key={testCase.id} value={testCase.id}>
-                            {testCase.name} ({testCase.category})
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => {
-                          const selectedTestCase = currentExecution?.test_case || testCases[0]
-                          if (selectedTestCase) {
-                            isProcessing ? stopTestExecution() : startTestExecution(selectedTestCase.id)
-                          }
-                        }}
-                        className={`btn btn-sm flex-1 ${isProcessing ? 'btn-error' : 'btn-success'}`}
-                        disabled={!testCases.length}
-                      >
-                        {isProcessing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                        {isProcessing ? 'Stop' : 'Start'}
-                      </button>
-                      <button className="btn btn-sm btn-outline">
-                        <RotateCcw className="w-4 h-4" />
-                        Reset
-                      </button>
+          {activeComponent === 'dashboard' && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-8rem)]">
+              {/* Left Panel - Controls */}
+              <div className="lg:col-span-1 space-y-4">
+                {/* Processing Controls */}
+                <div className="card bg-base-200">
+                  <div className="card-body p-4">
+                    <h3 className="card-title text-sm mb-3">Processing Controls</h3>
+                    <div className="space-y-3">
+                      <div className="form-control">
+                        <label className="label">
+                          <span className="label-text text-xs">Select Test Case</span>
+                        </label>
+                        <select 
+                          className="select select-bordered select-sm"
+                          onChange={(e) => {
+                            const testCase = testCases.find(tc => tc.id === e.target.value)
+                            if (testCase) {
+                              setCurrentExecution({ test_case: testCase })
+                            }
+                          }}
+                        >
+                          <option value="">Choose test case...</option>
+                          {testCases.slice(0, 10).map((testCase) => (
+                            <option key={testCase.id} value={testCase.id}>
+                              {testCase.name} ({testCase.category})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            const selectedTestCase = currentExecution?.test_case || testCases[0]
+                            if (selectedTestCase) {
+                              isProcessing ? stopTestExecution() : startTestExecution(selectedTestCase.id)
+                            }
+                          }}
+                          className={`btn btn-sm flex-1 ${isProcessing ? 'btn-error' : 'btn-success'}`}
+                          disabled={!testCases.length}
+                        >
+                          {isProcessing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                          {isProcessing ? 'Stop' : 'Start'}
+                        </button>
+                        <button className="btn btn-sm btn-outline">
+                          <RotateCcw className="w-4 h-4" />
+                          Reset
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* System Status */}
-              <div className="card bg-base-200">
-                <div className="card-body p-4">
-                  <h3 className="card-title text-sm mb-3">System Status</h3>
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span>Active Executions</span>
-                          <span className="font-bold">{testExecutions.filter(e => e.status === 'running').length}</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span>Total Test Cases</span>
-                          <span className="font-bold">{testCases.length}</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span>Analytics Metrics</span>
-                          <span className="font-bold">{analyticsMetrics.length}</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span>Real-time Status</span>
-                          <span className={`font-bold ${realTimeDataService.isConnectedToRealTime() ? 'text-success' : 'text-error'}`}>
-                            {realTimeDataService.getConnectionStatus()}
-                          </span>
-                        </div>
-                      </div>
-                </div>
-              </div>
-
-              {/* CLI Integrations */}
-              <div className="card bg-base-200">
-                <div className="card-body p-4">
-                  <h3 className="card-title text-sm mb-3">CLI Integrations</h3>
-                  <div className="space-y-2">
-                    {cliIntegrations.map((cli, index) => (
-                      <div key={index} className="flex items-center gap-2 text-sm">
-                        <cli.icon className="w-4 h-4" />
-                        <span className="flex-1">{cli.name}</span>
-                        <div className={`w-2 h-2 rounded-full ${cli.status === 'connected' ? 'bg-success' : 'bg-error'}`}></div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Panel - Log Display */}
-            <div className="lg:col-span-2">
-              <div className="card bg-base-200 h-full">
-                <div className="card-body p-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="card-title text-sm">Real-time Log Analysis</h3>
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
-                      <span className="text-sm text-base-content/70">Live</span>
-                    </div>
-                  </div>
-                  
-                  {/* Log Display */}
-                  <div className="bg-base-300 rounded-lg p-4 h-[calc(100%-4rem)] overflow-y-auto font-mono text-sm">
-                    {logs.length === 0 ? (
-                      <div className="text-center text-base-content/50 py-8">
-                        <Activity className="w-8 h-8 mx-auto mb-2" />
-                        <p>Click Start to begin real-time log analysis</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-1">
-                        {logs.map((log) => (
-                          <div key={log.id} className="flex items-start gap-2 py-1">
-                            <span className="text-xs text-base-content/50 w-20 flex-shrink-0">
-                              {log.timestamp}
-                            </span>
-                            <span className={`text-xs w-12 flex-shrink-0 ${getLevelColor(log.level)}`}>
-                              {log.level}
-                            </span>
-                            <div className="flex items-center gap-1 w-12 flex-shrink-0">
-                              {getComponentIcon(log.component)}
-                              <span className="text-xs">{log.component}</span>
-                            </div>
-                            <span className="text-xs flex-1 break-all">
-                              {log.message}
+                {/* System Status */}
+                <div className="card bg-base-200">
+                  <div className="card-body p-4">
+                    <h3 className="card-title text-sm mb-3">System Status</h3>
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span>Active Executions</span>
+                            <span className="font-bold">{testExecutions.filter(e => e.status === 'running').length}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Total Test Cases</span>
+                            <span className="font-bold">{testCases.length}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Analytics Metrics</span>
+                            <span className="font-bold">{analyticsMetrics.length}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Real-time Status</span>
+                            <span className={`font-bold ${realTimeDataService.isConnectedToRealTime() ? 'text-success' : 'text-error'}`}>
+                              {realTimeDataService.getConnectionStatus()}
                             </span>
                           </div>
-                        ))}
+                        </div>
+                  </div>
+                </div>
+
+                {/* CLI Integrations */}
+                <div className="card bg-base-200">
+                  <div className="card-body p-4">
+                    <h3 className="card-title text-sm mb-3">CLI Integrations</h3>
+                    <div className="space-y-2">
+                      {cliIntegrations.map((cli, index) => (
+                        <div key={index} className="flex items-center gap-2 text-sm">
+                          <cli.icon className="w-4 h-4" />
+                          <span className="flex-1">{cli.name}</span>
+                          <div className={`w-2 h-2 rounded-full ${cli.status === 'connected' ? 'bg-success' : 'bg-error'}`}></div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Panel - Log Display */}
+              <div className="lg:col-span-2">
+                <div className="card bg-base-200 h-full">
+                  <div className="card-body p-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="card-title text-sm">Real-time Log Analysis</h3>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+                        <span className="text-sm text-base-content/70">Live</span>
                       </div>
-                    )}
+                    </div>
+                    
+                    {/* Log Display */}
+                    <div className="bg-base-300 rounded-lg p-4 h-[calc(100%-4rem)] overflow-y-auto font-mono text-sm">
+                      {logs.length === 0 ? (
+                        <div className="text-center text-base-content/50 py-8">
+                          <Activity className="w-8 h-8 mx-auto mb-2" />
+                          <p>Click Start to begin real-time log analysis</p>
+                        </div>
+                      ) : (
+                        <div className="space-y-1">
+                          {logs.map((log) => (
+                            <div key={log.id} className="flex items-start gap-2 py-1">
+                              <span className="text-xs text-base-content/50 w-20 flex-shrink-0">
+                                {log.timestamp}
+                              </span>
+                              <span className={`text-xs w-12 flex-shrink-0 ${getLevelColor(log.level)}`}>
+                                {log.level}
+                              </span>
+                              <div className="flex items-center gap-1 w-12 flex-shrink-0">
+                                {getComponentIcon(log.component)}
+                                <span className="text-xs">{log.component}</span>
+                              </div>
+                              <span className="text-xs flex-1 break-all">
+                                {log.message}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
+          {activeComponent === 'logs-viewer' && (
+            <div className="h-[calc(100vh-8rem)]">
+              {currentExecution ? (
+                <EnhancedLogViewer executionId={currentExecution.id} />
+              ) : (
+                <div className="h-full flex items-center justify-center">
+                  <div className="text-center text-base-content/70">
+                    <p>Please start a test execution to view logs.</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          {activeComponent !== 'dashboard' && activeComponent !== 'logs-viewer' && (
+            (() => {
+              const config = getDataViewerConfig()
+              if (!config) {
+                return (
+                  <div className="h-[calc(100vh-8rem)] flex items-center justify-center text-base-content/70">
+                    {currentExecution ? 'Feature coming soon...' : 'Please start a test execution first.'}
+                  </div>
+                )
+              }
+              return (
+                <SimpleDataViewer {...config} />
+              )
+            })()
+          )}
         </main>
       </div>
     </div>
