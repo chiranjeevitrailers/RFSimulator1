@@ -11,7 +11,7 @@ import {
   BeakerIcon,
   ChartBarIcon,
   DownloadIcon,
-  UploadIcon,
+  ArrowUpTrayIcon,
   UsersIcon,
   AwardIcon,
   TrendingUpIcon,
@@ -156,7 +156,7 @@ const LandingPage: React.FC = () => {
                   01
                 </div>
                 <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-6">
-                  <UploadIcon className="h-8 w-8" />
+                  <ArrowUpTrayIcon className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Upload & Configure</h3>
                 <p className="text-gray-600 mb-6">
