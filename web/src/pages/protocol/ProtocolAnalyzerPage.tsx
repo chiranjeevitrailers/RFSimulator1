@@ -171,6 +171,13 @@ export const ProtocolAnalyzerPage: React.FC = () => {
     { name: 'PGW Analyzer', href: 'analyzer-pgw', icon: Network, description: 'Packet Data Network Gateway', technology: '4G' }
   ]
 
+  const testSuites = [
+    { name: 'Test Suites Library', href: 'test-suites', icon: TestTube, description: 'Browse and execute test cases' },
+    { name: 'Test Execution', href: 'test-execution', icon: Play, description: 'Run and monitor test executions' },
+    { name: 'Test Results', href: 'test-results', icon: BarChart3, description: 'View execution results and analytics' },
+    { name: 'Test Automation', href: 'test-automation', icon: Settings, description: 'Configure automated testing' },
+  ]
+
   const utilities = [
     { name: 'Report Generator', href: 'report-generator', icon: FileText },
     { name: 'Export Manager', href: 'export-manager', icon: Download },
@@ -308,6 +315,9 @@ export const ProtocolAnalyzerPage: React.FC = () => {
 
             {/* 4G Legacy */}
             {renderNavigationSection('4G Legacy', legacy4G, '4g-legacy')}
+
+            {/* Test Suites */}
+            {renderNavigationSection('Test Suites', testSuites, 'test-suites')}
 
             {/* Utilities */}
             {renderNavigationSection('Utilities', utilities, 'utilities')}

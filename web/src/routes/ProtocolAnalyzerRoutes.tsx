@@ -70,6 +70,12 @@ const MmeAnalyzerView = React.lazy(() => import('../pages/legacy/MmeAnalyzerPage
 const SgwAnalyzerView = React.lazy(() => import('../pages/legacy/SgwAnalyzerPage'))
 const PgwAnalyzerView = React.lazy(() => import('../pages/legacy/PgwAnalyzerPage'))
 
+// Test Suites
+const TestSuitesView = React.lazy(() => import('../pages/protocol/TestSuitesPage'))
+const TestExecutionView = React.lazy(() => import('../pages/protocol/TestExecutionPage'))
+const TestResultsView = React.lazy(() => import('../pages/protocol/TestResultsPage'))
+const TestAutomationView = React.lazy(() => import('../pages/protocol/TestAutomationPage'))
+
 // Utilities
 const ReportGeneratorView = React.lazy(() => import('../pages/utilities/ReportGeneratorPage'))
 const ExportManagerView = React.lazy(() => import('../pages/utilities/ExportManagerPage'))
@@ -156,6 +162,12 @@ export const ProtocolAnalyzerRoutes: React.FC = () => {
         <Route path="analyzer-mme" element={<MmeAnalyzerView />} />
         <Route path="analyzer-sgw" element={<SgwAnalyzerView />} />
         <Route path="analyzer-pgw" element={<PgwAnalyzerView />} />
+
+        {/* Test Suites */}
+        <Route path="test-suites" element={<TestSuitesView />} />
+        <Route path="test-execution" element={<TestExecutionView />} />
+        <Route path="test-results" element={<TestResultsView />} />
+        <Route path="test-automation" element={<TestAutomationView />} />
 
         {/* Utilities */}
         <Route path="report-generator" element={<ReportGeneratorView />} />
