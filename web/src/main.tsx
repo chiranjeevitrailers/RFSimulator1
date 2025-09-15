@@ -4,7 +4,8 @@ import { Toaster } from 'react-hot-toast'
 import App from './App.tsx'
 import './index.css'
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const rootEl = document.getElementById('web-root') as HTMLElement | null;
+if (rootEl) ReactDOM.createRoot(rootEl).render(
   <React.StrictMode>
     <App />
     <Toaster
@@ -31,4 +32,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       }}
     />
   </React.StrictMode>,
-)
+);

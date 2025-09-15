@@ -229,6 +229,9 @@ function App() {
   }
 }
 
-// Initialize React app with ErrorBoundary
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(React.createElement(ErrorBoundary, null, React.createElement(App)));
+// Initialize React app with ErrorBoundary, but only if the legacy container exists
+const mountEl = document.getElementById('legacy-root');
+if (mountEl) {
+  const root = ReactDOM.createRoot(mountEl);
+  root.render(React.createElement(ErrorBoundary, null, React.createElement(App)));
+}
