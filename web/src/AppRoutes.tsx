@@ -1,0 +1,1 @@
+import Legacy5GLabXPage from './pages/legacy/Legacy5GLabXPage'
