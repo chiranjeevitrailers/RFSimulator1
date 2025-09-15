@@ -436,7 +436,7 @@ export const UserDashboard: React.FC = () => {
       setCurrentExecution(execution)
       
       // Start real-time simulation
-      await realTimeDataService.startRealTimeSimulation(execution.id, testCaseId)
+      await realTimeDataService.connectToExecution(execution.id)
       
       // Update executions list
       const executions = await fiveGLabXDataService.getTestExecutions()
@@ -453,6 +453,7 @@ export const UserDashboard: React.FC = () => {
       setIsProcessing(false)
       if (currentExecution) {
         await fiveGLabXDataService.updateTestExecutionStatus(currentExecution.id, 'completed')
+        await realTimeDataService.disconnectExecution()
         setCurrentExecution(null)
       }
     } catch (error) {

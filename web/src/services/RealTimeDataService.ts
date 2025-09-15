@@ -37,6 +37,7 @@ export class RealTimeDataService {
   private reconnectAttempts = 0
   private maxReconnectAttempts = 5
   private reconnectDelay = 1000
+  private executionChannel: any = null
 
   // ==============================================
   // CONNECTION MANAGEMENT
@@ -136,6 +137,39 @@ export class RealTimeDataService {
         this.handleReconnect()
       }
     }, this.reconnectDelay * this.reconnectAttempts)
+  }
+
+  /**
+   * Connect to live decoded-message stream for a specific execution ID.
+   *   – Opens Supabase Realtime broadcast channel `test_log::<execId>`
+   *   – Emits `realtime:log` CustomEvent for each payload
+   */
+  async connectToExecution(execId: string): Promise<void> {
+    if (this.executionChannel) {
+      await supabase.removeChannel(this.executionChannel)
+      this.executionChannel = null
+    }
+
+    this.executionChannel = supabase
+      .channel(`test_log::${execId}`)
+      .on('broadcast', { event: 'log' }, ({ payload }) => {
+        const event = new CustomEvent('realtime:log', { detail: payload })
+        window.dispatchEvent(event)
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          this.isConnected = true
+        }
+      })
+  }
+
+  /** Disconnect current execution stream */
+  async disconnectExecution(): Promise<void> {
+    if (this.executionChannel) {
+      await supabase.removeChannel(this.executionChannel)
+      this.executionChannel = null
+      this.isConnected = false
+    }
   }
 
   // ==============================================
