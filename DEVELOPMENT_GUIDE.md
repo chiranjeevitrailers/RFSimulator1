@@ -250,3 +250,76 @@ jobs:
 • Core protocol parsers – o3 AI team.  
 • Dashboard shell – NextGen UI squad.  
 • Supabase schema & worker glue – DevOps guild.
+
+---
+
+## 11. 3 GPP-Compliant Message Flow & Data Model
+
+This section formalises how every packet / log line adheres to the 3 GPP specifications end-to-end.
+
+### 11.1 Canonical Layers & Columns
+
+| Layer | `decoded_messages.layer` value | Key columns (subset) |
+|-------|--------------------------------|----------------------|
+| PHY   | `PHY`  | `modulation`, `rb_allocation`, `snr_db`, `tbs_bits` |
+| MAC   | `MAC`  | `lcid`, `harq_id`, `rb_used`, `mcs`, `bsr` |
+| RLC   | `RLC`  | `mode`, `sn`, `pdu_len`, `retx_cnt` |
+| PDCP  | `PDCP` | `sn`, `cipher_alg`, `integrity_alg`, `payload_len` |
+| RRC   | `RRC`  | `procedure`, `message_type`, `ie_path[]`, `payload` |
+| NAS   | `NAS`  | `procedure`, `message_type`, `imsi/guti/supi`, `payload` |
+| IMS   | `IMS`  | `sip_method`, `resp_code`, `call_id`, `sdp_fields` |
+
+`ie_path` mirrors ASN.1 path **exactly** (e.g. `["RRCConnectionRequest","ue-Identity","s-TMSI","mmec"]`).
+
+### 11.2 Parsing Pipeline
+
+```mermaid
+graph LR
+  CLI/PCAP -->|raw line| LogProcessor
+  LogProcessor --> MessageAnalyzer
+  MessageAnalyzer -->|3GPP-expanded JSON| decoded_messages
+  decoded_messages --> Supabase.Realtime --> Browser
+```
+
+• **LogProcessor**: detects protocol, converts to neutral JSON.  
+• **MessageAnalyzer**: loads generated 3GPP grammar (ASN.1 → JSON-schema) and expands all IEs.
+
+### 11.3 JSON-Schema Validation (CI)
+
+Stored in `/schemas/3gpp/*.schema.json`; enforced in CI:
+
+```bash
+npm run lint:3gpp   # decode → validate → encode → PDML compare
+```
+
+### 11.4 Supabase Constraints
+
+Example for RLC rows to guarantee mandatory keys:
+
+```sql
+alter table decoded_messages
+  add constraint rlc_required_ies
+  check (layer <> 'RLC' or payload ?& array['sn','mode','pdu_len']);
+```
+
+### 11.5 Test-Suite YAML Meta
+
+```yaml
+id: 5gnr-ia-001
+spec_ref: 38.331 §6.2.3.2
+procedure: "Initial Access"
+expect:
+  - layer: RRC
+    ie_path: [RRCConnectionRequest, establishmentCause]
+    value: mo-Signalling
+pcaps:
+  - srsran/rrc-setup.pcap
+```
+`expected_output` is stored verbatim in `test_cases` to drive pass/fail logic.
+
+### 11.6 Developer Checklist
+
+☑ Regenerate JSON-schemas when 3GPP spec version bumps.  
+☑ Never change IE key casing; use exact spec label.  
+☑ Unit tests compare against Wireshark PDML dumps.  
+☑ UI PRs must pass TypeScript IE-key checks.
